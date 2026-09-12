@@ -74,47 +74,55 @@
 
   .hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(340px,.95fr);gap:28px;align-items:start}
 
-  /* render + simulación */
+  /* render */
   .render{display:grid;gap:14px;position:sticky;top:64px}
-  .stage{position:relative;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--surface);box-shadow:var(--shadow);isolation:isolate}
-  .stage img{display:block;width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;background:var(--surface-2);transition:filter .35s}
-  .stage .fx{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .35s}
-  .stage .fx.gloss{background:linear-gradient(115deg,rgba(255,255,255,0) 35%,rgba(255,255,255,.28) 48%,rgba(255,255,255,0) 58%);mix-blend-mode:screen}
-  .stage .fx.chrome{background:repeating-linear-gradient(112deg,rgba(255,255,255,.0) 0 6%,rgba(255,255,255,.55) 9%,rgba(120,130,150,.35) 13%,rgba(255,255,255,.0) 18%);mix-blend-mode:soft-light}
-  .stage .fx.holo{background:linear-gradient(120deg,#ff5f6d,#ffc371,#c6ff7a,#5cf3ff,#8a7bff,#ff6ad5,#ff5f6d);background-size:300% 300%;mix-blend-mode:color-dodge;animation:holo 9s linear infinite}
-  .stage canvas.fx{mix-blend-mode:screen}
-  @keyframes holo{0%{background-position:0% 50%}100%{background-position:300% 50%}}
-  .stage[data-fin="brillo"] .gloss{opacity:1}
-  .stage[data-fin="mate"] img{filter:saturate(.82) contrast(.9) brightness(.98)}
-  .stage[data-fin="glitter"] canvas{opacity:.9}
-  .stage[data-fin="glitter"] img{filter:saturate(1.08) contrast(1.04)}
-  .stage[data-base="cromado"] .chrome{opacity:.9}
-  .stage[data-base="cromado"] img{filter:contrast(1.18) saturate(.85)}
-  .stage[data-base="cromado"][data-fin="mate"] img{filter:contrast(1.05) saturate(.7) brightness(.98)}
-  .stage[data-base="holografico"] .holo{opacity:.42}
-  .stage[data-base="holografico"][data-fin="mate"] .holo{opacity:.3}
-  .stage[data-base="holografico"][data-fin="mate"] img{filter:saturate(.85) contrast(.92)}
+  .stage{position:relative;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--surface);box-shadow:var(--shadow)}
+  .stage img{display:block;width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;background:var(--surface-2)}
   .stage .tag{position:absolute;top:12px;left:12px;font-family:var(--display);font-weight:700;font-size:14px;letter-spacing:.06em;text-transform:uppercase;padding:5px 9px;border-radius:3px;background:var(--tape);color:var(--tape-ink);transform:rotate(-1.5deg);box-shadow:0 2px 0 rgba(0,0,0,.25)}
-  .stage figcaption{position:absolute;left:0;right:0;bottom:0;padding:10px 14px;font-family:var(--mono);font-size:11px;color:#fff;background:linear-gradient(transparent,rgba(0,0,0,.7));display:flex;justify-content:space-between;gap:10px}
-  .stage figcaption b{font-weight:600;color:var(--tape)}
+  .stage figcaption{position:absolute;left:0;right:0;bottom:0;padding:10px 14px;font-family:var(--mono);font-size:11px;color:#fff;background:linear-gradient(transparent,rgba(0,0,0,.7))}
+  .render-note{font-size:12.5px;color:var(--ink-3)}
 
-  .sw-group{display:grid;gap:8px}
-  .sw-group .lbl{display:flex;justify-content:space-between;align-items:baseline;font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
-  .sw-group .lbl output{font-family:var(--mono);color:var(--ink);text-transform:none;letter-spacing:0}
-  .sw{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-  .sw button{display:grid;grid-template-columns:44px 1fr;gap:10px;align-items:center;padding:8px 10px 8px 8px;border:1.5px solid var(--line);border-radius:4px;background:var(--surface);color:var(--ink);cursor:pointer;font:inherit;text-align:left;transition:border-color .15s}
-  .sw button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
-  .sw button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-  .sw b{display:block;font-family:var(--display);font-size:17px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;line-height:1.05}
-  .sw small{display:block;font-family:var(--mono);font-size:11px;color:var(--ink-3)}
-  .chip{width:44px;height:44px;border-radius:4px;border:1px solid rgba(0,0,0,.15);position:relative;overflow:hidden;background:#1F55E0}
-  .chip.brillo::after{content:"";position:absolute;inset:0;background:linear-gradient(120deg,rgba(255,255,255,0) 40%,rgba(255,255,255,.7) 50%,rgba(255,255,255,0) 60%)}
-  .chip.mate{background:#2B4FB3;filter:saturate(.8)}
-  .chip.glitter{background:radial-gradient(circle at 20% 30%,#fff 0 1px,transparent 1.5px),radial-gradient(circle at 70% 60%,#fff 0 1px,transparent 1.5px),radial-gradient(circle at 45% 80%,#fff 0 .8px,transparent 1.3px),radial-gradient(circle at 85% 20%,#fff 0 .8px,transparent 1.3px),radial-gradient(circle at 30% 65%,#fff 0 .7px,transparent 1.2px),#1F55E0}
-  .chip.normal{background:#1F55E0}
-  .chip.cromado{background:linear-gradient(160deg,#f7f9fc 0%,#9aa3ad 35%,#e9edf2 50%,#6f7883 70%,#dfe4ea 100%)}
-  .chip.holografico{background:linear-gradient(135deg,#ff5f6d,#ffc371,#c6ff7a,#5cf3ff,#8a7bff,#ff6ad5)}
-  .sim-note{font-size:12.5px;color:var(--ink-3)}
+  /* tarjetas de base / acabado (como el configurador de la tienda) */
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .card{position:relative;aspect-ratio:1/1;border:2px solid var(--line);border-radius:8px;overflow:hidden;background:var(--surface-2);cursor:pointer;padding:0;text-align:left;font:inherit;color:#fff;transition:border-color .18s,transform .18s}
+  .card:hover{transform:translateY(-2px)}
+  .card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+  .card[aria-pressed="true"]{border-color:var(--accent)}
+  .card:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .card .chk{position:absolute;top:8px;right:8px;width:22px;height:22px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-size:13px;font-weight:700;opacity:0;transition:opacity .15s}
+  .card[aria-pressed="true"] .chk{opacity:1}
+  .card .ft{position:absolute;inset:auto 0 0 0;display:flex;align-items:center;justify-content:space-between;gap:6px;padding:8px 10px;background:linear-gradient(0deg,rgba(0,0,0,.85),rgba(0,0,0,0))}
+  .card .nm{font-size:13px;font-weight:600;color:#fff;line-height:1.15}
+  .card .pr{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--tape-ink);background:var(--tape);border-radius:999px;padding:2px 7px;white-space:nowrap}
+
+  /* cambios de diseño progresivos */
+  .changes{display:grid;gap:8px}
+  .change{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center}
+  .change .k{font-family:var(--display);font-weight:700;font-size:16px;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;min-width:82px}
+  .change input{font:inherit;font-size:15px;padding:10px 12px;border:1.5px solid var(--line);border-radius:4px;background:var(--surface);color:var(--ink);width:100%}
+  .change input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .change .fee{font-family:var(--mono);font-size:12px;white-space:nowrap;color:var(--ok);font-weight:600;min-width:64px;text-align:right}
+  .change .fee.pay{color:var(--ink)}
+  .change[hidden]{display:none}
+  .change.new{animation:pop .25s ease-out}
+  @keyframes pop{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+
+  /* extras con imagen (como la tienda) */
+  .addon{display:grid;gap:10px;padding:12px;border:1.5px solid var(--line);border-radius:4px;background:var(--surface)}
+  .addon .head{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;cursor:pointer;background:none;border:0;padding:0;font:inherit;color:var(--ink);text-align:left;width:100%}
+  .addon .head img{width:64px;height:64px;object-fit:cover;border-radius:4px}
+  .addon .head b{display:block;font-family:var(--display);font-size:19px;font-weight:700;text-transform:uppercase;letter-spacing:.03em}
+  .addon .head small{display:block;font-size:12.5px;color:var(--ink-3)}
+  .addon .head .pr{font-family:var(--mono);font-size:13px;color:var(--ink);white-space:nowrap}
+  .addon .head:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .addon[data-open="true"]{border-color:var(--accent)}
+  .addon .panel{display:grid;gap:8px}
+  .addon .panel[hidden]{display:none}
+  .pills{display:flex;flex-wrap:wrap;gap:6px}
+  .pills button{font:inherit;font-size:13.5px;font-weight:600;padding:7px 12px;border-radius:999px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+  .pills button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+  .pills button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .pills .rm{border-style:dashed;color:var(--ink-3)}
 
   /* buybox / configurador por pasos */
   .buybox{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px;display:grid;gap:18px}
@@ -239,9 +247,8 @@
     .inc,.row2{grid-template-columns:1fr}
     .top{flex-direction:column;align-items:flex-start}
     .topmeta{text-align:left}
-    .sw button{grid-template-columns:34px 1fr;padding:6px}
-    .chip{width:34px;height:34px}
-    .sw b{font-size:15px}
+    .change{grid-template-columns:1fr auto}
+    .change .k{grid-column:1/-1;min-width:0}
   }
 </style>
 </head>
@@ -250,7 +257,7 @@
 
   <header class="top">
     <div class="brand">Carez Designs<small>Kits de adhesivos para moto · Martorell (Barcelona)</small></div>
-    <div class="topmeta">Ficha de producto · render + simulación de acabado<br>precios IVA incl. · EUR</div>
+    <div class="topmeta">Ficha de producto · configurador de la tienda<br>precios IVA incl. · EUR</div>
   </header>
 
   <div class="bar">
@@ -264,7 +271,7 @@
 
   <footer>
     <span>Carez Designs · www.carezdesigns.com · carezwrap@gmail.com · 614 016 384</span>
-    <span>El render es la imagen actual del producto en Shopify. La vista de base y acabado es una simulación sobre ese render.</span>
+    <span>Render, tarjetas de base y acabado y extras: los mismos que usa hoy el configurador de la tienda.</span>
   </footer>
 </div>
 
@@ -278,17 +285,25 @@ const STORE = "https://www.carezdesigns.com/products/";
 const CDN = "https://cdn.shopify.com/s/files/1/0948/5382/4899/files/";
 const BASES = [["Normal","normal","Color tal cual, sin efecto"],["Cromado","cromado","Efecto espejo metalizado"],["Holográfico","holografico","Cambia de tono con la luz"]];
 const FINISHES = [["Brillo","brillo","Color a máxima saturación"],["Mate","mate","Sobrio, sin reflejos"],["Glitter","glitter","Destellos metálicos al sol"]];
-// Extras tal y como aparecen hoy en la ficha de la tienda
-const ADAPT_PRICE = 20;          // "Adaptación a otra moto" +20 €
-const IG_PRICE = 9.99;           // "Instagram Stickers" +9,99 €
-const IG_QTY = ["5 unidades","15 unidades","20 unidades","50 unidades"];
-const MONTAJE = [["NAKED",70],["MOTO CARRETERA",80],["ENDURO/MX/SUPERMOTARD",60],["TRAIL",85],["SCOOTER",80],["QUAD",99],["MOTO DE AGUA",120]];
+// Extras tal y como están hoy en la tienda (productos "Stickers de Instagram (extra)" y "Montaje (extra)")
+const ADAPT_PRICE = 20;                   // "Adaptación a otra moto" +20 €
+const CHANGE_FREE = 2, CHANGE_PRICE = 9.99, CHANGE_MAX = 8;  // cambios de diseño: 2 gratis, desde el 3º 9,99 €
+const IG = [["5 unidades",9.99],["15 unidades",13.49],["20 unidades",13.98],["50 unidades",30.98]];
+const MONTAJE = [["Carretera",80],["Naked",70],["Enduro/MX/Supermoto",60],["Trail",85],["Scooter",80],["Quad",99],["Moto de agua",120],["Llantas",40]];
+// Imágenes de las tarjetas base × acabado del configurador de la tienda (fila = base, columna = acabado)
+const CARD_IMG = [
+  [CDN+"hf_20260730_223536_cee7a8cf-2203-4185-bcf3-8a176fbdccf6.png?v=1785452213&width=400", CDN+"hf_20260730_223603_6ea1c29e-af1e-4d69-9671-73c1d86e045e.png?v=1785452213&width=400", CDN+"normal-glitter-v3.png?v=1785455298&width=400"],
+  [CDN+"hf_20260730_223613_67641135-d9f7-4403-9b6d-4a179c4f384c.png?v=1785452213&width=400", CDN+"hf_20260730_223616_feec3db5-52fa-4665-b76b-c4b5177ede3b.png?v=1785453005&width=400", CDN+"cromado-glitter-v3.png?v=1785455298&width=400"],
+  [CDN+"hf_20260730_223855_f173530a-b497-4937-8dba-145db88effae.png?v=1785452213&width=400", CDN+"hf_20260730_223626_59eae77c-a6b9-4658-9a3f-bb26adc57794.png?v=1785453005&width=400", CDN+"holografico-glitter-v3.png?v=1785455533&width=400"]
+];
+const IG_IMG = CDN+"instagram-stickers-extra.png?v=1785457759&width=300";
+const MONT_IMG = CDN+"montaje-extra.jpg?v=1785490894&width=300";
 const YEARS = (a,b) => Array.from({length:b-a+1},(_,i)=>String(b-i));
 
 // Precios por variante en el orden: Normal(Brillo,Mate,Glitter), Cromado(...), Holográfico(...)
 const PRODUCTS = [
   {
-    id:"mt07", brand:"Yamaha", model:"MT-07", years:"Todas las generaciones", type:"Naked", montaje:"NAKED",
+    id:"mt07", brand:"Yamaha", model:"MT-07", years:"Todas las generaciones", type:"Naked", montaje:["Carretera","Naked"],
     design:"Racing Blue", handle:"kit-adhesivos-yamaha-mt07-2025-2026-racing-blue",
     render:{src:CDN+"RacingBlue.png?v=1788031580&width=1000&format=jpg", alt:"Yamaha MT-07 en caballete con el kit Racing Blue: azul y negro con el rótulo YAMAHA en el depósito"},
     models:["MT-07"], yearList:YEARS(2014,2026),
@@ -307,7 +322,7 @@ const PRODUCTS = [
     ]
   },
   {
-    id:"gs", brand:"BMW", model:"R 1200 / 1250 GS", years:"Desde 2014", type:"Trail", montaje:"TRAIL",
+    id:"gs", brand:"BMW", model:"R 1200 / 1250 GS", years:"Desde 2014", type:"Trail", montaje:["Trail","Carretera"],
     design:"Azul, rojo y blanco", handle:"adhesivos-para-moto-bmw-1200-gs-2014-2016",
     render:{src:CDN+"KitdeAdhesivosparaBMW1200GS_2014-2016_-Azul_Rojoyblanco.png?v=1784799978&width=1000&format=jpg", alt:"Kit de pegatinas azul, rojo y blanco montado en una BMW R 1200/1250 GS"},
     models:["1200/1250 GS"], yearList:YEARS(2014,2026),
@@ -326,7 +341,7 @@ const PRODUCTS = [
     ]
   },
   {
-    id:"tmax", brand:"Yamaha", model:"TMAX", years:"Todas las generaciones", type:"Maxi scooter", montaje:"SCOOTER",
+    id:"tmax", brand:"Yamaha", model:"TMAX", years:"Todas las generaciones", type:"Maxi scooter", montaje:["Scooter"],
     design:"GYTR Rojo", handle:"kit-adhesivos-yamaha-tmax-all-models-gytr-rojo",
     render:{src:CDN+"kit-adhesivos-yamaha-tmax-rojo.png?v=1786705864&width=1000&format=jpg", alt:"Kit de pegatinas GYTR rojo montado en una Yamaha TMAX"},
     models:["TMAX 500 (2004-2007)","TMAX 500 (2008-2011)","TMAX 530 (2012-2014)","TMAX 530 (2015-2016)","TMAX 530 (2017-2019)","TMAX 560 (2020-2021)","TMAX 560 (2022-2024)","TMAX 560 (2025-)"], yearList:YEARS(2004,2026),
@@ -345,7 +360,7 @@ const PRODUCTS = [
     ]
   },
   {
-    id:"husq", brand:"Husqvarna", model:"701 Supermoto", years:"2017 - 2025", type:"Supermoto", montaje:"ENDURO/MX/SUPERMOTARD",
+    id:"husq", brand:"Husqvarna", model:"701 Supermoto", years:"2017 - 2025", type:"Supermoto", montaje:["Enduro/MX/Supermoto"],
     design:"Amarillo y Gris", handle:"adhesivos-para-moto-husqvarna-701-supermoto-2017-2025",
     render:{src:CDN+"kit-adhesivos-husqvarna_64890de3-30ba-465e-9330-a36c2fb7fe99.png?v=1765708389&width=1000&format=jpg", alt:"Kit de adhesivos amarillo y gris para Husqvarna 701 Supermoto"},
     models:["701 Supermoto"], yearList:YEARS(2017,2025),
@@ -364,7 +379,7 @@ const PRODUCTS = [
     ]
   },
   {
-    id:"custom", brand:"Personalizado", model:"Kit 100% a medida", years:"Moto naked · cualquier marca", type:"Personalizado", montaje:"NAKED", custom:true,
+    id:"custom", brand:"Personalizado", model:"Kit 100% a medida", years:"Moto naked · cualquier marca", type:"Personalizado", montaje:["Naked","Carretera"], custom:true,
     design:"Diseñado desde cero", handle:"kit-de-pegatinas-100-personalizado",
     render:{src:CDN+"kit-personalizado-naked.png?v=1789057032&width=1000&format=jpg", alt:"Kit de pegatinas 100% personalizado montado en una moto naked"},
     models:null, yearList:YEARS(2000,2026),
@@ -392,13 +407,10 @@ const excl = p => p.custom ? ["cúpula","llantas","suspensiones","escape","chasi
 const name = p => p.custom ? "Kit 100% personalizado" : `${p.brand} ${p.model}`;
 const url = p => STORE + p.handle;
 const minP = p => Math.min(...p.prices);
-const montajeDe = p => MONTAJE.find(m=>m[0]===p.montaje);
+const montajeDe = p => MONTAJE.find(m=>m[0]===p.montaje[0]);
 
 function ficha(p){
-  const sw = (list,key) => list.map(([v,k,d],i)=>`<button type="button" data-${key}="${i}" aria-pressed="${i===0}"><span class="chip ${k}"></span><span><b>${v}</b><small>${d}</small></span></button>`).join("");
-  const opts = (list,key) => list.map(([v,k,d],i)=>`
-    <div class="opt"><input type="radio" id="${key}-${i}" name="${key}" value="${i}" ${i===0?"checked":""}>
-    <label for="${key}-${i}"><b>${v}</b><small>${d}</small><span class="pr" data-pr="${key}-${i}"></span></label></div>`).join("");
+  const cards = (list,key) => list.map(([v],i)=>`<button type="button" class="card" data-${key}="${i}" aria-pressed="${i===0}"><img src="${key==="base"?CARD_IMG[i][0]:CARD_IMG[0][i]}" alt="${v}" loading="lazy" width="400" height="400"><span class="chk">✓</span><span class="ft"><span class="nm">${v}</span><span class="pr" data-pr="${key}-${i}"></span></span></button>`).join("");
   return `
   <article class="ficha">
     <div class="ficha-head">
@@ -408,24 +420,12 @@ function ficha(p){
 
     <div class="hero">
       <div class="render">
-        <figure class="stage" id="stage" data-base="normal" data-fin="brillo" style="margin:0">
+        <figure class="stage" style="margin:0">
           <img src="${p.render.src}" alt="${esc(p.render.alt)}" width="1000" height="1000" id="render">
-          <div class="fx gloss"></div>
-          <div class="fx chrome"></div>
-          <div class="fx holo"></div>
-          <canvas class="fx" id="glitter" width="1000" height="1000" aria-hidden="true"></canvas>
           <span class="tag">Render del diseño</span>
-          <figcaption><span>Vista simulada · <b id="stage-lbl">Normal · Brillo</b></span></figcaption>
+          <figcaption>Representación digital del diseño ${esc(p.design)} sobre ${esc(name(p))}</figcaption>
         </figure>
-        <div class="sw-group">
-          <div class="lbl"><span>Acabado</span><output id="out-fin">Brillo</output></div>
-          <div class="sw" id="sw-fin">${sw(FINISHES,"fin")}</div>
-        </div>
-        <div class="sw-group">
-          <div class="lbl"><span>Base</span><output id="out-base">Normal</output></div>
-          <div class="sw" id="sw-base">${sw(BASES,"base")}</div>
-        </div>
-        <p class="sim-note">Pulsa un acabado o una base y el render cambia. Es una simulación orientativa sobre la imagen del producto; el color real depende del material y de la luz. Antes de fabricar apruebas una previsualización real.</p>
+        <p class="render-note">Antes de fabricar te enviamos la previsualización real de tu kit, con tu año y tus cambios aplicados, para que la apruebes.</p>
       </div>
 
       <form class="buybox" id="form" onsubmit="return false">
@@ -458,37 +458,40 @@ function ficha(p){
         </section>
 
         <section class="step">
-          <div class="step-h"><span class="n">PASO 2</span><h3>Diseño</h3><small>Se ve en el render</small></div>
-          <div class="field"><label>Base</label><div class="opts">${opts(BASES,"base")}</div></div>
-          <div class="field"><label>Acabado</label><div class="opts">${opts(FINISHES,"fin")}</div></div>
+          <div class="step-h"><span class="n">PASO 2</span><h3>Diseño</h3><small>Elige base y acabado</small></div>
+          <div class="field"><label>Base</label><div class="cards" id="cards-base">${cards(BASES,"base")}</div></div>
+          <div class="field"><label>Acabado</label><div class="cards" id="cards-fin">${cards(FINISHES,"fin")}</div></div>
           <p class="help"><strong>Brillo, mate o glitter:</strong> ${esc(p.finish)}</p>
         </section>
 
         <section class="step">
           <div class="step-h"><span class="n">PASO 3</span><h3>Extras y confirmación</h3><small>Opcional</small></div>
+          <div class="extra" data-open="true">
+            <div class="head" style="grid-template-columns:1fr auto"><label style="cursor:default">Cambio de diseño<small>Los 2 primeros cambios van incluidos. A partir del tercero, cada cambio cuesta ${eur(CHANGE_PRICE)}. Los ves aplicados en la previsualización.</small></label><span class="pr">2 gratis</span></div>
+            <div class="changes" id="changes"></div>
+          </div>
+          <div class="field"><label for="notas">Información a tener en cuenta</label>
+            <textarea id="notas" placeholder="Cualquier detalle que debamos saber antes de fabricar: piezas cambiadas, accesorios montados, dudas sobre el modelo…"></textarea>
+          </div>
           <div class="extra">
             <div class="head"><input type="checkbox" id="adapt"><label for="adapt">Adaptación a otra moto<small>Este diseño, redibujado sobre las piezas de un modelo distinto.</small></label><span class="pr">+${eur(ADAPT_PRICE)}</span></div>
-            <div class="sub" id="adapt-sub" hidden><div class="field"><label for="adapt-txt">¿A qué moto?</label><input type="text" id="adapt-txt" placeholder="Marca, modelo y año"></div></div>
+            <div class="sub" id="adapt-sub" hidden><div class="field"><textarea id="adapt-txt" placeholder="Indica la marca, modelo y año de la moto a la que quieres adaptar este diseño"></textarea></div></div>
           </div>
-          <div class="extra">
-            <div class="head"><input type="checkbox" id="ig"><label for="ig">Instagram Stickers<small>Pegatinas con tu usuario de Instagram para la moto o el casco.</small></label><span class="pr">+${eur(IG_PRICE)}</span></div>
-            <div class="sub" id="ig-sub" hidden><div class="row2">
-              <div class="field"><label for="ig-qty">Unidades</label><select id="ig-qty">${IG_QTY.map(q=>`<option>${q}</option>`).join("")}</select></div>
-              <div class="field"><label for="ig-user">Usuario</label><input type="text" id="ig-user" placeholder="@tuusuario"></div>
-            </div></div>
+          <div class="field"><label>Extra</label></div>
+          <div class="addon" id="ig" data-open="false">
+            <button type="button" class="head" data-toggle="ig" aria-expanded="false"><img src="${IG_IMG}" alt="" loading="lazy"><span><b>Instagram Stickers</b><small id="ig-sum">Toca para añadir · 5 unidades incluidas</small></span><span class="pr">+${eur(IG[0][1])}</span></button>
+            <div class="panel" hidden><div class="pills" id="ig-pills">${IG.map(([q,pr],i)=>`<button type="button" data-ig="${i}" aria-pressed="false">${q} · ${eur(pr)}</button>`).join("")}<button type="button" class="rm" data-ig-rm>Quitar extra</button></div>
+            <div class="field"><input type="text" id="ig-user" placeholder="@tuusuario de Instagram" style="font:inherit;font-size:15px;padding:10px 12px;border:1.5px solid var(--line);border-radius:4px;background:var(--surface);color:var(--ink)"></div></div>
           </div>
-          <div class="extra">
-            <div class="head"><input type="checkbox" id="mont"><label for="mont">Montaje en nuestro taller<small>En caso de que elijas el montaje nos pondremos en contacto contigo.</small></label><span class="pr">desde ${eur(60)}</span></div>
-            <div class="sub" id="mont-sub" hidden><div class="field"><label for="mont-tipo">Tipo de moto</label>
-              <select id="mont-tipo">${MONTAJE.map(([t,pr])=>`<option value="${pr}" ${t===p.montaje?"selected":""}>${cap(t.toLowerCase())} · ${eur(pr)}</option>`).join("")}</select></div></div>
-          </div>
-          <div class="field"><label for="notas">Cambios o comentarios para el diseño</label>
-            <textarea id="notas" placeholder="Ej.: quitar el dorsal del colín, cambiar el gris por negro, añadir mi nombre en el depósito…"></textarea>
-            <p class="help">Los 2 primeros cambios de diseño van incluidos. Los ves aplicados en la previsualización antes de fabricar.</p>
+          <div class="addon" id="mont" data-open="false">
+            <button type="button" class="head" data-toggle="mont" aria-expanded="false"><img src="${MONT_IMG}" alt="" loading="lazy"><span><b>Montaje</b><small id="mont-sum">Elige el tipo de tu moto</small></span><span class="pr">Desde ${eur(60)}</span></button>
+            <div class="panel" hidden><p class="help">En caso de que elijas el montaje nos pondremos en contacto contigo. Nuestra sede está situada en Martorell (Barcelona).</p>
+            <div class="pills" id="mont-pills">${p.montaje.map(t=>{const m=MONTAJE.find(x=>x[0]===t);return `<button type="button" data-mont="${m[1]}" data-name="${esc(m[0])}" aria-pressed="false">${esc(m[0])} · ${eur(m[1])}</button>`;}).join("")}<button type="button" class="rm" data-mont-rm>Quitar extra</button></div></div>
           </div>
         </section>
 
         <div class="summary">
+          <div class="price-note" id="combo-line" style="font-size:13px">Normal + Brillo · Extras: +0 €</div>
           <ul class="lines" id="lines"></ul>
           <div class="total">
             <div><div class="price" id="price">${eur(minP(p))}</div><div class="price-note">IVA incluido · <b>envío gratis</b> en España</div></div>
@@ -512,7 +515,7 @@ function ficha(p){
       <section class="sec"><h3>Cómo funciona</h3>
         <ol class="steps">
           <li><b>Configura</b><span>${p.custom?"Cuéntanos tu idea en el formulario: moto, año, base, acabado y comentarios.":"Modelo y año, base y acabado, y los extras que quieras."}</span></li>
-          <li><b>Revisa</b><span>Te enviamos una previsualización del diseño final para que la apruebes. Dos cambios incluidos.</span></li>
+          <li><b>Revisa</b><span>Te enviamos una previsualización del diseño final para que la apruebes. Los 2 primeros cambios van incluidos.</span></li>
           <li><b>Fabricamos</b><span>Troquelamos el kit en vinilo de 485 μm con las plantillas de tu modelo y año.</span></li>
           <li><b>Monta o trae</b><span>Lo montas tú o lo hacemos en nuestro taller de Martorell si lo has marcado.</span></li>
         </ol></section>
@@ -528,7 +531,7 @@ function ficha(p){
         </table></section>
       <section class="sec full"><h3>Preguntas frecuentes</h3>
         ${p.faq.map(([q,a])=>`<details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join("")}
-        <details><summary>¿La moto queda igual que en el render?</summary><p>El render es una representación digital y la vista de base y acabado es una simulación. Líneas, proporciones o gráficos pueden ajustarse a tu modelo, y lo ves en la previsualización real antes de fabricar.</p></details>
+        <details><summary>¿La moto queda igual que en el render?</summary><p>El render es una representación digital. Líneas, proporciones o gráficos pueden ajustarse a tu modelo, y lo ves en la previsualización real antes de fabricar.</p></details>
       </section>
       <aside class="upsell full">
         <img src="${INSTALL_IMG}" alt="Montaje de un kit de adhesivos sobre una moto en el taller de Carez Designs" loading="lazy">
@@ -540,64 +543,72 @@ function ficha(p){
   </article>`;
 }
 
-/* ---------- glitter canvas ---------- */
-function drawGlitter(cv){
-  const ctx=cv.getContext("2d"); ctx.clearRect(0,0,cv.width,cv.height);
-  let seed=7; const rnd=()=>{ seed=(seed*16807)%2147483647; return seed/2147483647; };
-  for(let i=0;i<2600;i++){
-    const x=rnd()*cv.width, y=rnd()*cv.height, r=rnd()*1.6+.3, a=rnd()*.9+.1;
-    ctx.fillStyle=`rgba(255,255,255,${a})`; ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill();
-  }
-}
-
 /* ---------- state + render ---------- */
 const main=document.getElementById("ficha"), select=document.getElementById("product");
 select.innerHTML=PRODUCTS.map(p=>`<option value="${p.id}">${esc(name(p))} · ${esc(p.design)}</option>`).join("");
 let current=PRODUCTS[0], base=0, fin=0;
 
+let igSel=-1, montSel=null;
 function setDesign(b,f){
   base=b; fin=f;
-  const stage=document.getElementById("stage");
-  stage.dataset.base=BASES[b][1]; stage.dataset.fin=FINISHES[f][1];
-  document.getElementById("stage-lbl").textContent=`${BASES[b][0]} · ${FINISHES[f][0]}`;
-  document.getElementById("out-base").textContent=BASES[b][0];
-  document.getElementById("out-fin").textContent=FINISHES[f][0];
-  document.querySelectorAll("#sw-base button").forEach(x=>x.setAttribute("aria-pressed",+x.dataset.base===b));
-  document.querySelectorAll("#sw-fin button").forEach(x=>x.setAttribute("aria-pressed",+x.dataset.fin===f));
-  document.querySelector(`input[name="base"][value="${b}"]`).checked=true;
-  document.querySelector(`input[name="fin"][value="${f}"]`).checked=true;
+  document.querySelectorAll("#cards-base .card").forEach(x=>{ const i=+x.dataset.base; x.setAttribute("aria-pressed",i===b); x.querySelector("img").src=CARD_IMG[i][f]; });
+  document.querySelectorAll("#cards-fin .card").forEach(x=>{ const i=+x.dataset.fin; x.setAttribute("aria-pressed",i===f); x.querySelector("img").src=CARD_IMG[b][i]; });
   total();
+}
+function changesFilled(){ return [...document.querySelectorAll("#changes input")].filter(i=>i.value.trim()).length; }
+function renderChanges(){
+  const wrap=document.getElementById("changes");
+  const vals=[...wrap.querySelectorAll("input")].map(i=>i.value);
+  // número de casillas visibles: la primera siempre; una nueva cada vez que la última visible tiene texto
+  let n=1; while(n<CHANGE_MAX && (vals[n-1]||"").trim()) n++;
+  const focusIdx=document.activeElement && document.activeElement.dataset ? document.activeElement.dataset.ch : null;
+  wrap.innerHTML=Array.from({length:n},(_,i)=>{
+    const free=i<CHANGE_FREE;
+    return `<div class="change ${i===n-1&&i>0?"new":""}"><span class="k">Cambio ${i+1}</span><input type="text" data-ch="${i}" value="${esc(vals[i]||"")}" placeholder="${i===0?"Ej.: cambiar el gris por negro":i===1?"Ej.: añadir mi nombre en el depósito":"Ej.: quitar el dorsal del colín"}"><span class="fee ${free?"":"pay"}">${free?"Gratis":"+"+eur(CHANGE_PRICE)}</span></div>`;
+  }).join("");
+  wrap.querySelectorAll("input").forEach(i=>i.addEventListener("input",()=>{ const wasLast=+i.dataset.ch===n-1; if(wasLast && i.value.trim() && n<CHANGE_MAX){ renderChanges(); wrap.querySelector(`[data-ch="${i.dataset.ch}"]`).focus(); } else if(!i.value.trim() && +i.dataset.ch<n-1){ /* se mantiene hasta perder el foco */ } total(); }));
+  wrap.querySelectorAll("input").forEach(i=>i.addEventListener("blur",()=>{ renderChanges(); }));
+  if(focusIdx!=null){ const el=wrap.querySelector(`[data-ch="${focusIdx}"]`); if(el){ el.focus(); el.setSelectionRange(el.value.length,el.value.length);} }
 }
 function total(){
   const p=current, kit=p.prices[base*3+fin];
   const lines=[[`Kit ${p.design} · ${BASES[base][0]} / ${FINISHES[fin][0]}`,kit]];
-  let sum=kit;
-  if(document.getElementById("adapt").checked){ lines.push(["Adaptación a otra moto",ADAPT_PRICE]); sum+=ADAPT_PRICE; }
-  if(document.getElementById("ig").checked){ lines.push([`Instagram Stickers · ${document.getElementById("ig-qty").value}`,IG_PRICE]); sum+=IG_PRICE; }
-  if(document.getElementById("mont").checked){ const v=+document.getElementById("mont-tipo").value; lines.push(["Montaje en taller",v]); sum+=v; }
+  let extras=0;
+  const paid=Math.max(0,changesFilled()-CHANGE_FREE);
+  if(paid>0){ lines.push([`Cambios de diseño extra (${paid} × ${eur(CHANGE_PRICE)})`,paid*CHANGE_PRICE]); extras+=paid*CHANGE_PRICE; }
+  if(document.getElementById("adapt").checked){ lines.push(["Adaptación a otra moto",ADAPT_PRICE]); extras+=ADAPT_PRICE; }
+  if(igSel>=0){ lines.push([`Instagram Stickers · ${IG[igSel][0]}`,IG[igSel][1]]); extras+=IG[igSel][1]; }
+  if(montSel){ lines.push([`Montaje · ${montSel[0]}`,montSel[1]]); extras+=montSel[1]; }
+  const sum=kit+extras;
+  document.getElementById("combo-line").textContent=`${BASES[base][0]} + ${FINISHES[fin][0]} · Extras: +${eur(extras)}`;
   document.getElementById("lines").innerHTML=lines.map(([l,v])=>`<li><span>${esc(l)}</span><span>${eur(v)}</span></li>`).join("");
   document.getElementById("price").textContent=eur(sum);
   document.getElementById("mprice").textContent=eur(sum);
-  // precio de cada opción de base/acabado con la otra elección fijada
   BASES.forEach((_,b)=>document.querySelector(`[data-pr="base-${b}"]`).textContent=eur(p.prices[b*3+fin]));
   FINISHES.forEach((_,f)=>document.querySelector(`[data-pr="fin-${f}"]`).textContent=eur(p.prices[base*3+f]));
 }
 function render(p){
-  current=p; base=0; fin=0;
+  current=p; base=0; fin=0; igSel=-1; montSel=null;
   main.innerHTML=ficha(p);
-  drawGlitter(document.getElementById("glitter"));
-  document.querySelectorAll("#sw-base button").forEach(b=>b.addEventListener("click",()=>setDesign(+b.dataset.base,fin)));
-  document.querySelectorAll("#sw-fin button").forEach(b=>b.addEventListener("click",()=>setDesign(base,+b.dataset.fin)));
-  document.querySelectorAll('input[name="base"]').forEach(i=>i.addEventListener("change",()=>setDesign(+i.value,fin)));
-  document.querySelectorAll('input[name="fin"]').forEach(i=>i.addEventListener("change",()=>setDesign(base,+i.value)));
-  [["adapt","adapt-sub"],["ig","ig-sub"],["mont","mont-sub"]].forEach(([id,sub])=>{
-    const cb=document.getElementById(id); cb.addEventListener("change",()=>{ document.getElementById(sub).hidden=!cb.checked; total(); });
-  });
-  document.getElementById("ig-qty").addEventListener("change",total);
-  document.getElementById("mont-tipo").addEventListener("change",total);
+  document.querySelectorAll("#cards-base .card").forEach(b=>b.addEventListener("click",()=>setDesign(+b.dataset.base,fin)));
+  document.querySelectorAll("#cards-fin .card").forEach(b=>b.addEventListener("click",()=>setDesign(base,+b.dataset.fin)));
+  renderChanges();
+  const adapt=document.getElementById("adapt"); adapt.addEventListener("change",()=>{ document.getElementById("adapt-sub").hidden=!adapt.checked; total(); });
+  // extras con imagen: abrir/cerrar
+  document.querySelectorAll("[data-toggle]").forEach(btn=>btn.addEventListener("click",()=>{
+    const box=document.getElementById(btn.dataset.toggle), panel=box.querySelector(".panel"), open=panel.hidden;
+    panel.hidden=!open; btn.setAttribute("aria-expanded",open); box.dataset.open=open;
+    if(open && btn.dataset.toggle==="ig" && igSel<0) pickIg(0);
+  }));
+  const pickIg=i=>{ igSel=i; document.querySelectorAll("#ig-pills [data-ig]").forEach(b=>b.setAttribute("aria-pressed",+b.dataset.ig===i)); document.getElementById("ig-sum").textContent=i>=0?`${IG[i][0]} · ${eur(IG[i][1])}`:"Toca para añadir · 5 unidades incluidas"; total(); };
+  document.querySelectorAll("#ig-pills [data-ig]").forEach(b=>b.addEventListener("click",()=>pickIg(+b.dataset.ig)));
+  document.querySelector("[data-ig-rm]").addEventListener("click",()=>{ pickIg(-1); const box=document.getElementById("ig"); box.querySelector(".panel").hidden=true; box.dataset.open=false; box.querySelector(".head").setAttribute("aria-expanded",false); });
+  const pickMont=b=>{ montSel=b?[b.dataset.name,+b.dataset.mont]:null; document.querySelectorAll("#mont-pills [data-mont]").forEach(x=>x.setAttribute("aria-pressed",x===b)); document.getElementById("mont-sum").textContent=montSel?`${montSel[0]} · ${eur(montSel[1])}`:"Elige el tipo de tu moto"; total(); };
+  document.querySelectorAll("#mont-pills [data-mont]").forEach(b=>b.addEventListener("click",()=>pickMont(b)));
+  document.querySelector("[data-mont-rm]").addEventListener("click",()=>{ pickMont(null); const box=document.getElementById("mont"); box.querySelector(".panel").hidden=true; box.dataset.open=false; box.querySelector(".head").setAttribute("aria-expanded",false); });
   document.getElementById("up-mont").addEventListener("click",()=>{
-    const cb=document.getElementById("mont"); cb.checked=true; document.getElementById("mont-sub").hidden=false; total();
-    cb.scrollIntoView({behavior:"smooth",block:"center"});
+    const box=document.getElementById("mont"); box.querySelector(".panel").hidden=false; box.dataset.open=true; box.querySelector(".head").setAttribute("aria-expanded",true);
+    pickMont(document.querySelector("#mont-pills [data-mont]")); box.scrollIntoView({behavior:"smooth",block:"center"});
   });
   document.getElementById("mname").textContent=`${name(p)} · ${p.design}`;
   document.getElementById("mlink").href=url(p);
@@ -624,7 +635,7 @@ ${p.why.map(([,t,d])=>`<p><strong>${esc(t)}.</strong> ${esc(d)}</p>`).join("\n")
 <ol>
 <li><strong>Tu moto:</strong> modelo y año${p.custom?" (cualquier marca)":""}. Si quieres, sube una foto para que confirmemos el modelo antes de fabricar.</li>
 <li><strong>Diseño:</strong> base (normal, cromado u holográfico) y acabado (brillo, mate o glitter).</li>
-<li><strong>Extras:</strong> adaptación a otra moto, Instagram Stickers, montaje en nuestro taller y tus cambios o comentarios para el diseño.</li>
+<li><strong>Extras:</strong> cambios de diseño (2 gratis, desde el tercero 9,99 € cada uno), información a tener en cuenta, adaptación a otra moto, Instagram Stickers y montaje en nuestro taller.</li>
 </ol>
 <hr>
 <h3>¿QUÉ INCLUYE EL KIT?</h3>
