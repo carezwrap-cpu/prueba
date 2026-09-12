@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Fichas Carez Designs</title>
-<meta name="description" content="Cuatro tipos de ficha de producto para los kits de adhesivos de moto de Carez Designs, con las fotos actuales de Shopify y precios reales por variante.">
+<meta name="description" content="Ficha de producto para los kits de adhesivos de moto de Carez Designs: render con simulación de base y acabado, configuración por pasos como en la tienda y precio real por variante.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@500&display=swap">
 <style>
@@ -49,85 +49,101 @@
   img{max-width:100%}
   .wrap{max-width:1180px;margin-inline:auto}
 
-  /* ---------- top ---------- */
   .top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:18px;border-bottom:2px solid var(--ink)}
   .brand{font-family:var(--display);font-weight:800;font-size:22px;letter-spacing:.06em;text-transform:uppercase}
   .brand small{display:block;font-family:var(--body);font-weight:500;font-size:11px;letter-spacing:.18em;color:var(--ink-3)}
   .topmeta{font-family:var(--mono);font-size:12px;color:var(--ink-2);text-align:right}
 
-  .intro{display:grid;grid-template-columns:1.15fr .85fr;gap:32px;align-items:end;padding-block:36px 24px}
-  .intro h1{font-size:clamp(40px,6vw,72px);font-weight:800;text-transform:uppercase}
-  .intro h1 em{font-style:normal;color:var(--accent)}
-  .intro p{max-width:60ch;color:var(--ink-2);font-size:17px}
-  .kicker{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:12px}
-  .rules{display:grid;gap:10px;font-size:14px;color:var(--ink-2);border-left:3px solid var(--tape);padding-left:14px}
-  .rules b{color:var(--ink)}
-
-  /* ---------- control bar ---------- */
-  .bar{position:sticky;top:0;z-index:20;background:var(--bg);border-block:1px solid var(--line);display:flex;align-items:center;gap:0;overflow-x:auto;scrollbar-width:none}
-  .bar::-webkit-scrollbar{display:none}
-  .bar .pick{display:flex;align-items:center;gap:10px;padding:10px 16px 10px 0;border-right:1px solid var(--line);flex:none}
-  .bar .pick label{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);white-space:nowrap}
-  .bar select{font:inherit;font-size:14px;font-weight:600;padding:7px 10px;border:1.5px solid var(--line);border-radius:4px;background:var(--surface);color:var(--ink);max-width:260px}
+  .bar{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:16px;padding-block:10px;flex-wrap:wrap}
+  .bar label{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);white-space:nowrap}
+  .bar select{font:inherit;font-size:14px;font-weight:600;padding:7px 10px;border:1.5px solid var(--line);border-radius:4px;background:var(--surface);color:var(--ink);max-width:min(320px,80vw)}
   .bar select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-  .bar ul{list-style:none;margin:0;padding:0;display:flex;min-width:max-content}
-  .bar ul a{display:flex;align-items:baseline;gap:8px;padding:12px 16px;color:var(--ink-2);text-decoration:none;font-family:var(--display);font-weight:600;font-size:17px;text-transform:uppercase;letter-spacing:.04em;border-right:1px solid var(--line)}
-  .bar ul a:hover{color:var(--ink);background:var(--surface)}
-  .bar ul a .n{font-family:var(--mono);font-size:11px;color:var(--ink-3)}
-  .bar ul a.active{color:var(--accent);box-shadow:inset 0 -3px 0 var(--accent)}
-
-  /* ---------- sample frame ---------- */
-  .sample{margin-top:56px;scroll-margin-top:64px}
-  .sample-head{display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:end;border-bottom:2px solid var(--ink);padding-bottom:12px;margin-bottom:22px}
-  .plate{font-family:var(--display);font-weight:800;font-size:40px;line-height:1;padding:2px 12px;border:2px solid var(--ink);border-radius:4px;background:var(--tape);color:var(--tape-ink)}
-  .sample-head h2{font-size:clamp(26px,3.4vw,38px);font-weight:800;text-transform:uppercase}
-  .sample-head .when{font-size:14px;color:var(--ink-2);max-width:70ch;margin-top:4px}
-  .sample-head .when b{color:var(--ink)}
-  .sample-head .tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+  .bar .note{font-size:13px;color:var(--ink-2);margin-left:auto}
+  .bar .tools{display:flex;gap:8px;align-items:center}
   .tools button{font:inherit;font-size:13px;font-weight:600;padding:8px 12px;border-radius:4px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;white-space:nowrap}
   .tools button:hover{border-color:var(--ink)}
   .tools button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
   .tools .st{font-family:var(--mono);font-size:12px;color:var(--ok)}
-  .frame{border:1px dashed var(--line);border-radius:8px;padding:clamp(12px,2vw,24px);background:color-mix(in srgb,var(--surface) 55%,var(--bg))}
-  .frame-lbl{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:12px}
 
-  /* ---------- shared components ---------- */
+  /* ---------- ficha ---------- */
+  .ficha{margin-top:28px}
+  .ficha-head{display:flex;align-items:baseline;gap:14px;border-bottom:2px solid var(--ink);padding-bottom:8px;margin-bottom:22px}
+  .plate{font-family:var(--display);font-weight:800;font-size:34px;line-height:1;padding:2px 10px;border:2px solid var(--ink);border-radius:4px;background:var(--tape);color:var(--tape-ink)}
+  .cat{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
+  .cat b{color:var(--ink);font-weight:600}
+
+  .hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(340px,.95fr);gap:28px;align-items:start}
+
+  /* render + simulación */
+  .render{display:grid;gap:14px;position:sticky;top:64px}
+  .stage{position:relative;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--surface);box-shadow:var(--shadow);isolation:isolate}
+  .stage img{display:block;width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;background:var(--surface-2);transition:filter .35s}
+  .stage .fx{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .35s}
+  .stage .fx.gloss{background:linear-gradient(115deg,rgba(255,255,255,0) 35%,rgba(255,255,255,.28) 48%,rgba(255,255,255,0) 58%);mix-blend-mode:screen}
+  .stage .fx.chrome{background:repeating-linear-gradient(112deg,rgba(255,255,255,.0) 0 6%,rgba(255,255,255,.55) 9%,rgba(120,130,150,.35) 13%,rgba(255,255,255,.0) 18%);mix-blend-mode:soft-light}
+  .stage .fx.holo{background:linear-gradient(120deg,#ff5f6d,#ffc371,#c6ff7a,#5cf3ff,#8a7bff,#ff6ad5,#ff5f6d);background-size:300% 300%;mix-blend-mode:color-dodge;animation:holo 9s linear infinite}
+  .stage canvas.fx{mix-blend-mode:screen}
+  @keyframes holo{0%{background-position:0% 50%}100%{background-position:300% 50%}}
+  .stage[data-fin="brillo"] .gloss{opacity:1}
+  .stage[data-fin="mate"] img{filter:saturate(.82) contrast(.9) brightness(.98)}
+  .stage[data-fin="glitter"] canvas{opacity:.9}
+  .stage[data-fin="glitter"] img{filter:saturate(1.08) contrast(1.04)}
+  .stage[data-base="cromado"] .chrome{opacity:.9}
+  .stage[data-base="cromado"] img{filter:contrast(1.18) saturate(.85)}
+  .stage[data-base="cromado"][data-fin="mate"] img{filter:contrast(1.05) saturate(.7) brightness(.98)}
+  .stage[data-base="holografico"] .holo{opacity:.42}
+  .stage[data-base="holografico"][data-fin="mate"] .holo{opacity:.3}
+  .stage[data-base="holografico"][data-fin="mate"] img{filter:saturate(.85) contrast(.92)}
+  .stage .tag{position:absolute;top:12px;left:12px;font-family:var(--display);font-weight:700;font-size:14px;letter-spacing:.06em;text-transform:uppercase;padding:5px 9px;border-radius:3px;background:var(--tape);color:var(--tape-ink);transform:rotate(-1.5deg);box-shadow:0 2px 0 rgba(0,0,0,.25)}
+  .stage figcaption{position:absolute;left:0;right:0;bottom:0;padding:10px 14px;font-family:var(--mono);font-size:11px;color:#fff;background:linear-gradient(transparent,rgba(0,0,0,.7));display:flex;justify-content:space-between;gap:10px}
+  .stage figcaption b{font-weight:600;color:var(--tape)}
+
+  .sw-group{display:grid;gap:8px}
+  .sw-group .lbl{display:flex;justify-content:space-between;align-items:baseline;font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+  .sw-group .lbl output{font-family:var(--mono);color:var(--ink);text-transform:none;letter-spacing:0}
+  .sw{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .sw button{display:grid;grid-template-columns:44px 1fr;gap:10px;align-items:center;padding:8px 10px 8px 8px;border:1.5px solid var(--line);border-radius:4px;background:var(--surface);color:var(--ink);cursor:pointer;font:inherit;text-align:left;transition:border-color .15s}
+  .sw button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+  .sw button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .sw b{display:block;font-family:var(--display);font-size:17px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;line-height:1.05}
+  .sw small{display:block;font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+  .chip{width:44px;height:44px;border-radius:4px;border:1px solid rgba(0,0,0,.15);position:relative;overflow:hidden;background:#1F55E0}
+  .chip.brillo::after{content:"";position:absolute;inset:0;background:linear-gradient(120deg,rgba(255,255,255,0) 40%,rgba(255,255,255,.7) 50%,rgba(255,255,255,0) 60%)}
+  .chip.mate{background:#2B4FB3;filter:saturate(.8)}
+  .chip.glitter{background:radial-gradient(circle at 20% 30%,#fff 0 1px,transparent 1.5px),radial-gradient(circle at 70% 60%,#fff 0 1px,transparent 1.5px),radial-gradient(circle at 45% 80%,#fff 0 .8px,transparent 1.3px),radial-gradient(circle at 85% 20%,#fff 0 .8px,transparent 1.3px),radial-gradient(circle at 30% 65%,#fff 0 .7px,transparent 1.2px),#1F55E0}
+  .chip.normal{background:#1F55E0}
+  .chip.cromado{background:linear-gradient(160deg,#f7f9fc 0%,#9aa3ad 35%,#e9edf2 50%,#6f7883 70%,#dfe4ea 100%)}
+  .chip.holografico{background:linear-gradient(135deg,#ff5f6d,#ffc371,#c6ff7a,#5cf3ff,#8a7bff,#ff6ad5)}
+  .sim-note{font-size:12.5px;color:var(--ink-3)}
+
+  /* buybox / configurador por pasos */
+  .buybox{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px;display:grid;gap:18px}
   .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
-  .proof{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0;list-style:none}
-  .proof li{font-size:13px;font-weight:500;padding:5px 10px;border-radius:999px;background:var(--surface-2);color:var(--ink-2)}
-  .proof li::before{content:"✓ ";color:var(--ok);font-weight:700}
-  .cta{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 22px;border-radius:4px;background:var(--accent);color:var(--accent-ink);text-decoration:none;font-family:var(--display);font-weight:800;font-size:20px;letter-spacing:.06em;text-transform:uppercase;border:0;cursor:pointer;transition:transform .12s,filter .12s}
-  .cta:hover{filter:brightness(1.07);transform:translateY(-1px)}
-  .cta:focus-visible{outline:3px solid var(--tape);outline-offset:2px}
-  .cta.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line);font-size:16px;min-height:44px}
-  .cta.tape{background:var(--tape);color:var(--tape-ink)}
-  .micro{font-size:12.5px;color:var(--ink-3)}
-  .price{font-family:var(--display);font-weight:800;font-size:46px;line-height:.9;font-variant-numeric:tabular-nums}
-  .price-note{font-size:12px;color:var(--ink-3);font-family:var(--mono)}
-  .price-note b{color:var(--ok);font-weight:600}
+  .buybox h2{font-size:clamp(30px,4vw,44px);font-weight:800;text-transform:uppercase}
+  .buybox h2 span{color:var(--ink-3);font-weight:600}
+  .hook{font-size:16.5px;color:var(--ink-2);max-width:50ch}
+  .badges{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0;padding:0;list-style:none}
+  .badges li{display:grid;gap:2px;padding:10px;border-radius:4px;background:var(--ok-soft)}
+  .badges b{font-family:var(--display);font-size:20px;font-weight:800;text-transform:uppercase;color:var(--ok);line-height:1}
+  .badges span{font-size:12.5px;color:var(--ink-2)}
 
-  /* gallery */
-  .gal{display:grid;gap:10px}
-  .gal .main{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
-  .gal .main img{display:block;width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;background:var(--surface-2)}
-  .gal .main.wide img{aspect-ratio:4/3}
-  .gal .main figcaption{position:absolute;left:0;bottom:0;right:0;padding:10px 14px;font-family:var(--mono);font-size:11px;color:#fff;background:linear-gradient(transparent,rgba(0,0,0,.7))}
-  .gal .tag{position:absolute;top:12px;left:12px;font-family:var(--display);font-weight:700;font-size:14px;letter-spacing:.06em;text-transform:uppercase;padding:5px 9px;border-radius:3px;background:var(--tape);color:var(--tape-ink);transform:rotate(-1.5deg);box-shadow:0 2px 0 rgba(0,0,0,.25)}
-  .thumbs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0;padding:0;list-style:none}
-  .thumbs button{display:grid;gap:4px;width:100%;padding:0;background:var(--surface);border:1.5px solid var(--line);border-radius:4px;overflow:hidden;cursor:pointer;text-align:left;font:inherit;color:var(--ink)}
-  .thumbs button img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover}
-  .thumbs button span{font-family:var(--display);font-weight:700;font-size:14px;letter-spacing:.05em;text-transform:uppercase;padding:4px 8px 6px}
-  .thumbs button[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
-  .thumbs button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-  .view-tabs{display:flex;gap:6px;flex-wrap:wrap}
-  .view-tabs button{font:inherit;font-family:var(--display);font-weight:700;font-size:16px;letter-spacing:.05em;text-transform:uppercase;padding:8px 14px;border-radius:999px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink-2);cursor:pointer}
-  .view-tabs button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-  .view-tabs button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .step{display:grid;gap:12px;border-top:1px solid var(--line);padding-top:14px}
+  .step-h{display:flex;align-items:baseline;gap:10px}
+  .step-h .n{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--accent)}
+  .step-h h3{font-family:var(--display);font-size:22px;font-weight:700;text-transform:uppercase;letter-spacing:.03em}
+  .step-h small{font-size:12.5px;color:var(--ink-3);margin-left:auto}
+  .field{display:grid;gap:6px}
+  .field label{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+  .field label i{font-style:normal;color:var(--accent)}
+  .field select,.field input[type="text"],.field textarea{font:inherit;font-size:15px;padding:10px 12px;border:1.5px solid var(--line);border-radius:4px;background:var(--surface);color:var(--ink);width:100%}
+  .field select:focus-visible,.field input:focus-visible,.field textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .field textarea{min-height:76px;resize:vertical}
+  .field .help{font-size:12.5px;color:var(--ink-3)}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .file{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center;padding:10px 12px;border:1.5px dashed var(--line);border-radius:4px;background:var(--surface)}
+  .file input{font-size:13px;max-width:100%}
+  .file .ic{width:36px;height:36px;border-radius:4px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-family:var(--display);font-weight:800}
 
-  /* configurator */
-  .config{display:grid;gap:12px}
-  .config .lbl{display:flex;justify-content:space-between;font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
-  .config .lbl output{font-family:var(--mono);color:var(--ink);text-transform:none;letter-spacing:0}
   .opts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
   .opt{position:relative}
   .opt input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer}
@@ -136,8 +152,35 @@
   .opt label small{font-family:var(--mono);font-size:11px;color:var(--ink-3)}
   .opt input:checked + label{border-color:var(--accent);background:var(--accent-soft)}
   .opt input:focus-visible + label{outline:2px solid var(--accent);outline-offset:2px}
+  .opt label .pr{font-family:var(--mono);font-size:12px;color:var(--ink);margin-top:2px}
 
-  /* sections */
+  .extra{display:grid;gap:8px;padding:12px;border:1.5px solid var(--line);border-radius:4px;background:var(--surface)}
+  .extra .head{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center}
+  .extra .head input{width:18px;height:18px;margin:0;accent-color:var(--accent)}
+  .extra .head label{font-family:var(--display);font-size:19px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;cursor:pointer}
+  .extra .head label small{display:block;font-family:var(--body);font-weight:400;font-size:12.5px;text-transform:none;letter-spacing:0;color:var(--ink-3)}
+  .extra .pr{font-family:var(--mono);font-size:13px;color:var(--ink)}
+  .extra .sub{display:grid;gap:6px;padding-left:28px}
+  .extra .sub[hidden]{display:none}
+  .extra:has(input:checked){border-color:var(--accent)}
+
+  .summary{border-top:1px dashed var(--line);padding-top:14px;display:grid;gap:10px}
+  .lines{margin:0;padding:0;list-style:none;display:grid;gap:4px;font-size:13.5px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+  .lines li{display:flex;justify-content:space-between;gap:12px}
+  .lines li span:last-child{font-family:var(--mono);color:var(--ink)}
+  .total{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .price{font-family:var(--display);font-weight:800;font-size:46px;line-height:.9;font-variant-numeric:tabular-nums}
+  .price-note{font-size:12px;color:var(--ink-3);font-family:var(--mono)}
+  .price-note b{color:var(--ok);font-weight:600}
+  .cta{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 22px;border-radius:4px;background:var(--accent);color:var(--accent-ink);text-decoration:none;font-family:var(--display);font-weight:800;font-size:20px;letter-spacing:.06em;text-transform:uppercase;border:0;cursor:pointer;transition:transform .12s,filter .12s;width:100%}
+  .cta:hover{filter:brightness(1.07);transform:translateY(-1px)}
+  .cta:focus-visible{outline:3px solid var(--tape);outline-offset:2px}
+  .cta.tape{background:var(--tape);color:var(--tape-ink);width:auto}
+  .micro{font-size:12.5px;color:var(--ink-3);text-align:center}
+
+  /* secciones */
+  .body{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:28px}
+  .body .full{grid-column:1/-1}
   .sec{display:grid;align-content:start;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px}
   .sec h3{font-size:24px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;display:flex;align-items:center;gap:10px}
   .sec h3::before{content:"";width:18px;height:3px;background:var(--accent);border-radius:2px}
@@ -164,10 +207,6 @@
   .steps li::before{content:"0" counter(s);font-family:var(--mono);font-size:12px;color:var(--accent);display:block;margin-bottom:6px}
   .steps b{display:block;font-family:var(--display);font-size:20px;font-weight:700;text-transform:uppercase;letter-spacing:.03em}
   .steps span{font-size:13.5px;color:var(--ink-2)}
-  .guar{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-  .guar div{background:var(--ok-soft);border-radius:4px;padding:12px;display:grid;gap:2px}
-  .guar b{font-family:var(--display);font-size:22px;font-weight:800;text-transform:uppercase;color:var(--ok);line-height:1}
-  .guar span{font-size:13px;color:var(--ink-2)}
   details{border-top:1px solid var(--line)}
   details:last-of-type{border-bottom:1px solid var(--line)}
   summary{cursor:pointer;padding:12px 0;font-weight:600;font-size:15px;list-style:none;display:flex;justify-content:space-between;gap:12px}
@@ -180,117 +219,29 @@
   .upsell h3{font-size:26px;font-weight:800;text-transform:uppercase;letter-spacing:.03em;color:var(--bg)}
   .upsell p{color:color-mix(in srgb,var(--bg) 78%,transparent);font-size:14.5px;max-width:60ch}
 
-  /* ---------- Template A: configurador ---------- */
-  .tA .hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(320px,.95fr);gap:28px;align-items:start}
-  .tA .buybox{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px;display:grid;gap:16px}
-  .tA .buybox h2{font-size:clamp(32px,4.2vw,46px);font-weight:800;text-transform:uppercase}
-  .tA .buybox h2 span{color:var(--ink-3);font-weight:600}
-  .tA .hook{font-size:17px;color:var(--ink-2);max-width:48ch}
-  .tA .config{border-top:1px solid var(--line);padding-top:14px}
-  .tA .pricebar{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px dashed var(--line);padding-top:14px}
-  .tA .ctas{display:grid;gap:8px;text-align:center}
-  .tA .body{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:28px}
-  .tA .body .full{grid-column:1/-1}
-
-  /* ---------- Template B: resultado a la vista ---------- */
-  .tB .hero{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(300px,.65fr);gap:24px;align-items:start}
-  .tB .thumbs{display:none}
-  .tB .side{position:sticky;top:70px;display:grid;gap:14px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px}
-  .tB .side h2{font-size:clamp(28px,3.4vw,38px);font-weight:800;text-transform:uppercase}
-  .tB .side .hook{font-size:15px;color:var(--ink-2)}
-  .tB .side .price{font-size:40px}
-  .tB .side .price small{font-family:var(--body);font-size:13px;font-weight:500;color:var(--ink-3);letter-spacing:0}
-  .tB .side ul.proof{gap:6px}
-  .tB .side .cta{width:100%}
-  .tB .strip{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:22px}
-  .tB .strip figure{margin:0;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
-  .tB .strip img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover}
-  .tB .strip figcaption{padding:10px 12px;display:grid;gap:2px}
-  .tB .strip figcaption b{font-family:var(--display);font-size:19px;font-weight:700;text-transform:uppercase;letter-spacing:.03em}
-  .tB .strip figcaption span{font-size:13.5px;color:var(--ink-2)}
-  .tB .below{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:22px}
-
-  /* ---------- Template C: landing ---------- */
-  .tC .cover{position:relative;border-radius:var(--radius);overflow:hidden;background:var(--ink);min-height:420px;display:grid;align-items:end;isolation:isolate}
-  .tC .cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;opacity:.92}
-  .tC .cover::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 30%,rgba(0,0,0,.78) 100%);z-index:-1}
-  .tC .cover .txt{padding:clamp(20px,4vw,40px);color:#fff;display:grid;gap:10px;max-width:640px}
-  .tC .cover .eyebrow{color:var(--tape)}
-  .tC .cover h2{font-size:clamp(40px,6vw,76px);font-weight:800;text-transform:uppercase;line-height:.95;color:#fff}
-  .tC .cover p{font-size:17px;color:rgba(255,255,255,.85);max-width:52ch}
-  .tC .cover .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:6px}
-  .tC .cover .from{font-family:var(--display);font-weight:700;font-size:22px;color:#fff}
-  .tC .cover .from small{font-family:var(--mono);font-size:11px;color:rgba(255,255,255,.7);display:block;letter-spacing:.1em;text-transform:uppercase}
-  .tC .story{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:28px;align-items:start}
-  .tC .story h3{font-size:clamp(28px,3.5vw,40px);font-weight:800;text-transform:uppercase}
-  .tC .story p{color:var(--ink-2);font-size:16.5px;max-width:58ch}
-  .tC .story .col{display:grid;gap:14px}
-  .tC .nums{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:28px}
-  .tC .nums div{border-top:3px solid var(--ink);padding-top:10px}
-  .tC .nums b{display:block;font-family:var(--display);font-weight:800;font-size:clamp(34px,4.5vw,54px);line-height:1;font-variant-numeric:tabular-nums}
-  .tC .nums span{font-size:14px;color:var(--ink-2)}
-  .tC .shots{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:28px}
-  .tC .shots figure{margin:0;position:relative;border-radius:var(--radius);overflow:hidden;background:var(--surface);border:1px solid var(--line)}
-  .tC .shots img{display:block;width:100%;aspect-ratio:1/1;object-fit:cover}
-  .tC .shots figcaption{position:absolute;left:10px;bottom:10px;font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:.06em;text-transform:uppercase;padding:5px 9px;border-radius:3px;background:var(--tape);color:var(--tape-ink)}
-  .tC .close{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;margin-top:28px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:24px}
-  .tC .close h3{font-size:clamp(26px,3vw,36px);font-weight:800;text-transform:uppercase}
-  .tC .close p{color:var(--ink-2);margin-top:6px;max-width:60ch}
-  .tC .close .buy{display:grid;gap:8px;justify-items:end;text-align:right}
-  .tC .grid2{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:22px}
-
-  /* ---------- Template D: técnica ---------- */
-  .tD .hero{display:grid;grid-template-columns:minmax(260px,.8fr) minmax(0,1.2fr);gap:24px;align-items:start}
-  .tD .head{display:grid;gap:8px;border-bottom:2px solid var(--ink);padding-bottom:12px}
-  .tD .head h2{font-size:clamp(28px,3.6vw,40px);font-weight:800;text-transform:uppercase}
-  .tD .head p{color:var(--ink-2);font-size:15px;max-width:60ch}
-  .tD .matrix{width:100%;border-collapse:collapse;font-size:14.5px;font-variant-numeric:tabular-nums;margin-top:16px}
-  .tD .matrix caption{caption-side:top;text-align:left;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);padding-bottom:8px}
-  .tD .matrix th,.tD .matrix td{padding:9px 10px;border:1px solid var(--line);text-align:right}
-  .tD .matrix th{background:var(--surface-2);font-family:var(--display);font-weight:700;font-size:16px;letter-spacing:.04em;text-transform:uppercase;text-align:left}
-  .tD .matrix thead th{text-align:right}
-  .tD .matrix td.cell{cursor:pointer}
-  .tD .matrix td.on{background:var(--accent-soft);color:var(--accent);font-weight:600;outline:2px solid var(--accent);outline-offset:-2px}
-  .tD .matrix td:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
-  .tD .sum{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-top:16px;padding:16px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius)}
-  .tD .sum .price{font-size:40px}
-  .tD .sum .sel{font-family:var(--mono);font-size:12px;color:var(--ink-3)}
-  .tD .cols{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:22px}
-  .tD .gal .main img{aspect-ratio:1/1}
-  .tD .list{margin:0;padding:0;list-style:none;display:grid;gap:6px;font-size:14.5px;color:var(--ink-2)}
-  .tD .list li{display:grid;grid-template-columns:auto 1fr;gap:10px}
-  .tD .list li::before{content:"■";color:var(--accent);font-size:9px;line-height:2.4}
-
-  /* mobile sticky */
   .mcta{position:fixed;left:0;right:0;bottom:0;z-index:30;display:none;gap:12px;align-items:center;padding:10px 16px;background:var(--surface);border-top:1px solid var(--line);box-shadow:0 -8px 24px -12px rgba(0,0,0,.4)}
   .mcta .mprice{font-family:var(--display);font-weight:800;font-size:24px;font-variant-numeric:tabular-nums;line-height:1}
   .mcta .mname{font-size:11px;color:var(--ink-3);font-family:var(--mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:44vw}
-  .mcta .cta{margin-left:auto;font-size:17px;min-height:46px;padding:0 16px}
+  .mcta .cta{margin-left:auto;font-size:17px;min-height:46px;padding:0 16px;width:auto}
 
   footer{margin-top:64px;padding-top:20px;border-top:2px solid var(--ink);font-size:13px;color:var(--ink-3);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 
   @media (max-width: 900px){
-    .intro{grid-template-columns:1fr}
-    .sample-head{grid-template-columns:auto 1fr}
-    .sample-head .tools{grid-column:1/-1;justify-content:flex-start}
-    .tA .hero,.tA .body,.tB .hero,.tB .below,.tC .story,.tC .grid2,.tD .hero,.tD .cols{grid-template-columns:1fr}
-    .tB .side{position:static}
-    .tB .strip,.tC .shots{grid-template-columns:1fr}
-    .tC .nums{grid-template-columns:1fr 1fr 1fr}
-    .tC .close{grid-template-columns:1fr}
-    .tC .close .buy{justify-items:start;text-align:left}
-    .guar{grid-template-columns:1fr}
+    .hero,.body{grid-template-columns:1fr}
+    .render{position:static}
+    .badges{grid-template-columns:1fr}
     .upsell{grid-template-columns:1fr}
     .upsell img{width:100%;height:160px}
     .mcta{display:flex}
+    .bar .note{margin-left:0;flex-basis:100%}
   }
   @media (max-width: 520px){
-    .inc{grid-template-columns:1fr}
+    .inc,.row2{grid-template-columns:1fr}
     .top{flex-direction:column;align-items:flex-start}
     .topmeta{text-align:left}
-    .thumbs{grid-template-columns:1fr 1fr 1fr}
-    .tC .nums{grid-template-columns:1fr}
-    .tC .cover{min-height:340px}
+    .sw button{grid-template-columns:34px 1fr;padding:6px}
+    .chip{width:34px;height:34px}
+    .sw b{font-size:15px}
   }
 </style>
 </head>
@@ -299,73 +250,50 @@
 
   <header class="top">
     <div class="brand">Carez Designs<small>Kits de adhesivos para moto · Martorell (Barcelona)</small></div>
-    <div class="topmeta">4 tipos de ficha · fotos y precios de la tienda<br>precios IVA incl. · EUR</div>
+    <div class="topmeta">Ficha de producto · render + simulación de acabado<br>precios IVA incl. · EUR</div>
   </header>
 
-  <section class="intro">
-    <div>
-      <div class="kicker">Cuatro tipos de ficha de producto</div>
-      <h1>Cuatro formas de <em>vender</em> el mismo kit.</h1>
-      <p style="margin-top:14px">Cada muestra es un tipo de ficha distinto, no un producto distinto. Elige arriba el producto de ejemplo y las cuatro se rellenan con sus fotos actuales de Shopify (render, moto montada, plantilla) y sus precios reales por base y acabado.</p>
-    </div>
-    <div class="rules">
-      <div><b>A · Configurador:</b> precio y opciones a la vista desde el primer segundo.</div>
-      <div><b>B · Resultado a la vista:</b> la foto manda; el cliente ve cómo queda montado.</div>
-      <div><b>C · Landing larga:</b> historia, cifras y cierre; para campañas y anuncios.</div>
-      <div><b>D · Técnica:</b> tabla de precios completa y datos; para quien decide por números.</div>
-    </div>
-  </section>
+  <div class="bar">
+    <label for="product">Producto de ejemplo</label>
+    <select id="product"></select>
+    <span class="note">Cambia el producto y la ficha se rellena con su render, sus precios y sus modelos y años compatibles de Shopify.</span>
+    <div class="tools"><button type="button" id="copy">Copiar descripción HTML para Shopify</button><span class="st" id="st"></span></div>
+  </div>
 
-  <nav class="bar" aria-label="Muestras">
-    <div class="pick"><label for="product">Producto de ejemplo</label><select id="product"></select></div>
-    <ul id="index">
-      <li><a href="#sA" data-idx="sA"><span class="n">A</span>Configurador</a></li>
-      <li><a href="#sB" data-idx="sB"><span class="n">B</span>Resultado a la vista</a></li>
-      <li><a href="#sC" data-idx="sC"><span class="n">C</span>Landing larga</a></li>
-      <li><a href="#sD" data-idx="sD"><span class="n">D</span>Técnica</a></li>
-    </ul>
-  </nav>
-
-  <main id="samples"></main>
+  <main id="ficha"></main>
 
   <footer>
     <span>Carez Designs · www.carezdesigns.com · carezwrap@gmail.com · 614 016 384</span>
-    <span>Fotos: las que tiene cada producto en Shopify hoy. El contenido del kit puede variar según modelo y año.</span>
+    <span>El render es la imagen actual del producto en Shopify. La vista de base y acabado es una simulación sobre ese render.</span>
   </footer>
 </div>
 
 <div class="mcta" id="mcta" hidden>
   <div><div class="mprice" id="mprice">—</div><div class="mname" id="mname"></div></div>
-  <a class="cta" id="mlink" href="#" target="_blank" rel="noopener">Comprar</a>
+  <a class="cta" id="mlink" href="#" target="_blank" rel="noopener">Añadir al carrito</a>
 </div>
 
 <script>
 const STORE = "https://www.carezdesigns.com/products/";
 const CDN = "https://cdn.shopify.com/s/files/1/0948/5382/4899/files/";
-const BASES = [["Normal","La base clásica: el color tal cual"],["Cromado","Efecto espejo metalizado"],["Holográfico","Cambia de tono con la luz"]];
-const FINISHES = [["Brillo","Color a máxima saturación"],["Mate","Sobrio, sin reflejos"],["Glitter","Destellos metálicos al sol"]];
-const KIND = {render:"Render del diseño", montada:"Así queda montado", detalle:"Detalle real", plantilla:"Lo que recibes", lateral:"Vista lateral"};
-const KIND_TXT = {
-  render:"Representación digital del diseño sobre tu modelo. Lo que apruebas antes de fabricar.",
-  montada:"Kit montado en la moto. Así se ve en la calle.",
-  detalle:"Foto real de un kit ya instalado: corte, encaje y acabado.",
-  plantilla:"Plantilla del kit: cada pieza ya cortada y numerada para su zona.",
-  lateral:"Otra vista del kit montado para ver cómo recorre depósito y laterales."
-};
+const BASES = [["Normal","normal","Color tal cual, sin efecto"],["Cromado","cromado","Efecto espejo metalizado"],["Holográfico","holografico","Cambia de tono con la luz"]];
+const FINISHES = [["Brillo","brillo","Color a máxima saturación"],["Mate","mate","Sobrio, sin reflejos"],["Glitter","glitter","Destellos metálicos al sol"]];
+// Extras tal y como aparecen hoy en la ficha de la tienda
+const ADAPT_PRICE = 20;          // "Adaptación a otra moto" +20 €
+const IG_PRICE = 9.99;           // "Instagram Stickers" +9,99 €
+const IG_QTY = ["5 unidades","15 unidades","20 unidades","50 unidades"];
+const MONTAJE = [["NAKED",70],["MOTO CARRETERA",80],["ENDURO/MX/SUPERMOTARD",60],["TRAIL",85],["SCOOTER",80],["QUAD",99],["MOTO DE AGUA",120]];
+const YEARS = (a,b) => Array.from({length:b-a+1},(_,i)=>String(b-i));
 
 // Precios por variante en el orden: Normal(Brillo,Mate,Glitter), Cromado(...), Holográfico(...)
 const PRODUCTS = [
   {
-    id:"mt07", brand:"Yamaha", model:"MT-07", years:"Todas las generaciones", type:"Naked",
+    id:"mt07", brand:"Yamaha", model:"MT-07", years:"Todas las generaciones", type:"Naked", montaje:"NAKED",
     design:"Racing Blue", handle:"kit-adhesivos-yamaha-mt07-2025-2026-racing-blue",
-    images:[
-      {kind:"render", src:CDN+"RacingBlue.png?v=1788031580&width=1000&format=jpg", alt:"Yamaha MT-07 en caballete con el kit Racing Blue: azul y negro con el rótulo YAMAHA en el depósito"},
-      {kind:"montada", src:CDN+"kit-adhesivos-yamaha-mt07-racing-blue.png?v=1765899902&width=1000&format=jpg", alt:"Kit de pegatinas Racing Blue montado en una Yamaha MT-07"},
-      {kind:"plantilla", src:CDN+"plantilla-kit-adhesivos-yamaha-mt07-racing-blue.png?v=1765899906&width=1000&format=jpg", alt:"Plantilla del kit de adhesivos Racing Blue para Yamaha MT-07"}
-    ],
+    render:{src:CDN+"RacingBlue.png?v=1788031580&width=1000&format=jpg", alt:"Yamaha MT-07 en caballete con el kit Racing Blue: azul y negro con el rótulo YAMAHA en el depósito"},
+    models:["MT-07"], yearList:YEARS(2014,2026),
     hook:"La MT-07 es la primera moto de medio A2 de España. Con el Racing Blue deja de ser una más en el parking y sigue pareciendo una Yamaha de serie.",
-    story:"La MT-07 se vende por miles y todas salen del concesionario iguales. Tienes dos opciones para que la tuya se distinga: pasar por el pintor, o un kit troquelado para sus piezas que montas en una tarde y retiras sin dejar marca.",
-    prices:[170,190,229,269,289,328,269,289,328], install:"70 €",
+    prices:[170,190,229,269,289,328,269,289,328],
     why:[
       ["AZ","El azul histórico de Yamaha","Deportivo sin romper la estética de fábrica. Es el color que la marca lleva a competición."],
       ["A2","Pensado para la primera moto","Cubre depósito, tapas laterales, frontal y colín: las zonas que se ven, sin piezas raras que sobren."],
@@ -374,21 +302,17 @@ const PRODUCTS = [
     finish:"Este azul queda más fiel en brillo, con el tono limpio y profundo. En mate se apaga y deja la moto más sobria. En glitter añade destellos metálicos al sol.",
     zones:["depósito","tapas laterales","frontal","colín"],
     faq:[
-      ["¿Vale para mi MT-07 de 2018?","Sí. El kit es All Models: al pedir indicas el año y cortamos con la plantilla de esa generación."],
-      ["¿Se puede montar uno mismo?","Sí, con paciencia, agua jabonosa y una rasqueta. Si prefieres no arriesgar, el montaje en nuestro taller de Martorell se añade al pedido."]
+      ["¿Vale para mi MT-07 de 2018?","Sí. El kit es All Models: eliges el año en el paso 1 y cortamos con la plantilla de esa generación."],
+      ["¿Se puede montar uno mismo?","Sí, con paciencia, agua jabonosa y una rasqueta. Si prefieres no arriesgar, marca el montaje en el paso 3 y te damos cita en Martorell."]
     ]
   },
   {
-    id:"gs", brand:"BMW", model:"R 1200 / 1250 GS", years:"Desde 2014", type:"Trail",
+    id:"gs", brand:"BMW", model:"R 1200 / 1250 GS", years:"Desde 2014", type:"Trail", montaje:"TRAIL",
     design:"Azul, rojo y blanco", handle:"adhesivos-para-moto-bmw-1200-gs-2014-2016",
-    images:[
-      {kind:"render", src:CDN+"KitdeAdhesivosparaBMW1200GS_2014-2016_-Azul_Rojoyblanco.png?v=1784799978&width=1000&format=jpg", alt:"Kit de pegatinas azul, rojo y blanco montado en una BMW R 1200/1250 GS"},
-      {kind:"lateral", src:CDN+"KitdeAdhesivosparaBMW1200GS_2014-2016_-Azul_Rojoyblanco1.png?v=1784799985&width=1000&format=jpg", alt:"Vista lateral del kit de pegatinas azul, rojo y blanco en una BMW R 1200/1250 GS"},
-      {kind:"plantilla", src:CDN+"Plantilla-adhesivos-bmw-1200-gs-2014-2016.jpg?v=1765628274&width=1000&format=jpg", alt:"Plantilla del kit de adhesivos azul, rojo y blanco para BMW R 1200/1250 GS"}
-    ],
+    render:{src:CDN+"KitdeAdhesivosparaBMW1200GS_2014-2016_-Azul_Rojoyblanco.png?v=1784799978&width=1000&format=jpg", alt:"Kit de pegatinas azul, rojo y blanco montado en una BMW R 1200/1250 GS"},
+    models:["1200/1250 GS"], yearList:YEARS(2014,2026),
     hook:"El tricolor de la casa, en bloques limpios y sin degradados. Directo, ordenado y reconocible a cien metros: la GS que todo el mundo identifica.",
-    story:"Una GS es una moto para muchos kilómetros, y el depósito ancho y las tapas son lo primero que se ve al llegar a cualquier sitio. El tricolor es la decoración que la GS tiene en el imaginario de todos, y aquí va cortado para tu año, sin tocar la pintura.",
-    prices:[188,188,227,267,287,326,267,287,326], install:"85 €",
+    prices:[188,188,227,267,287,326,267,287,326],
     why:[
       ["M","El clásico de la marca","Tres colores bien separados, sin degradados. La decoración que la GS lleva en el imaginario de todos."],
       ["GS","Cubre la trail entera","Depósito ancho, tapas laterales, frontal del pico y colín."],
@@ -397,42 +321,36 @@ const PRODUCTS = [
     finish:"El brillo es el acabado que mejor respeta el tricolor, con azules y rojos bien vivos. En mate da una lectura más actual, y en este kit cuesta lo mismo.",
     zones:["depósito","tapas laterales","frontal del pico","colín"],
     faq:[
-      ["Tengo una R 1250 GS de 2021, ¿me sirve?","Sí. Indicas el año al pedir y ajustamos la plantilla a tu generación antes de fabricar."],
+      ["Tengo una R 1250 GS de 2021, ¿me sirve?","Sí. Indicas el año en el paso 1 y ajustamos la plantilla a tu generación antes de fabricar."],
       ["¿Qué pasa si no me gusta al recibirlo?","Es un producto de catálogo: tienes 30 días naturales para devolverlo sin usar."]
     ]
   },
   {
-    id:"tmax", brand:"Yamaha", model:"TMAX", years:"Todas las generaciones", type:"Maxi scooter",
+    id:"tmax", brand:"Yamaha", model:"TMAX", years:"Todas las generaciones", type:"Maxi scooter", montaje:"SCOOTER",
     design:"GYTR Rojo", handle:"kit-adhesivos-yamaha-tmax-all-models-gytr-rojo",
-    images:[
-      {kind:"render", src:CDN+"kit-adhesivos-yamaha-tmax-rojo.png?v=1786705864&width=1000&format=jpg", alt:"Kit de pegatinas GYTR rojo montado en una Yamaha TMAX"},
-      {kind:"detalle", src:CDN+"kit-adhesivos-yamaha-tmax-rojo.jpg?v=1786705864&width=1000&format=jpg", alt:"Detalle del kit de pegatinas GYTR rojo en una Yamaha TMAX"}
-    ],
+    render:{src:CDN+"kit-adhesivos-yamaha-tmax-rojo.png?v=1786705864&width=1000&format=jpg", alt:"Kit de pegatinas GYTR rojo montado en una Yamaha TMAX"},
+    models:["TMAX 500 (2004-2007)","TMAX 500 (2008-2011)","TMAX 530 (2012-2014)","TMAX 530 (2015-2016)","TMAX 530 (2017-2019)","TMAX 560 (2020-2021)","TMAX 560 (2022-2024)","TMAX 560 (2025-)"], yearList:YEARS(2004,2026),
     hook:"El escudo frontal del TMAX es un lienzo enorme y casi todos lo llevan igual. El GYTR Rojo es la lectura más agresiva de la serie: rojo, blanco y negro con letras grandes delante.",
-    story:"El TMAX es el maxiscooter que más se ve en la ciudad, y de fábrica todos son negros o grises. Su escudo frontal y sus flancos son las superficies más grandes que vas a decorar en una moto: el GYTR Rojo las aprovecha con bloques y letras de competición.",
-    prices:[185,205,244,284,304,343,284,304,343], install:"80 €",
+    prices:[185,205,244,284,304,343,284,304,343],
     why:[
       ["GY","Estética GYTR","Bloques y franjas de inspiración competición cruzando frontal, flancos y colín."],
       ["XL","Superficies grandes","Escudo frontal, flancos y tapa del túnel central: donde el maxiscooter tiene más plástico visible."],
-      ["✂","Todas las generaciones","Eliges el año del TMAX y se corta con esas plantillas."]
+      ["✂","Todas las generaciones","Eliges tu generación de TMAX en el paso 1 y se corta con esas plantillas."]
     ],
     finish:"En brillo sale todo el rojo y la lectura es la más agresiva. En mate se apaga un poco y el negro pasa a ser el color de referencia.",
     zones:["escudo frontal","flancos","tapa del túnel central","colín"],
     faq:[
       ["¿Aguanta el uso diario en ciudad?","Sí. Vinilo de 485 μm preparado para agua, sol, rayaduras e impactos de uso intensivo."],
-      ["¿Puedo llevarlo a montar?","Sí. Montaje profesional en Martorell (Barcelona), se añade al pedido y te damos cita."]
+      ["¿Puedo llevarlo a montar?","Sí. Marca el montaje en el paso 3 y te damos cita en Martorell (Barcelona)."]
     ]
   },
   {
-    id:"husq", brand:"Husqvarna", model:"701 Supermoto", years:"2017 - 2025", type:"Supermoto",
+    id:"husq", brand:"Husqvarna", model:"701 Supermoto", years:"2017 - 2025", type:"Supermoto", montaje:"ENDURO/MX/SUPERMOTARD",
     design:"Amarillo y Gris", handle:"adhesivos-para-moto-husqvarna-701-supermoto-2017-2025",
-    images:[
-      {kind:"render", src:CDN+"kit-adhesivos-husqvarna_64890de3-30ba-465e-9330-a36c2fb7fe99.png?v=1765708389&width=1000&format=jpg", alt:"Kit de adhesivos amarillo y gris para Husqvarna 701 Supermoto"},
-      {kind:"plantilla", src:CDN+"kit-placas-husqvarna.png?v=1765708389&width=1000&format=jpg", alt:"Plantilla del kit de placas y adhesivos para Husqvarna 701 Supermoto"}
-    ],
+    render:{src:CDN+"kit-adhesivos-husqvarna_64890de3-30ba-465e-9330-a36c2fb7fe99.png?v=1765708389&width=1000&format=jpg", alt:"Kit de adhesivos amarillo y gris para Husqvarna 701 Supermoto"},
+    models:["701 Supermoto"], yearList:YEARS(2017,2025),
     hook:"La 701 es una moto para castigarla: ciudad, curvas y tandas de supermoto. Este kit tiene el amarillo de competición y el grosor para aguantarlo todo.",
-    story:"Una supermoto se cae, se roza y se lava a manguerazos. Pintarla no tiene sentido; un kit de vinilo grueso sí: aguanta el castigo y, cuando una pieza sufre, se cambia esa pieza y no la moto entera.",
-    prices:[135,155,194,234,254,293,234,254,293], install:"60 €",
+    prices:[135,155,194,234,254,293,234,254,293],
     why:[
       ["Y","Amarillo dominante sobre gris","Lectura muy directa, en la línea de las decoraciones de competición off-road."],
       ["SM","Hecho para el castigo","Vinilo de 485 μm que aguanta el uso urbano, las curvas y el circuito. Sale sin dañar la pintura."],
@@ -446,15 +364,12 @@ const PRODUCTS = [
     ]
   },
   {
-    id:"custom", brand:"Personalizado", model:"Kit 100% a medida", years:"Moto naked · cualquier marca", type:"Personalizado",
-    design:"Diseñado desde cero", handle:"kit-de-pegatinas-100-personalizado", custom:true,
-    images:[
-      {kind:"montada", src:CDN+"kit-personalizado-naked.png?v=1789057032&width=1000&format=jpg", alt:"Kit de pegatinas 100% personalizado montado en una moto naked"},
-      {kind:"detalle", src:CDN+"kit-personalizado-naked-detalle.jpg?v=1787004342&width=1000&format=jpg", alt:"Kit de pegatinas 100% personalizado montado en una moto"}
-    ],
+    id:"custom", brand:"Personalizado", model:"Kit 100% a medida", years:"Moto naked · cualquier marca", type:"Personalizado", montaje:"NAKED", custom:true,
+    design:"Diseñado desde cero", handle:"kit-de-pegatinas-100-personalizado",
+    render:{src:CDN+"kit-personalizado-naked.png?v=1789057032&width=1000&format=jpg", alt:"Kit de pegatinas 100% personalizado montado en una moto naked"},
+    models:null, yearList:YEARS(2000,2026),
     hook:"Si tienes claro cómo quieres tu moto y no existe, lo dibujamos para ti. No es una variante de otro diseño: colores, patrones y ubicación de cada gráfico salen de tu briefing.",
-    story:"Hay gente que sabe exactamente cómo quiere su moto y no lo encuentra hecho. Para eso está este kit: nos cuentas la idea, la dibujamos sobre las piezas de tu modelo, la ajustamos contigo y solo cuando la apruebas la fabricamos.",
-    prices:[245,265,304,344,364,403,344,364,403], install:"70 €",
+    prices:[245,265,304,344,364,403,344,364,403],
     why:[
       ["01","Tu idea, no un catálogo","Nos cuentas qué quieres por el configurador o por escrito. Preparamos la propuesta y la ajustamos hasta que la des por buena."],
       ["02","Corte a medida de tu moto","Marca, modelo y año exactos. Depósito, tapas, frontal, colín y guardabarros."],
@@ -470,268 +385,248 @@ const PRODUCTS = [
 ];
 const INSTALL_IMG = CDN+"DSC09429-2.jpg?v=1765584750&width=900&format=jpg";
 
-const eur = n => n.toLocaleString("es-ES",{minimumFractionDigits: Number.isInteger(n)?0:2, maximumFractionDigits:2}) + " €";
+const eur = n => n.toLocaleString("es-ES",{minimumFractionDigits: Number.isInteger(+n.toFixed(2))?0:2, maximumFractionDigits:2}) + " €";
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 const cap = s => s.charAt(0).toUpperCase()+s.slice(1);
 const excl = p => p.custom ? ["cúpula","llantas","suspensiones","escape","chasis","radiador"] : ["cúpula","paramanos","llantas","suspensiones","escape","chasis","radiador"];
 const name = p => p.custom ? "Kit 100% personalizado" : `${p.brand} ${p.model}`;
 const url = p => STORE + p.handle;
 const minP = p => Math.min(...p.prices);
-const imgOf = (p,k) => p.images.find(i=>i.kind===k) || p.images[0];
+const montajeDe = p => MONTAJE.find(m=>m[0]===p.montaje);
 
-/* ---------- shared blocks ---------- */
-function gallery(p, id, wide){
+function ficha(p){
+  const sw = (list,key) => list.map(([v,k,d],i)=>`<button type="button" data-${key}="${i}" aria-pressed="${i===0}"><span class="chip ${k}"></span><span><b>${v}</b><small>${d}</small></span></button>`).join("");
+  const opts = (list,key) => list.map(([v,k,d],i)=>`
+    <div class="opt"><input type="radio" id="${key}-${i}" name="${key}" value="${i}" ${i===0?"checked":""}>
+    <label for="${key}-${i}"><b>${v}</b><small>${d}</small><span class="pr" data-pr="${key}-${i}"></span></label></div>`).join("");
   return `
-  <div class="gal" data-gal="${id}">
-    <figure class="main ${wide?"wide":""}" style="margin:0">
-      <img src="${p.images[0].src}" alt="${esc(p.images[0].alt)}" width="1000" height="1000" data-main>
-      <span class="tag" data-tag>${KIND[p.images[0].kind]}</span>
-      <figcaption data-cap>${KIND_TXT[p.images[0].kind]}</figcaption>
-    </figure>
-    <ul class="thumbs">${p.images.map((im,k)=>`<li><button type="button" data-thumb="${k}" aria-pressed="${k===0}"><img src="${im.src}" alt="" loading="lazy"><span>${KIND[im.kind]}</span></button></li>`).join("")}</ul>
-  </div>`;
-}
-function bindGallery(root, p){
-  root.querySelectorAll("[data-gal]").forEach(g=>{
-    const main=g.querySelector("[data-main]"), tag=g.querySelector("[data-tag]"), cap=g.querySelector("[data-cap]");
-    g.querySelectorAll("[data-thumb]").forEach(b=>b.addEventListener("click",()=>{
-      const im=p.images[+b.dataset.thumb];
-      main.src=im.src; main.alt=im.alt; tag.textContent=KIND[im.kind]; cap.textContent=KIND_TXT[im.kind];
-      g.querySelectorAll("[data-thumb]").forEach(x=>x.setAttribute("aria-pressed",x===b));
-    }));
-  });
-}
-function configurator(p, id){
-  const opts = (list,key) => list.map(([v,d],k)=>`
-    <div class="opt"><input type="radio" id="${id}-${key}-${k}" name="${id}-${key}" value="${k}" ${k===0?"checked":""}>
-    <label for="${id}-${key}-${k}"><b>${v}</b><small>${d}</small></label></div>`).join("");
-  return `<div class="config" data-config="${id}">
-    <div class="lbl"><span>Base</span><output data-out-base>Normal</output></div><div class="opts">${opts(BASES,"base")}</div>
-    <div class="lbl"><span>Acabado</span><output data-out-fin>Brillo</output></div><div class="opts">${opts(FINISHES,"fin")}</div>
-  </div>`;
-}
-function bindConfig(root, p, onChange){
-  root.querySelectorAll("[data-config]").forEach(c=>{
-    const id=c.dataset.config;
-    const calc=()=>{
-      const b=+c.querySelector(`input[name="${id}-base"]:checked`).value, f=+c.querySelector(`input[name="${id}-fin"]:checked`).value;
-      c.querySelector("[data-out-base]").textContent=BASES[b][0]; c.querySelector("[data-out-fin]").textContent=FINISHES[f][0];
-      onChange(p.prices[b*3+f], BASES[b][0], FINISHES[f][0]);
-    };
-    c.querySelectorAll("input").forEach(i=>i.addEventListener("change",calc));
-    calc();
-  });
-}
-const proofs = p => `<ul class="proof"><li>Envío gratis en España</li><li>Previsualización antes de fabricar</li><li>Vinilo premium 485 μm</li><li>${p.custom?"Diseño desde cero":"30 días de devolución"}</li></ul>`;
-const includes = p => `<div class="inc">
-  <div class="yes"><h4>Incluido</h4><ul>${(p.custom?["Diseño personalizado completo con rondas de ajuste","Previsualización digital del diseño final"]:[]).concat(p.zones.map(z=>"Adhesivos para "+z)).map(z=>`<li>${esc(cap(z))}</li>`).join("")}<li>Corte a medida de marca, modelo y año</li></ul></div>
-  <div class="no"><h4>Se pide aparte</h4><ul>${excl(p).map(z=>`<li>${z}</li>`).join("")}</ul></div>
-  <p class="note">El contenido exacto puede variar ligeramente según el modelo seleccionado. Los elementos opcionales se pueden añadir al pedido.</p></div>`;
-const steps = p => `<ol class="steps">
-  <li><b>Configura</b><span>${p.custom?"Cuéntanos tu idea por el configurador o por escrito.":"Elige base, acabado y el año de tu moto."}</span></li>
-  <li><b>Revisa</b><span>Te enviamos una previsualización del diseño final para que la apruebes.</span></li>
-  <li><b>Fabricamos</b><span>Troquelamos el kit en vinilo de 485 μm con las plantillas de tu modelo.</span></li>
-  <li><b>Monta o trae</b><span>Lo montas tú o lo hacemos en nuestro taller de Martorell.</span></li></ol>`;
-const specs = p => `<table class="spec">
-  <tr><th>Material</th><td>Vinilo premium <code>485 μm</code>, alta adherencia. Impactos, rayaduras, agua, sol y uso intensivo.</td></tr>
-  <tr><th>Base</th><td>Normal · Cromado · Holográfico</td></tr>
-  <tr><th>Acabado</th><td>Brillo · Mate · Glitter</td></tr>
-  <tr><th>Compatibilidad</th><td>${esc(name(p))} · ${esc(p.years)}</td></tr>
-  <tr><th>Pintura</th><td>No se toca. El vinilo se retira sin dañarla.</td></tr></table>`;
-const guar = p => `<div class="guar">
-  <div><b>Envío gratis</b><span>España, 3 a 5 días laborables. UE 13,50 €.</span></div>
-  <div><b>${p.custom?"OK previo":"30 días"}</b><span>${p.custom?"Nada se fabrica sin tu aprobación del diseño.":"Devolución de productos de catálogo sin usar."}</span></div>
-  <div><b>Taller propio</b><span>Montaje profesional en Martorell, más de 6 años instalando.</span></div></div>`;
-const faq = p => p.faq.map(([q,a])=>`<details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join("") +
-  `<details><summary>¿La moto queda igual que en la foto?</summary><p>La imagen es una representación digital. Líneas, proporciones o elementos gráficos pueden ajustarse para encajar en tu modelo, y lo ves en la previsualización antes de fabricar.</p></details>`;
-const upsell = p => `<aside class="upsell">
-  <img src="${INSTALL_IMG}" alt="Montaje de un kit de adhesivos sobre una moto en el taller de Carez Designs" loading="lazy">
-  <div><h3>¿Sin experiencia colocando vinilos? Lo montamos nosotros.</h3>
-  <p>Servicio de instalación en Martorell (08760). Cita tras confirmar el pedido, instaladores con más de 6 años de experiencia y entrega sin burbujas ni fallos. Si son plásticos sueltos, puedes enviarlos.</p></div>
-  <a class="cta tape" href="${STORE}servicio-de-instalacion-de-adhesivos" target="_blank" rel="noopener">Añadir montaje · ${p.install}</a></aside>`;
-
-/* ---------- Template A: configurador ---------- */
-function tplA(p){
-  return `<div class="tA">
-    <div class="hero">
-      ${gallery(p,"A")}
-      <div class="buybox">
-        <div><div class="eyebrow">${p.custom?"Kit de adhesivos 100% personalizado":`Kit de adhesivos · ${esc(name(p))}`}</div>
-        <h2 style="margin-top:6px">${esc(p.design)} ${p.custom?"":`<span>· ${esc(p.model)}</span>`}</h2></div>
-        <p class="hook">${esc(p.hook)}</p>
-        ${proofs(p)}
-        ${configurator(p,"A")}
-        <div class="pricebar">
-          <div><div class="price" data-price>${eur(minP(p))}</div><div class="price-note">IVA incluido · <b>envío gratis</b> en España</div></div>
-          <div class="price-note" style="text-align:right">Desde ${eur(minP(p))}<br>Montaje opcional: ${p.install}</div>
-        </div>
-        <div class="ctas">
-          <a class="cta" href="${url(p)}" target="_blank" rel="noopener">${p.custom?"Empezar mi diseño":"Configurar y comprar"} →</a>
-          <p class="micro">${p.custom?"No se fabrica nada hasta que apruebes la previsualización.":"Entrega en España en 3 a 5 días laborables tras aprobar la previsualización."}</p>
-        </div>
-      </div>
+  <article class="ficha">
+    <div class="ficha-head">
+      <span class="plate" aria-hidden="true">${p.custom?"100%":esc(p.type)}</span>
+      <span class="cat">Ficha · <b>${esc(name(p))}</b> · ${esc(p.years)}</span>
     </div>
+
+    <div class="hero">
+      <div class="render">
+        <figure class="stage" id="stage" data-base="normal" data-fin="brillo" style="margin:0">
+          <img src="${p.render.src}" alt="${esc(p.render.alt)}" width="1000" height="1000" id="render">
+          <div class="fx gloss"></div>
+          <div class="fx chrome"></div>
+          <div class="fx holo"></div>
+          <canvas class="fx" id="glitter" width="1000" height="1000" aria-hidden="true"></canvas>
+          <span class="tag">Render del diseño</span>
+          <figcaption><span>Vista simulada · <b id="stage-lbl">Normal · Brillo</b></span></figcaption>
+        </figure>
+        <div class="sw-group">
+          <div class="lbl"><span>Acabado</span><output id="out-fin">Brillo</output></div>
+          <div class="sw" id="sw-fin">${sw(FINISHES,"fin")}</div>
+        </div>
+        <div class="sw-group">
+          <div class="lbl"><span>Base</span><output id="out-base">Normal</output></div>
+          <div class="sw" id="sw-base">${sw(BASES,"base")}</div>
+        </div>
+        <p class="sim-note">Pulsa un acabado o una base y el render cambia. Es una simulación orientativa sobre la imagen del producto; el color real depende del material y de la luz. Antes de fabricar apruebas una previsualización real.</p>
+      </div>
+
+      <form class="buybox" id="form" onsubmit="return false">
+        <div>
+          <div class="eyebrow">${p.custom?"Kit de adhesivos 100% personalizado":`Kit de adhesivos · ${esc(name(p))}`}</div>
+          <h2 style="margin-top:6px">${esc(p.design)} ${p.custom?"":`<span>· ${esc(p.model)}</span>`}</h2>
+        </div>
+        <p class="hook">${esc(p.hook)}</p>
+        <ul class="badges">
+          <li><b>365 días</b><span>de garantía en el vinilo</span></li>
+          <li><b>2 cambios</b><span>de diseño gratis incluidos</span></li>
+          <li><b>Envío gratis</b><span>en España · UE 13,50 €</span></li>
+        </ul>
+
+        <section class="step">
+          <div class="step-h"><span class="n">PASO 1</span><h3>Tu moto</h3><small>Obligatorio</small></div>
+          <div class="row2">
+            <div class="field"><label for="modelo">Modelo <i>*</i></label>
+              ${p.models ? `<select id="modelo" required>${p.models.map(m=>`<option>${esc(m)}</option>`).join("")}</select>` : `<input type="text" id="modelo" placeholder="Marca y modelo, p. ej. KTM 890 Duke" required>`}
+            </div>
+            <div class="field"><label for="anio">Año <i>*</i></label>
+              <select id="anio" required><option value="" selected disabled>Elige el año</option>${p.yearList.map(y=>`<option>${y}</option>`).join("")}</select>
+            </div>
+          </div>
+          <div class="field">
+            <label for="foto">Foto de tu moto</label>
+            <div class="file"><span class="ic">+</span><input type="file" id="foto" accept="image/*"></div>
+            <p class="help">Revisa que el modelo de tu moto sea el exacto. Envía una foto por si acaso, nos ayuda a confirmarlo antes de fabricar tu kit.</p>
+          </div>
+        </section>
+
+        <section class="step">
+          <div class="step-h"><span class="n">PASO 2</span><h3>Diseño</h3><small>Se ve en el render</small></div>
+          <div class="field"><label>Base</label><div class="opts">${opts(BASES,"base")}</div></div>
+          <div class="field"><label>Acabado</label><div class="opts">${opts(FINISHES,"fin")}</div></div>
+          <p class="help"><strong>Brillo, mate o glitter:</strong> ${esc(p.finish)}</p>
+        </section>
+
+        <section class="step">
+          <div class="step-h"><span class="n">PASO 3</span><h3>Extras y confirmación</h3><small>Opcional</small></div>
+          <div class="extra">
+            <div class="head"><input type="checkbox" id="adapt"><label for="adapt">Adaptación a otra moto<small>Este diseño, redibujado sobre las piezas de un modelo distinto.</small></label><span class="pr">+${eur(ADAPT_PRICE)}</span></div>
+            <div class="sub" id="adapt-sub" hidden><div class="field"><label for="adapt-txt">¿A qué moto?</label><input type="text" id="adapt-txt" placeholder="Marca, modelo y año"></div></div>
+          </div>
+          <div class="extra">
+            <div class="head"><input type="checkbox" id="ig"><label for="ig">Instagram Stickers<small>Pegatinas con tu usuario de Instagram para la moto o el casco.</small></label><span class="pr">+${eur(IG_PRICE)}</span></div>
+            <div class="sub" id="ig-sub" hidden><div class="row2">
+              <div class="field"><label for="ig-qty">Unidades</label><select id="ig-qty">${IG_QTY.map(q=>`<option>${q}</option>`).join("")}</select></div>
+              <div class="field"><label for="ig-user">Usuario</label><input type="text" id="ig-user" placeholder="@tuusuario"></div>
+            </div></div>
+          </div>
+          <div class="extra">
+            <div class="head"><input type="checkbox" id="mont"><label for="mont">Montaje en nuestro taller<small>En caso de que elijas el montaje nos pondremos en contacto contigo.</small></label><span class="pr">desde ${eur(60)}</span></div>
+            <div class="sub" id="mont-sub" hidden><div class="field"><label for="mont-tipo">Tipo de moto</label>
+              <select id="mont-tipo">${MONTAJE.map(([t,pr])=>`<option value="${pr}" ${t===p.montaje?"selected":""}>${cap(t.toLowerCase())} · ${eur(pr)}</option>`).join("")}</select></div></div>
+          </div>
+          <div class="field"><label for="notas">Cambios o comentarios para el diseño</label>
+            <textarea id="notas" placeholder="Ej.: quitar el dorsal del colín, cambiar el gris por negro, añadir mi nombre en el depósito…"></textarea>
+            <p class="help">Los 2 primeros cambios de diseño van incluidos. Los ves aplicados en la previsualización antes de fabricar.</p>
+          </div>
+        </section>
+
+        <div class="summary">
+          <ul class="lines" id="lines"></ul>
+          <div class="total">
+            <div><div class="price" id="price">${eur(minP(p))}</div><div class="price-note">IVA incluido · <b>envío gratis</b> en España</div></div>
+            <div class="price-note" style="text-align:right">Kit desde ${eur(minP(p))}<br>Entrega en 3 a 5 días laborables</div>
+          </div>
+          <a class="cta" id="cta" href="${url(p)}" target="_blank" rel="noopener">Añadir al carrito →</a>
+          <p class="micro" id="cta-note">${p.custom?"No se fabrica nada hasta que apruebes la previsualización.":"Antes de fabricar te enviamos la previsualización de tu kit para que la apruebes."}</p>
+        </div>
+      </form>
+    </div>
+
     <div class="body">
       <section class="sec"><h3>Por qué este diseño</h3>
-        <ul class="bene">${p.why.map(([ic,t,d])=>`<li><span class="ic">${esc(ic)}</span><div><b>${esc(t)}</b><span>${esc(d)}</span></div></li>`).join("")}</ul>
-        <p><strong>Brillo, mate o glitter:</strong> ${esc(p.finish)}</p></section>
-      <section class="sec"><h3>Qué incluye el kit</h3>${includes(p)}</section>
-      <section class="sec"><h3>Cómo funciona</h3>${steps(p)}</section>
-      <section class="sec"><h3>Material y garantías</h3>${specs(p)}${guar(p)}</section>
-      <section class="sec full"><h3>Preguntas frecuentes</h3>${faq(p)}</section>
-      <div class="full">${upsell(p)}</div>
-    </div>
-  </div>`;
-}
-
-/* ---------- Template B: resultado a la vista ---------- */
-function tplB(p){
-  const order = ["montada","lateral","detalle","render","plantilla"];
-  const shots = [...p.images].sort((a,b)=>order.indexOf(a.kind)-order.indexOf(b.kind));
-  const first = shots[0];
-  const q = {...p, images:shots};
-  return `<div class="tB">
-    <div class="hero">
-      <div>
-        <div class="view-tabs" style="margin-bottom:10px">${shots.map((im,k)=>`<button type="button" data-view="${k}" aria-pressed="${k===0}">${KIND[im.kind]}</button>`).join("")}</div>
-        ${gallery(q,"B",true)}
-      </div>
-      <aside class="side">
-        <div class="eyebrow">${esc(p.type)} · ${esc(p.years)}</div>
-        <h2>${esc(p.design)}<br><span style="color:var(--ink-3);font-weight:600">${esc(name(p))}</span></h2>
-        <p class="hook">${esc(p.hook)}</p>
-        <div><div class="price">${eur(minP(p))} <small>desde · IVA incl.</small></div>
-        <div class="price-note">Base normal, acabado brillo. Cromado, holográfico y glitter en la ficha.</div></div>
-        ${proofs(p)}
-        <a class="cta" href="${url(p)}" target="_blank" rel="noopener">${p.custom?"Empezar mi diseño":"Quiero este look"} →</a>
-        <p class="micro" style="text-align:center">Envío gratis en España · 3 a 5 días laborables</p>
+        <ul class="bene">${p.why.map(([ic,t,d])=>`<li><span class="ic">${esc(ic)}</span><div><b>${esc(t)}</b><span>${esc(d)}</span></div></li>`).join("")}</ul></section>
+      <section class="sec"><h3>Qué incluye el kit</h3>
+        <div class="inc">
+          <div class="yes"><h4>Incluido</h4><ul>${(p.custom?["Diseño personalizado completo con rondas de ajuste","Previsualización digital del diseño final"]:[]).concat(p.zones.map(z=>"Adhesivos para "+z)).map(z=>`<li>${esc(cap(z))}</li>`).join("")}<li>Corte a medida de marca, modelo y año</li></ul></div>
+          <div class="no"><h4>Se pide aparte</h4><ul>${excl(p).map(z=>`<li>${z}</li>`).join("")}</ul></div>
+          <p class="note">El contenido exacto puede variar ligeramente según el modelo seleccionado. Los elementos opcionales se pueden añadir al pedido.</p>
+        </div></section>
+      <section class="sec"><h3>Cómo funciona</h3>
+        <ol class="steps">
+          <li><b>Configura</b><span>${p.custom?"Cuéntanos tu idea en el formulario: moto, año, base, acabado y comentarios.":"Modelo y año, base y acabado, y los extras que quieras."}</span></li>
+          <li><b>Revisa</b><span>Te enviamos una previsualización del diseño final para que la apruebes. Dos cambios incluidos.</span></li>
+          <li><b>Fabricamos</b><span>Troquelamos el kit en vinilo de 485 μm con las plantillas de tu modelo y año.</span></li>
+          <li><b>Monta o trae</b><span>Lo montas tú o lo hacemos en nuestro taller de Martorell si lo has marcado.</span></li>
+        </ol></section>
+      <section class="sec"><h3>Material y garantías</h3>
+        <table class="spec">
+          <tr><th>Material</th><td>Vinilo premium <code>485 μm</code>, alta adherencia. Impactos, rayaduras, agua, sol y uso intensivo.</td></tr>
+          <tr><th>Base</th><td>Normal · Cromado · Holográfico</td></tr>
+          <tr><th>Acabado</th><td>Brillo · Mate · Glitter</td></tr>
+          <tr><th>Compatibilidad</th><td>${esc(name(p))} · ${esc(p.years)}</td></tr>
+          <tr><th>Garantía</th><td>365 días. Pintura intacta: el vinilo se retira sin dañarla.</td></tr>
+          <tr><th>Envío</th><td>España gratis, 3 a 5 días laborables · UE 13,50 €, 5 a 7 días</td></tr>
+          <tr><th>Devolución</th><td>${p.custom?"Sin desistimiento por ser 100% personalizado, salvo defecto o daño en transporte":"30 días naturales en productos de catálogo sin usar"}</td></tr>
+        </table></section>
+      <section class="sec full"><h3>Preguntas frecuentes</h3>
+        ${p.faq.map(([q,a])=>`<details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join("")}
+        <details><summary>¿La moto queda igual que en el render?</summary><p>El render es una representación digital y la vista de base y acabado es una simulación. Líneas, proporciones o gráficos pueden ajustarse a tu modelo, y lo ves en la previsualización real antes de fabricar.</p></details>
+      </section>
+      <aside class="upsell full">
+        <img src="${INSTALL_IMG}" alt="Montaje de un kit de adhesivos sobre una moto en el taller de Carez Designs" loading="lazy">
+        <div><h3>¿Sin experiencia colocando vinilos? Lo montamos nosotros.</h3>
+        <p>Servicio de instalación en Martorell (08760). Cita tras confirmar el pedido, instaladores con más de 6 años de experiencia y entrega sin burbujas ni fallos. Si son plásticos sueltos, puedes enviarlos.</p></div>
+        <button type="button" class="cta tape" id="up-mont">Añadir montaje · ${eur(montajeDe(p)[1])}</button>
       </aside>
     </div>
-    <div class="strip">
-      ${shots.slice(0,3).map(im=>`<figure><img src="${im.src}" alt="${esc(im.alt)}" loading="lazy"><figcaption><b>${KIND[im.kind]}</b><span>${KIND_TXT[im.kind]}</span></figcaption></figure>`).join("")}
-      ${shots.length<3?`<figure><img src="${INSTALL_IMG}" alt="Montaje de un kit de adhesivos en el taller de Carez Designs" loading="lazy"><figcaption><b>Montaje en taller</b><span>Opcional: lo instalamos en Martorell, sin burbujas ni fallos.</span></figcaption></figure>`:""}
-    </div>
-    <div class="below">
-      <section class="sec"><h3>Lo que ves es lo que montas</h3>
-        <p>${esc(p.story)}</p>
-        <p><strong>Brillo, mate o glitter:</strong> ${esc(p.finish)}</p>
-        ${guar(p)}</section>
-      <section class="sec"><h3>Qué incluye el kit</h3>${includes(p)}${steps(p)}</section>
-      <section class="sec" style="grid-column:1/-1"><h3>Preguntas frecuentes</h3>${faq(p)}</section>
-    </div>
-  </div>`;
-}
-function bindB(root,p){
-  const order = ["montada","lateral","detalle","render","plantilla"];
-  const shots = [...p.images].sort((a,b)=>order.indexOf(a.kind)-order.indexOf(b.kind));
-  const gal=root.querySelector('[data-gal="B"]');
-  if(!gal) return;
-  root.querySelectorAll("[data-view]").forEach(b=>b.addEventListener("click",()=>{
-    gal.querySelector(`[data-thumb="${b.dataset.view}"]`).click();
-    root.querySelectorAll("[data-view]").forEach(x=>x.setAttribute("aria-pressed",x===b));
-  }));
-  gal.querySelectorAll("[data-thumb]").forEach(t=>t.addEventListener("click",()=>{
-    root.querySelectorAll("[data-view]").forEach(x=>x.setAttribute("aria-pressed",x.dataset.view===t.dataset.thumb));
-  }));
+  </article>`;
 }
 
-/* ---------- Template C: landing larga ---------- */
-function tplC(p){
-  const cover = imgOf(p,"montada").kind==="montada" ? imgOf(p,"montada") : imgOf(p,"render");
-  return `<div class="tC">
-    <section class="cover">
-      <img src="${cover.src}" alt="${esc(cover.alt)}">
-      <div class="txt">
-        <div class="eyebrow">${esc(name(p))} · ${esc(p.years)}</div>
-        <h2>${esc(p.design)}</h2>
-        <p>${esc(p.hook)}</p>
-        <div class="row">
-          <a class="cta tape" href="${url(p)}" target="_blank" rel="noopener">${p.custom?"Empezar mi diseño":"Lo quiero en mi moto"} →</a>
-          <div class="from"><small>Desde</small>${eur(minP(p))}</div>
-        </div>
-      </div>
-    </section>
-    <div class="story">
-      <div class="col"><h3>${p.custom?"Tu moto, dibujada desde cero":"Tu moto no tiene por qué ser una más"}</h3><p>${esc(p.story)}</p></div>
-      <div class="col">${p.why.map(([,t,d])=>`<p><strong style="color:var(--ink)">${esc(t)}.</strong> ${esc(d)}</p>`).join("")}</div>
-    </div>
-    <div class="nums">
-      <div><b>485 μm</b><span>Grosor del vinilo. Aguanta impactos, rayaduras, agua y sol.</span></div>
-      <div><b>3-5 días</b><span>Entrega en España tras aprobar la previsualización. Envío gratis.</span></div>
-      <div><b>${p.custom?"0 €":"30 días"}</b><span>${p.custom?"No pagas fabricación hasta aprobar el diseño: nada se corta sin tu OK.":"Para devolver un kit de catálogo sin usar."}</span></div>
-    </div>
-    <div class="shots">
-      ${p.images.map(im=>`<figure><img src="${im.src}" alt="${esc(im.alt)}" loading="lazy"><figcaption>${KIND[im.kind]}</figcaption></figure>`).join("")}
-      ${p.images.length<3?`<figure><img src="${INSTALL_IMG}" alt="Montaje de un kit de adhesivos en el taller de Carez Designs" loading="lazy"><figcaption>Montaje en taller</figcaption></figure>`:""}
-    </div>
-    <div class="grid2">
-      <section class="sec"><h3>Cómo funciona</h3>${steps(p)}<p><strong>Brillo, mate o glitter:</strong> ${esc(p.finish)}</p></section>
-      <section class="sec"><h3>Qué incluye el kit</h3>${includes(p)}</section>
-    </div>
-    <div class="close">
-      <div><h3>${p.custom?"Cuéntanos cómo la quieres.":`Tu ${esc(p.model)} con el ${esc(p.design)}.`}</h3>
-      <p>${p.custom?"Empiezas con un briefing, ves la propuesta, la ajustas y solo entonces se fabrica.":"Eliges base y acabado, apruebas la previsualización y en 3 a 5 días laborables lo tienes en casa. Montaje opcional en Martorell por "+p.install+"."}</p></div>
-      <div class="buy"><div class="price">${eur(minP(p))}</div><div class="price-note">desde · IVA incluido · <b>envío gratis</b></div>
-      <a class="cta" href="${url(p)}" target="_blank" rel="noopener">${p.custom?"Empezar mi diseño":"Configurar y comprar"} →</a></div>
-    </div>
-    <div class="grid2">
-      <section class="sec"><h3>Material y garantías</h3>${specs(p)}</section>
-      <section class="sec"><h3>Preguntas frecuentes</h3>${faq(p)}</section>
-    </div>
-  </div>`;
+/* ---------- glitter canvas ---------- */
+function drawGlitter(cv){
+  const ctx=cv.getContext("2d"); ctx.clearRect(0,0,cv.width,cv.height);
+  let seed=7; const rnd=()=>{ seed=(seed*16807)%2147483647; return seed/2147483647; };
+  for(let i=0;i<2600;i++){
+    const x=rnd()*cv.width, y=rnd()*cv.height, r=rnd()*1.6+.3, a=rnd()*.9+.1;
+    ctx.fillStyle=`rgba(255,255,255,${a})`; ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill();
+  }
 }
 
-/* ---------- Template D: técnica ---------- */
-function tplD(p){
-  const rows = BASES.map(([b],bi)=>`<tr><th>${b}</th>${FINISHES.map(([f],fi)=>`<td class="cell ${bi===0&&fi===0?"on":""}" tabindex="0" data-cell="${bi}-${fi}">${eur(p.prices[bi*3+fi])}</td>`).join("")}</tr>`).join("");
-  return `<div class="tD">
-    <div class="hero">
-      <div>${gallery(p,"D")}</div>
-      <div>
-        <div class="head">
-          <div class="eyebrow">${esc(name(p))} · ${esc(p.years)} · ${esc(p.type)}</div>
-          <h2>Kit de adhesivos ${esc(p.design)}</h2>
-          <p>${esc(p.hook)}</p>
-        </div>
-        <table class="matrix" data-matrix>
-          <caption>Precio por base y acabado · IVA incluido · toca una celda</caption>
-          <thead><tr><th>Base \\ Acabado</th>${FINISHES.map(([f])=>`<th>${f}</th>`).join("")}</tr></thead>
-          <tbody>${rows}</tbody>
-        </table>
-        <div class="sum">
-          <div><div class="price" data-price>${eur(minP(p))}</div><div class="sel" data-sel>Normal · Brillo</div></div>
-          <div style="display:grid;gap:6px;justify-items:end"><a class="cta" href="${url(p)}" target="_blank" rel="noopener">${p.custom?"Empezar mi diseño":"Comprar esta opción"} →</a><span class="price-note"><b>Envío gratis</b> España · montaje opcional ${p.install}</span></div>
-        </div>
-      </div>
-    </div>
-    <div class="cols">
-      <section class="sec"><h3>Ficha técnica</h3>${specs(p)}
-        <ul class="list">
-          <li>Envío gratis en España, 3 a 5 días laborables. Unión Europea 13,50 €, 5 a 7 días.</li>
-          <li>${p.custom?"Sin desistimiento por ser 100% personalizado, salvo defecto o daño en transporte.":"30 días naturales de devolución sin usar. Reembolso en 14 días."}</li>
-          <li>Previsualización digital antes de fabricar. Nada se corta sin tu confirmación.</li>
-          <li>Montaje opcional en taller propio, Martorell (08760). Más de 6 años instalando.</li>
-        </ul></section>
-      <section class="sec"><h3>Contenido del kit</h3>${includes(p)}<p><strong>Acabados:</strong> ${esc(p.finish)}</p></section>
-      <section class="sec" style="grid-column:1/-1"><h3>Preguntas frecuentes</h3>${faq(p)}</section>
-    </div>
-  </div>`;
-}
-function bindD(root,p){
-  const m=root.querySelector("[data-matrix]"); if(!m) return;
-  const price=root.querySelector(".tD [data-price]"), sel=root.querySelector(".tD [data-sel]");
-  const pick=td=>{
-    m.querySelectorAll(".cell").forEach(c=>c.classList.toggle("on",c===td));
-    const [b,f]=td.dataset.cell.split("-").map(Number);
-    price.textContent=eur(p.prices[b*3+f]); sel.textContent=`${BASES[b][0]} · ${FINISHES[f][0]}`;
-  };
-  m.querySelectorAll(".cell").forEach(td=>{ td.addEventListener("click",()=>pick(td)); td.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){e.preventDefault();pick(td);} }); });
-}
+/* ---------- state + render ---------- */
+const main=document.getElementById("ficha"), select=document.getElementById("product");
+select.innerHTML=PRODUCTS.map(p=>`<option value="${p.id}">${esc(name(p))} · ${esc(p.design)}</option>`).join("");
+let current=PRODUCTS[0], base=0, fin=0;
 
-/* ---------- Shopify-ready copy per template ---------- */
-function shopifyHtml(p, t){
-  const li = a => a.map(x=>`<li>${x}</li>`).join("\n");
-  const common = `<hr>
+function setDesign(b,f){
+  base=b; fin=f;
+  const stage=document.getElementById("stage");
+  stage.dataset.base=BASES[b][1]; stage.dataset.fin=FINISHES[f][1];
+  document.getElementById("stage-lbl").textContent=`${BASES[b][0]} · ${FINISHES[f][0]}`;
+  document.getElementById("out-base").textContent=BASES[b][0];
+  document.getElementById("out-fin").textContent=FINISHES[f][0];
+  document.querySelectorAll("#sw-base button").forEach(x=>x.setAttribute("aria-pressed",+x.dataset.base===b));
+  document.querySelectorAll("#sw-fin button").forEach(x=>x.setAttribute("aria-pressed",+x.dataset.fin===f));
+  document.querySelector(`input[name="base"][value="${b}"]`).checked=true;
+  document.querySelector(`input[name="fin"][value="${f}"]`).checked=true;
+  total();
+}
+function total(){
+  const p=current, kit=p.prices[base*3+fin];
+  const lines=[[`Kit ${p.design} · ${BASES[base][0]} / ${FINISHES[fin][0]}`,kit]];
+  let sum=kit;
+  if(document.getElementById("adapt").checked){ lines.push(["Adaptación a otra moto",ADAPT_PRICE]); sum+=ADAPT_PRICE; }
+  if(document.getElementById("ig").checked){ lines.push([`Instagram Stickers · ${document.getElementById("ig-qty").value}`,IG_PRICE]); sum+=IG_PRICE; }
+  if(document.getElementById("mont").checked){ const v=+document.getElementById("mont-tipo").value; lines.push(["Montaje en taller",v]); sum+=v; }
+  document.getElementById("lines").innerHTML=lines.map(([l,v])=>`<li><span>${esc(l)}</span><span>${eur(v)}</span></li>`).join("");
+  document.getElementById("price").textContent=eur(sum);
+  document.getElementById("mprice").textContent=eur(sum);
+  // precio de cada opción de base/acabado con la otra elección fijada
+  BASES.forEach((_,b)=>document.querySelector(`[data-pr="base-${b}"]`).textContent=eur(p.prices[b*3+fin]));
+  FINISHES.forEach((_,f)=>document.querySelector(`[data-pr="fin-${f}"]`).textContent=eur(p.prices[base*3+f]));
+}
+function render(p){
+  current=p; base=0; fin=0;
+  main.innerHTML=ficha(p);
+  drawGlitter(document.getElementById("glitter"));
+  document.querySelectorAll("#sw-base button").forEach(b=>b.addEventListener("click",()=>setDesign(+b.dataset.base,fin)));
+  document.querySelectorAll("#sw-fin button").forEach(b=>b.addEventListener("click",()=>setDesign(base,+b.dataset.fin)));
+  document.querySelectorAll('input[name="base"]').forEach(i=>i.addEventListener("change",()=>setDesign(+i.value,fin)));
+  document.querySelectorAll('input[name="fin"]').forEach(i=>i.addEventListener("change",()=>setDesign(base,+i.value)));
+  [["adapt","adapt-sub"],["ig","ig-sub"],["mont","mont-sub"]].forEach(([id,sub])=>{
+    const cb=document.getElementById(id); cb.addEventListener("change",()=>{ document.getElementById(sub).hidden=!cb.checked; total(); });
+  });
+  document.getElementById("ig-qty").addEventListener("change",total);
+  document.getElementById("mont-tipo").addEventListener("change",total);
+  document.getElementById("up-mont").addEventListener("click",()=>{
+    const cb=document.getElementById("mont"); cb.checked=true; document.getElementById("mont-sub").hidden=false; total();
+    cb.scrollIntoView({behavior:"smooth",block:"center"});
+  });
+  document.getElementById("mname").textContent=`${name(p)} · ${p.design}`;
+  document.getElementById("mlink").href=url(p);
+  document.getElementById("mcta").hidden=false;
+  setDesign(0,0);
+}
+select.addEventListener("change",()=>render(PRODUCTS.find(p=>p.id===select.value)));
+
+/* ---------- copia para Shopify ---------- */
+function shopifyHtml(p){
+  const li=a=>a.map(x=>`<li>${x}</li>`).join("\n");
+  return `<p><strong>${esc(p.hook)}</strong></p>
+<ul>
+<li>365 días de garantía en el vinilo</li>
+<li>2 cambios de diseño gratis incluidos</li>
+<li>Envío gratis en España (3 a 5 días laborables) · UE 13,50 €</li>
+<li>Previsualización del diseño antes de fabricar</li>
+</ul>
+<h3>POR QUÉ ${esc(p.design.toUpperCase())}</h3>
+${p.why.map(([,t,d])=>`<p><strong>${esc(t)}.</strong> ${esc(d)}</p>`).join("\n")}
+<p><strong>Brillo, mate o glitter:</strong> ${esc(p.finish)}</p>
+<hr>
+<h3>CÓMO SE CONFIGURA</h3>
+<ol>
+<li><strong>Tu moto:</strong> modelo y año${p.custom?" (cualquier marca)":""}. Si quieres, sube una foto para que confirmemos el modelo antes de fabricar.</li>
+<li><strong>Diseño:</strong> base (normal, cromado u holográfico) y acabado (brillo, mate o glitter).</li>
+<li><strong>Extras:</strong> adaptación a otra moto, Instagram Stickers, montaje en nuestro taller y tus cambios o comentarios para el diseño.</li>
+</ol>
+<hr>
 <h3>¿QUÉ INCLUYE EL KIT?</h3>
 <p>Adhesivos para ${esc(p.zones.join(", "))}, cortados a medida de marca, modelo y año${p.custom?", más el diseño personalizado completo con las rondas de ajuste necesarias":""}.<br>El contenido exacto puede variar ligeramente según el modelo seleccionado.</p>
 <hr>
@@ -757,119 +652,13 @@ ${p.faq.map(([q,a])=>`<p><strong>${esc(q)}</strong><br>${esc(a)}</p>`).join("\n"
 <p>Algunos detalles como líneas, proporciones o elementos gráficos pueden ajustarse para adaptarse correctamente al modelo de tu moto.</p>
 <p>Antes de fabricar el kit, te enviaremos una previsualización del diseño final para que puedas revisarlo y confirmar que todo esté correcto.</p>
 <p>El montaje profesional es opcional y puede añadirse al pedido: lo realizamos en nuestro taller de Martorell (Barcelona).</p>`;
-  const proofList = `<ul>
-<li>Envío gratis en España (3 a 5 días laborables)</li>
-<li>Previsualización del diseño antes de fabricar</li>
-<li>Vinilo premium de 485 μm</li>
-<li>${p.custom?"Diseño desde cero, sin plantillas de catálogo":"30 días de devolución en productos de catálogo"}</li>
-</ul>`;
-  const stepsHtml = `<h3>CÓMO FUNCIONA</h3>
-<ol>
-<li><strong>Configura:</strong> ${p.custom?"cuéntanos tu idea por el configurador o por escrito.":"elige base, acabado y el año de tu moto."}</li>
-<li><strong>Revisa:</strong> te enviamos una previsualización del diseño final para que la apruebes.</li>
-<li><strong>Fabricamos:</strong> troquelamos el kit con las plantillas de tu modelo.</li>
-<li><strong>Monta o trae:</strong> lo montas tú o lo hacemos en nuestro taller de Martorell (Barcelona).</li>
-</ol>`;
-  if(t==="A") return `<p><strong>${esc(p.hook)}</strong></p>
-${proofList}
-<h3>POR QUÉ ${esc(p.design.toUpperCase())}</h3>
-${p.why.map(([,t,d])=>`<p><strong>${esc(t)}.</strong> ${esc(d)}</p>`).join("\n")}
-<p><strong>Brillo, mate o glitter:</strong> ${esc(p.finish)}</p>
-<hr>
-${stepsHtml}
-${common}`;
-  if(t==="B") return `<p><strong>${esc(p.hook)}</strong></p>
-<h3>ASÍ QUEDA EN TU MOTO</h3>
-${p.images.map(im=>`<p><strong>${KIND[im.kind]}:</strong> ${KIND_TXT[im.kind]}</p>`).join("\n")}
-<p>${esc(p.story)}</p>
-<p><strong>Brillo, mate o glitter:</strong> ${esc(p.finish)}</p>
-${proofList}
-${common}`;
-  if(t==="C") return `<h3>${p.custom?"TU MOTO, DIBUJADA DESDE CERO":"TU MOTO NO TIENE POR QUÉ SER UNA MÁS"}</h3>
-<p>${esc(p.story)}</p>
-${p.why.map(([,t,d])=>`<p><strong>${esc(t)}.</strong> ${esc(d)}</p>`).join("\n")}
-<h3>EN CIFRAS</h3>
-<ul>
-<li><strong>485 μm:</strong> grosor del vinilo. Aguanta impactos, rayaduras, agua y sol.</li>
-<li><strong>3 a 5 días:</strong> entrega en España tras aprobar la previsualización. Envío gratis.</li>
-<li><strong>${p.custom?"0 € hasta tu OK:":"30 días:"}</strong> ${p.custom?"nada se fabrica sin tu aprobación del diseño.":"para devolver un kit de catálogo sin usar."}</li>
-</ul>
-<p><strong>Brillo, mate o glitter:</strong> ${esc(p.finish)}</p>
-<hr>
-${stepsHtml}
-${common}`;
-  return `<p>${esc(p.hook)}</p>
-<h3>FICHA TÉCNICA</h3>
-<ul>
-<li><strong>Compatibilidad:</strong> ${esc(name(p))} · ${esc(p.years)}</li>
-<li><strong>Material:</strong> vinilo premium de 485 μm, alta adherencia</li>
-<li><strong>Base:</strong> normal, cromado u holográfico · <strong>Acabado:</strong> brillo, mate o glitter</li>
-<li><strong>Pintura:</strong> no se toca; el vinilo se retira sin dañarla</li>
-<li><strong>Envío:</strong> gratis en España (3 a 5 días laborables); UE 13,50 € (5 a 7 días)</li>
-<li><strong>${p.custom?"Devolución:</strong> sin desistimiento por ser 100% personalizado, salvo defecto o daño en transporte":"Devolución:</strong> 30 días naturales sin usar; reembolso en 14 días"}</li>
-<li><strong>Montaje opcional:</strong> taller propio en Martorell (08760), ${p.install}</li>
-</ul>
-<h3>PRECIOS POR BASE Y ACABADO (IVA INCLUIDO)</h3>
-<ul>
-${BASES.map(([b],bi)=>`<li><strong>${b}:</strong> ${FINISHES.map(([f],fi)=>`${f} ${eur(p.prices[bi*3+fi])}`).join(" · ")}</li>`).join("\n")}
-</ul>
-<p><strong>Acabados:</strong> ${esc(p.finish)}</p>
-${common}`;
 }
-
-/* ---------- Render ---------- */
-const SAMPLES = [
-  {id:"sA", t:"A", plate:"A", title:"Configurador directo", when:"<b>Para la ficha estándar de catálogo.</b> El precio cambia al elegir base y acabado, la galería muestra render, moto montada y plantilla, y todo lo demás cuelga debajo. Es la que convierte mejor con tráfico que ya sabe qué moto tiene.", tpl:tplA},
-  {id:"sB", t:"B", plate:"B", title:"Resultado a la vista", when:"<b>Para diseños con foto real montada.</b> La imagen ocupa dos tercios de la pantalla y se cambia con pestañas: así queda, render, lo que recibes. El resumen de compra se queda fijo a la derecha mientras el cliente mira fotos. Ideal para tráfico de Instagram y TikTok.", tpl:tplB},
-  {id:"sC", t:"C", plate:"C", title:"Landing larga", when:"<b>Para campañas y anuncios.</b> Portada a sangre con la moto, una historia corta, tres cifras que se recuerdan, fotos, proceso y un cierre con precio y botón. Funciona cuando el cliente llega frío y hay que convencerle antes de enseñarle opciones.", tpl:tplC},
-  {id:"sD", t:"D", plate:"D", title:"Ficha técnica", when:"<b>Para quien decide por números.</b> La tabla con los nueve precios de base por acabado se ve entera, sin clics, y debajo van los datos duros: material, plazos, devoluciones, contenido. Menos discurso, más comparación. Buena para B2B, talleres y clientes que ya han comprado antes.", tpl:tplD},
-];
-
-const main = document.getElementById("samples");
-const select = document.getElementById("product");
-select.innerHTML = PRODUCTS.map(p=>`<option value="${p.id}">${esc(name(p))} · ${esc(p.design)}</option>`).join("");
-let current = PRODUCTS[0];
-
-function render(p){
-  current = p;
-  main.innerHTML = SAMPLES.map(s=>`
-    <article class="sample" id="${s.id}" data-t="${s.t}">
-      <div class="sample-head">
-        <span class="plate" aria-hidden="true">${s.plate}</span>
-        <div><h2>Muestra ${s.plate} · ${s.title}</h2><p class="when">${s.when}</p></div>
-        <div class="tools"><button type="button" data-copy="${s.t}">Copiar descripción HTML para Shopify</button><span class="st" data-st></span></div>
-      </div>
-      <div class="frame"><div class="frame-lbl">Vista de la ficha · ${esc(name(p))} · ${esc(p.design)}</div>${s.tpl(p)}</div>
-    </article>`).join("");
-  main.querySelectorAll(".sample").forEach(el=>{
-    bindGallery(el,p);
-    bindConfig(el,p,(price)=>{ const out=el.querySelector("[data-price]"); if(out) out.textContent=eur(price); if(el.dataset.t==="A") mobile(price); });
-    if(el.dataset.t==="B") bindB(el,p);
-    if(el.dataset.t==="D") bindD(el,p);
-    el.querySelector("[data-copy]").addEventListener("click", async e=>{
-      const st=el.querySelector("[data-st]");
-      try{ await navigator.clipboard.writeText(shopifyHtml(p, e.currentTarget.dataset.copy)); st.textContent="Copiado. Pégalo en la descripción del producto (vista HTML)."; }
-      catch(err){ st.textContent="No se pudo copiar: revisa los permisos del portapapeles."; }
-      setTimeout(()=>st.textContent="",5000);
-    });
-    io.observe(el);
-  });
-  mobile(minP(p));
-}
-select.addEventListener("change",()=>{ render(PRODUCTS.find(p=>p.id===select.value)); });
-
-/* mobile sticky + index highlight */
-const mcta=document.getElementById("mcta");
-function mobile(price){
-  document.getElementById("mprice").textContent=eur(price);
-  document.getElementById("mname").textContent=`${name(current)} · ${current.design}`;
-  document.getElementById("mlink").href=url(current);
-  mcta.hidden=false;
-}
-const links=[...document.querySelectorAll("#index a")];
-const io=new IntersectionObserver(entries=>{
-  entries.forEach(e=>{ if(e.isIntersecting) links.forEach(a=>a.classList.toggle("active",a.dataset.idx===e.target.id)); });
-},{rootMargin:"-25% 0px -60% 0px"});
+document.getElementById("copy").addEventListener("click", async ()=>{
+  const st=document.getElementById("st");
+  try{ await navigator.clipboard.writeText(shopifyHtml(current)); st.textContent="Copiado. Pégalo en la descripción del producto (vista HTML)."; }
+  catch(e){ st.textContent="No se pudo copiar: revisa los permisos del portapapeles."; }
+  setTimeout(()=>st.textContent="",5000);
+});
 
 render(current);
 </script>
