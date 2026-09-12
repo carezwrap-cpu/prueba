@@ -1,0 +1,628 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fichas Carez Designs</title>
+<meta name="description" content="Fichas de producto orientadas a venta para los kits de adhesivos de moto de Carez Designs, construidas con los datos reales de la tienda.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+  :root{
+    --bg:#F1F2EF; --surface:#FFFFFF; --surface-2:#E6E8E3; --line:#CFD3CB;
+    --ink:#14171B; --ink-2:#4B535D; --ink-3:#7A828C;
+    --accent:#1747C8; --accent-ink:#FFFFFF; --accent-soft:#E4EAFB;
+    --tape:#FFD028; --tape-ink:#1A1400;
+    --ok:#1E7F4F; --ok-soft:#E1F3E8;
+    --shadow:0 18px 40px -24px rgba(20,23,27,.35);
+    --radius:6px;
+    --display:"Barlow Condensed","Arial Narrow","Helvetica Neue",Arial,sans-serif;
+    --body:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+    color-scheme:light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0F1114; --surface:#181B20; --surface-2:#22262C; --line:#343941;
+      --ink:#F1F2EE; --ink-2:#B7BDC6; --ink-3:#8A929C;
+      --accent:#5B86FF; --accent-ink:#0B1020; --accent-soft:#1B2540;
+      --tape:#FFD028; --tape-ink:#1A1400;
+      --ok:#5CCB8E; --ok-soft:#16301F;
+      --shadow:0 18px 40px -24px rgba(0,0,0,.8);
+      color-scheme:dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0F1114; --surface:#181B20; --surface-2:#22262C; --line:#343941;
+    --ink:#F1F2EE; --ink-2:#B7BDC6; --ink-3:#8A929C;
+    --accent:#5B86FF; --accent-ink:#0B1020; --accent-soft:#1B2540;
+    --tape:#FFD028; --tape-ink:#1A1400;
+    --ok:#5CCB8E; --ok-soft:#16301F;
+    --shadow:0 18px 40px -24px rgba(0,0,0,.8);
+    color-scheme:dark;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} *{transition:none!important;animation:none!important} }
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;padding-inline:clamp(16px,4vw,40px);padding-block:0 96px}
+  a{color:var(--accent)}
+  h1,h2,h3,h4{font-family:var(--display);line-height:1.02;margin:0;text-wrap:balance;letter-spacing:.005em}
+  p{margin:0}
+  .wrap{max-width:1180px;margin-inline:auto}
+
+  /* ---------- top bar ---------- */
+  .top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:18px;border-bottom:2px solid var(--ink)}
+  .brand{font-family:var(--display);font-weight:800;font-size:22px;letter-spacing:.06em;text-transform:uppercase}
+  .brand small{display:block;font-family:var(--body);font-weight:500;font-size:11px;letter-spacing:.18em;color:var(--ink-3)}
+  .topmeta{font-family:var(--mono);font-size:12px;color:var(--ink-2);text-align:right}
+
+  /* ---------- intro ---------- */
+  .intro{display:grid;grid-template-columns:1.2fr .8fr;gap:32px;align-items:end;padding-block:40px 28px}
+  .intro h1{font-size:clamp(40px,6vw,72px);font-weight:800;text-transform:uppercase;letter-spacing:-.005em}
+  .intro h1 em{font-style:normal;color:var(--accent)}
+  .intro p{max-width:60ch;color:var(--ink-2);font-size:17px}
+  .kicker{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:12px}
+  .rules{display:grid;gap:10px;font-size:14px;color:var(--ink-2);border-left:3px solid var(--tape);padding-left:14px}
+  .rules b{color:var(--ink)}
+
+  /* ---------- index ---------- */
+  .index{position:sticky;top:0;z-index:20;background:var(--bg);border-block:1px solid var(--line);margin-block:8px 0;overflow-x:auto;scrollbar-width:none}
+  .index::-webkit-scrollbar{display:none}
+  .index ul{list-style:none;margin:0;padding:0;display:flex;gap:0;min-width:max-content}
+  .index a{display:flex;align-items:baseline;gap:8px;padding:12px 16px;color:var(--ink-2);text-decoration:none;font-family:var(--display);font-weight:600;font-size:17px;text-transform:uppercase;letter-spacing:.04em;border-right:1px solid var(--line)}
+  .index a:hover,.index a:focus-visible{color:var(--ink);background:var(--surface)}
+  .index a .n{font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+  .index a.active{color:var(--accent);box-shadow:inset 0 -3px 0 var(--accent)}
+
+  /* ---------- ficha ---------- */
+  .ficha{margin-top:56px;scroll-margin-top:60px}
+  .ficha-head{display:flex;align-items:baseline;gap:16px;border-bottom:2px solid var(--ink);padding-bottom:8px;margin-bottom:22px}
+  .plate{font-family:var(--display);font-weight:800;font-size:40px;line-height:1;color:var(--ink);padding:2px 10px;border:2px solid var(--ink);border-radius:4px;background:var(--tape);color:var(--tape-ink)}
+  .ficha-head .cat{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
+  .ficha-head .cat b{color:var(--ink);font-weight:600}
+
+  .hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(320px,.95fr);gap:28px;align-items:start}
+  .gallery{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+  .gallery img{display:block;width:100%;height:auto;max-width:100%;aspect-ratio:1/1;object-fit:cover;background:var(--surface-2)}
+  .gallery figcaption{position:absolute;left:0;bottom:0;right:0;padding:10px 14px;font-family:var(--mono);font-size:11px;color:#fff;background:linear-gradient(transparent,rgba(0,0,0,.65))}
+  .stickers{position:absolute;top:12px;left:12px;display:flex;flex-direction:column;gap:6px}
+  .sticker{font-family:var(--display);font-weight:700;font-size:14px;letter-spacing:.06em;text-transform:uppercase;padding:5px 9px;border-radius:3px;background:var(--tape);color:var(--tape-ink);transform:rotate(-1.5deg);box-shadow:0 2px 0 rgba(0,0,0,.25)}
+  .sticker.ink{background:var(--ink);color:var(--bg);transform:rotate(1deg)}
+
+  .buybox{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px 22px 18px;display:grid;gap:16px}
+  .buybox .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+  .buybox h2{font-size:clamp(32px,4.2vw,46px);font-weight:800;text-transform:uppercase}
+  .buybox h2 span{color:var(--ink-3);font-weight:600}
+  .hook{font-size:17px;color:var(--ink-2);max-width:48ch}
+  .proof{display:flex;flex-wrap:wrap;gap:8px}
+  .proof li{list-style:none;font-size:13px;font-weight:500;padding:5px 10px;border-radius:999px;background:var(--surface-2);color:var(--ink-2)}
+  .proof li::before{content:"✓ ";color:var(--ok);font-weight:700}
+  .proof{margin:0;padding:0}
+
+  .config{border-top:1px solid var(--line);padding-top:14px;display:grid;gap:12px}
+  .config .lbl{display:flex;justify-content:space-between;font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+  .config .lbl output{font-family:var(--mono);color:var(--ink);text-transform:none;letter-spacing:0}
+  .opts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .opt{position:relative}
+  .opt input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer}
+  .opt label{display:grid;gap:2px;padding:9px 10px;border:1.5px solid var(--line);border-radius:4px;text-align:left;cursor:pointer;background:var(--surface);transition:border-color .15s}
+  .opt label b{font-family:var(--display);font-size:17px;font-weight:700;text-transform:uppercase;letter-spacing:.03em}
+  .opt label small{font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+  .opt input:checked + label{border-color:var(--accent);background:var(--accent-soft)}
+  .opt input:focus-visible + label{outline:2px solid var(--accent);outline-offset:2px}
+
+  .pricebar{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px dashed var(--line);padding-top:14px}
+  .price{font-family:var(--display);font-weight:800;font-size:46px;line-height:.9;font-variant-numeric:tabular-nums}
+  .price sup{font-size:.45em;vertical-align:top;margin-left:2px;font-weight:600}
+  .price-note{font-size:12px;color:var(--ink-3);font-family:var(--mono)}
+  .price-note b{color:var(--ok);font-weight:600}
+  .cta{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 22px;border-radius:4px;background:var(--accent);color:var(--accent-ink);text-decoration:none;font-family:var(--display);font-weight:800;font-size:20px;letter-spacing:.06em;text-transform:uppercase;border:0;cursor:pointer;transition:transform .12s,filter .12s}
+  .cta:hover{filter:brightness(1.07);transform:translateY(-1px)}
+  .cta:focus-visible{outline:3px solid var(--tape);outline-offset:2px}
+  .cta.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line);font-size:16px;min-height:44px}
+  .ctas{display:grid;gap:8px}
+  .micro{font-size:12.5px;color:var(--ink-3);text-align:center}
+
+  /* ---------- body of ficha ---------- */
+  .body{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(320px,.95fr);gap:28px;margin-top:28px}
+  .sec{display:grid;align-content:start;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px}
+  .sec h3{font-size:24px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;display:flex;align-items:center;gap:10px}
+  .sec h3::before{content:"";width:18px;height:3px;background:var(--accent);border-radius:2px}
+  .sec p{color:var(--ink-2);max-width:65ch}
+  .sec p strong{color:var(--ink)}
+  .bene{display:grid;gap:14px;margin:0;padding:0;list-style:none}
+  .bene li{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start}
+  .bene .ic{width:34px;height:34px;border-radius:4px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:15px;flex:none}
+  .bene b{display:block;font-family:var(--display);font-size:19px;font-weight:700;text-transform:uppercase;letter-spacing:.03em}
+  .bene span{color:var(--ink-2);font-size:14.5px}
+
+  .inc{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .inc h4{font-size:15px;letter-spacing:.1em;text-transform:uppercase;font-family:var(--body);font-weight:600;color:var(--ink-3);margin-bottom:8px}
+  .inc ul{margin:0;padding:0;list-style:none;display:grid;gap:5px;font-size:14.5px;color:var(--ink-2)}
+  .inc .yes li::before{content:"●";color:var(--ok);margin-right:8px;font-size:11px}
+  .inc .no li::before{content:"○";color:var(--ink-3);margin-right:8px;font-size:11px}
+  .inc .note{grid-column:1/-1;font-size:13px;color:var(--ink-3)}
+
+  .spec{width:100%;border-collapse:collapse;font-size:14.5px}
+  .spec th{text-align:left;font-weight:600;color:var(--ink-3);padding:8px 0;border-bottom:1px solid var(--line);width:36%;font-size:12px;letter-spacing:.1em;text-transform:uppercase;vertical-align:top}
+  .spec td{padding:8px 0;border-bottom:1px solid var(--line);color:var(--ink);font-variant-numeric:tabular-nums}
+  .spec tr:last-child th,.spec tr:last-child td{border-bottom:0}
+  .spec code{font-family:var(--mono);font-size:13px;background:var(--surface-2);padding:1px 6px;border-radius:3px}
+
+  .steps{display:grid;grid-template-columns:1fr 1fr;gap:0 18px;counter-reset:s;margin:0;padding:0;list-style:none}
+  .steps li{counter-increment:s;padding:14px 14px 14px 0;border-top:2px solid var(--line);position:relative}
+  .steps li::before{content:"0" counter(s);font-family:var(--mono);font-size:12px;color:var(--accent);display:block;margin-bottom:6px}
+  .steps b{display:block;font-family:var(--display);font-size:20px;font-weight:700;text-transform:uppercase;letter-spacing:.03em}
+  .steps span{font-size:13.5px;color:var(--ink-2)}
+
+  .guar{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .guar div{background:var(--ok-soft);border-radius:4px;padding:12px;display:grid;gap:2px}
+  .guar b{font-family:var(--display);font-size:22px;font-weight:800;text-transform:uppercase;color:var(--ok);line-height:1}
+  .guar span{font-size:13px;color:var(--ink-2)}
+
+  details{border-top:1px solid var(--line)}
+  details:last-of-type{border-bottom:1px solid var(--line)}
+  summary{cursor:pointer;padding:12px 0;font-weight:600;font-size:15px;list-style:none;display:flex;justify-content:space-between;gap:12px}
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:"+";font-family:var(--mono);color:var(--accent);flex:none}
+  details[open] summary::after{content:"–"}
+  details p{padding-bottom:14px;font-size:14.5px}
+
+  .upsell{display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center;background:var(--ink);color:var(--bg);border-radius:var(--radius);padding:18px 20px;margin-top:28px}
+  .upsell img{width:110px;height:110px;object-fit:cover;border-radius:4px;max-width:100%}
+  .upsell h3{font-size:26px;font-weight:800;text-transform:uppercase;letter-spacing:.03em;color:var(--bg)}
+  .upsell p{color:color-mix(in srgb,var(--bg) 78%,transparent);font-size:14.5px;max-width:60ch}
+  .upsell .cta{background:var(--tape);color:var(--tape-ink)}
+
+  .tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;align-items:center}
+  .tools button{font:inherit;font-size:13px;font-weight:600;padding:8px 12px;border-radius:4px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+  .tools button:hover{border-color:var(--ink)}
+  .tools button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .tools .st{font-family:var(--mono);font-size:12px;color:var(--ok)}
+
+  /* ---------- mobile sticky cta ---------- */
+  .mcta{position:fixed;left:0;right:0;bottom:0;z-index:30;display:none;gap:12px;align-items:center;padding:10px 16px;background:var(--surface);border-top:1px solid var(--line);box-shadow:0 -8px 24px -12px rgba(0,0,0,.4)}
+  .mcta .mprice{font-family:var(--display);font-weight:800;font-size:24px;font-variant-numeric:tabular-nums;line-height:1}
+  .mcta .mname{font-size:11px;color:var(--ink-3);font-family:var(--mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:44vw}
+  .mcta .cta{margin-left:auto;font-size:17px;min-height:46px;padding:0 16px}
+
+  footer{margin-top:64px;padding-top:20px;border-top:2px solid var(--ink);font-size:13px;color:var(--ink-3);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+
+  @media (max-width: 900px){
+    .intro{grid-template-columns:1fr}
+    .hero,.body{grid-template-columns:1fr}
+    .guar{grid-template-columns:1fr}
+    .upsell{grid-template-columns:1fr}
+    .upsell img{width:100%;height:160px}
+    .mcta{display:flex}
+  }
+  @media (max-width: 520px){
+    .inc{grid-template-columns:1fr}
+    .opts{grid-template-columns:1fr 1fr 1fr}
+    .opt label b{font-size:15px}
+    .top{flex-direction:column;align-items:flex-start}
+    .topmeta{text-align:left}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="brand">Carez Designs<small>Kits de adhesivos para moto · Martorell (Barcelona)</small></div>
+    <div class="topmeta">7 fichas · datos reales de la tienda<br>precios IVA incl. · EUR</div>
+  </header>
+
+  <section class="intro">
+    <div>
+      <div class="kicker">Fichas de producto orientadas a venta</div>
+      <h1>Que la ficha <em>venda</em> antes de que el cliente pregunte.</h1>
+      <p style="margin-top:14px">Cada ficha sigue el mismo recorrido: gancho, prueba, configurador con precio real, qué incluye, cómo funciona y garantías. Todo el contenido sale de tus productos actuales (precios por variante, materiales, política de envío y devoluciones).</p>
+    </div>
+    <div class="rules">
+      <div><b>Precio visible desde el primer segundo</b> y cambia al elegir base y acabado.</div>
+      <div><b>Objeciones resueltas en la ficha:</b> pintura, montaje, año de la moto, devoluciones.</div>
+      <div><b>Sin promesas inventadas:</b> solo envío gratis, plazos, previsualización y garantías que ya ofreces.</div>
+    </div>
+  </section>
+
+  <nav class="index" aria-label="Fichas"><ul id="index"></ul></nav>
+
+  <main id="fichas"></main>
+
+  <footer>
+    <span>Carez Designs · www.carezdesigns.com · carezwrap@gmail.com · 614 016 384</span>
+    <span>Imágenes: representación digital del diseño. El contenido del kit puede variar según modelo y año.</span>
+  </footer>
+</div>
+
+<div class="mcta" id="mcta" hidden>
+  <div><div class="mprice" id="mprice">—</div><div class="mname" id="mname"></div></div>
+  <a class="cta" id="mlink" href="#" target="_blank" rel="noopener">Comprar</a>
+</div>
+
+<script>
+const STORE = "https://www.carezdesigns.com/products/";
+const BASES = [["Normal","La base clásica: el color tal cual"],["Cromado","Efecto espejo metalizado"],["Holográfico","Cambia de tono con la luz"]];
+const FINISHES = [["Brillo","Color a máxima saturación"],["Mate","Sobrio, sin reflejos"],["Glitter","Destellos metálicos al sol"]];
+// Precios por variante en el orden: Normal(Brillo,Mate,Glitter), Cromado(...), Holográfico(...)
+const PRODUCTS = [
+  {
+    id:"mt07", plate:"07", brand:"Yamaha", model:"MT-07", years:"Todas las generaciones",
+    design:"Racing Blue", handle:"kit-adhesivos-yamaha-mt07-2025-2026-racing-blue",
+    img:"https://cdn.shopify.com/s/files/1/0948/5382/4899/files/RacingBlue.png?v=1788031580&width=1000&format=jpg",
+    alt:"Yamaha MT-07 en caballete con el kit Racing Blue: azul y negro con el rótulo YAMAHA en el depósito",
+    stickers:["Top ventas MT-07","Todas las generaciones"],
+    hook:"La MT-07 es la primera moto de medio A2 de España. Con el Racing Blue deja de ser una más en el parking y sigue pareciendo una Yamaha de serie.",
+    prices:[170,190,229,269,289,328,269,289,328],
+    why:[
+      ["AZ","El azul histórico de Yamaha","Deportivo sin romper la estética de fábrica. Es el color que la marca lleva a competición."],
+      ["A2","Pensado para la primera moto","Cubre depósito, tapas laterales, frontal y colín: las zonas que se ven, sin piezas raras que sobren."],
+      ["✂","Corte para tu generación","Un solo kit con plantillas para todos los años de MT-07. Indicas el tuyo y se troquela a medida."]
+    ],
+    finish:"Este azul queda más fiel en brillo, con el tono limpio y profundo. En mate se apaga y deja la moto más sobria. En glitter añade destellos metálicos al sol.",
+    zones:"depósito, tapas laterales, frontal y colín",
+    faq:[
+      ["¿Vale para mi MT-07 de 2018?","Sí. El kit es All Models: al pedir indicas el año y cortamos con la plantilla de esa generación."],
+      ["¿Se puede montar uno mismo?","Sí, con paciencia, agua jabonosa y una rasqueta. Si prefieres no arriesgar, el montaje en nuestro taller de Martorell se añade al pedido."]
+    ]
+  },
+  {
+    id:"z900", plate:"900", brand:"Kawasaki", model:"Z900", years:"2017 - 2026",
+    design:"Racing Green", handle:"kit-adhesivos-kawasaki-z900-all-models-racing-green",
+    img:"https://cdn.shopify.com/s/files/1/0948/5382/4899/files/kit-adhesivos-z900-allmodels.png?v=1770389270&width=1000&format=jpg",
+    alt:"Kit de pegatinas Racing Green montado en una Kawasaki Z900",
+    stickers:["Verde Kawasaki","All Models"],
+    hook:"La Z900 va desnuda: cada flanco del depósito se ve. El Racing Green lo convierte en el punto de mira, con un verde de circuito que refuerza la marca.",
+    prices:[168,188,227,267,287,326,267,287,326],
+    why:[
+      ["KX","Verde de circuito","El color de Kawasaki en competición, con un esquema deportivo que recorre depósito, tapas, frontal y colín."],
+      ["Z","Diseñado para una naked","Sin carenado no hay dónde esconderse: el kit se corta para los flancos marcados del depósito y las tapas laterales."],
+      ["✂","De 2017 a 2026","El corte se ajusta a tu año. Mismo diseño, plantilla exacta de tu generación."]
+    ],
+    finish:"El brillo es lo que mejor le sienta a este verde: gana saturación. En mate baja de intensidad y se lee más de calle.",
+    zones:"depósito, tapas laterales, frontal del faro y colín",
+    faq:[
+      ["¿Tapa la pintura original?","Solo las zonas del kit. Al retirarlo la pintura queda como estaba: es vinilo, no pintura."],
+      ["¿Cuánto tarda en llegar?","En España, de 3 a 5 días laborables desde que confirmas la previsualización. Envío gratis."]
+    ]
+  },
+  {
+    id:"tmax", plate:"T", brand:"Yamaha", model:"TMAX", years:"Todas las generaciones",
+    design:"GYTR Rojo", handle:"kit-adhesivos-yamaha-tmax-all-models-gytr-rojo",
+    img:"https://cdn.shopify.com/s/files/1/0948/5382/4899/files/kit-adhesivos-yamaha-tmax-rojo.png?v=1786705864&width=1000&format=jpg",
+    alt:"Kit de pegatinas GYTR rojo montado en una Yamaha TMAX",
+    stickers:["Look GYTR","Maxi scooter"],
+    hook:"El escudo frontal del TMAX es un lienzo enorme y casi todos lo llevan igual. El GYTR Rojo es la lectura más agresiva de la serie: rojo, blanco y negro con letras grandes delante.",
+    prices:[185,205,244,284,304,343,284,304,343],
+    why:[
+      ["GY","Estética GYTR","Bloques y franjas de inspiración competición cruzando frontal, flancos y colín."],
+      ["XL","Superficies grandes","Escudo frontal, flancos y tapa del túnel central: donde el maxiscooter tiene más plástico visible."],
+      ["✂","Todas las generaciones","Eliges el año del TMAX y se corta con esas plantillas."]
+    ],
+    finish:"En brillo sale todo el rojo y la lectura es la más agresiva. En mate se apaga un poco y el negro pasa a ser el color de referencia.",
+    zones:"escudo frontal, flancos, tapa del túnel central y colín",
+    faq:[
+      ["¿Aguanta el uso diario en ciudad?","Sí. Vinilo de 485 μm preparado para agua, sol, rayaduras e impactos de uso intensivo."],
+      ["¿Puedo llevarlo a montar?","Sí. Montaje profesional en Martorell (Barcelona), se añade al pedido y te damos cita."]
+    ]
+  },
+  {
+    id:"gs", plate:"GS", brand:"BMW", model:"R 1200 / 1250 GS", years:"Desde 2014",
+    design:"Azul, rojo y blanco", handle:"adhesivos-para-moto-bmw-1200-gs-2014-2016",
+    img:"https://cdn.shopify.com/s/files/1/0948/5382/4899/files/KitdeAdhesivosparaBMW1200GS_2014-2016_-Azul_Rojoyblanco.png?v=1784799978&width=1000&format=jpg",
+    alt:"Kit de pegatinas azul, rojo y blanco montado en una BMW R 1200/1250 GS",
+    stickers:["Tricolor clásico","Mate al mismo precio"],
+    hook:"El tricolor de la casa, en bloques limpios y sin degradados. Directo, ordenado y reconocible a cien metros: la GS que todo el mundo identifica.",
+    prices:[188,188,227,267,287,326,267,287,326],
+    why:[
+      ["M","El clásico de la marca","Tres colores bien separados, sin degradados. La decoración que la GS lleva en el imaginario de todos."],
+      ["GS","Cubre la trail entera","Depósito ancho, tapas laterales, frontal del pico y colín."],
+      ["✂","1200 y 1250 GS","El mismo kit encaja en la R 1200 GS desde 2014 y en la R 1250 GS. Solo indicas tu año."]
+    ],
+    finish:"El brillo es el acabado que mejor respeta el tricolor, con azules y rojos bien vivos. En mate da una lectura más actual, y en este kit cuesta lo mismo.",
+    zones:"depósito, tapas laterales, frontal del pico y colín",
+    faq:[
+      ["Tengo una R 1250 GS de 2021, ¿me sirve?","Sí. Indicas el año al pedir y ajustamos la plantilla a tu generación antes de fabricar."],
+      ["¿Qué pasa si no me gusta al recibirlo?","Es un producto de catálogo: tienes 30 días naturales para devolverlo sin usar."]
+    ]
+  },
+  {
+    id:"voge", plate:"800", brand:"Voge", model:"800 DS Rally", years:"2025 - 2026",
+    design:"Blue Storm", handle:"adhesivos-moto-voge-800-ds-rally-2025-2026-blue-storm",
+    img:"https://cdn.shopify.com/s/files/1/0948/5382/4899/files/AdhesivosMotoVoge800DSRALLY_2025-2026_-BlueStorm_2.png?v=1784313590&width=1000&format=jpg",
+    alt:"Kit de pegatinas Blue Storm montado en una Voge 800 DS Rally",
+    stickers:["Novedad 2025-2026","Look rally"],
+    hook:"Acabas de estrenar una 800 DS Rally y en la calle aún hay pocas. El Blue Storm la convierte en la que parece salida de un raid, sin tocar la pintura.",
+    prices:[175.99,195.99,234.99,274.99,294.99,333.99,274.99,294.99,333.99],
+    why:[
+      ["⚡","Azul eléctrico, nervio rally","Un conjunto dinámico con la tormenta como referencia. Frío y sereno en el color, agresivo en el trazo."],
+      ["DS","Troquelado para la Rally","Torreta alta, depósito ancho, quilla y colín estrecho: cada pieza tiene su adhesivo a medida."],
+      ["✂","Unidades 2025 y 2026","Plantillas específicas de la primera generación, sin adaptar nada."]
+    ],
+    finish:"El azul aguanta bien el brillo, que le da el punto eléctrico de la tormenta. En mate se vuelve más frío y contenido.",
+    zones:"depósito, laterales, frontal y guardabarros",
+    faq:[
+      ["¿Es un diseño exclusivo de Voge?","Es un diseño propio de Carez Designs dibujado sobre las piezas de la 800 DS Rally. No es un accesorio de la marca."],
+      ["¿Y si un día lo quiero quitar?","Se retira sin dañar la pintura. Es la ventaja frente a pintar: cambias de look cuando quieras."]
+    ]
+  },
+  {
+    id:"husq", plate:"701", brand:"Husqvarna", model:"701 Supermoto", years:"2017 - 2025",
+    design:"Amarillo y Gris", handle:"adhesivos-para-moto-husqvarna-701-supermoto-2017-2025",
+    img:"https://cdn.shopify.com/s/files/1/0948/5382/4899/files/kit-adhesivos-husqvarna_64890de3-30ba-465e-9330-a36c2fb7fe99.png?v=1765708389&width=1000&format=jpg",
+    alt:"Kit de adhesivos amarillo y gris para Husqvarna 701 Supermoto",
+    stickers:["Desde 135 €","Aguanta circuito"],
+    hook:"La 701 es una moto para castigarla: ciudad, curvas y tandas de supermoto. Este kit tiene el amarillo de competición y el grosor para aguantarlo todo.",
+    prices:[135,155,194,234,254,293,234,254,293],
+    why:[
+      ["Y","Amarillo dominante sobre gris","Lectura muy directa, en la línea de las decoraciones de competición off-road."],
+      ["SM","Hecho para el castigo","Vinilo de 485 μm que aguanta el uso urbano, las curvas y el circuito. Sale sin dañar la pintura."],
+      ["✂","Año por año","Depósito, tapas, guardabarros y portafaros de la monocilíndrica, cortados para tu año de 2017 a 2025."]
+    ],
+    finish:"El amarillo sobre gris es muy directo: en brillo mantiene el aire de competición y en mate queda más apagado, algo más de calle.",
+    zones:"depósito, tapas, guardabarros y portafaros",
+    faq:[
+      ["¿Incluye las placas portanúmeros?","El kit cubre depósito, tapas, guardabarros y portafaros. Cúpula, paramanos y otros extras se piden aparte."],
+      ["¿Resiste caídas de supermoto?","Está preparado para impactos y rayaduras. Un vinilo se cambia por piezas; una pintura, no."]
+    ]
+  },
+  {
+    id:"custom", plate:"100%", brand:"Personalizado", model:"Kit 100% a medida", years:"Moto naked · cualquier marca",
+    design:"Diseñado desde cero", handle:"kit-de-pegatinas-100-personalizado",
+    img:"https://cdn.shopify.com/s/files/1/0948/5382/4899/files/kit-personalizado-naked.png?v=1789057032&width=1000&format=jpg",
+    alt:"Kit de pegatinas 100% personalizado montado en una moto naked",
+    stickers:["Diseño único","Previsualización incluida"],
+    hook:"Si tienes claro cómo quieres tu moto y no existe, lo dibujamos para ti. No es una variante de otro diseño: colores, patrones y ubicación de cada gráfico salen de tu briefing.",
+    prices:[245,265,304,344,364,403,344,364,403],
+    why:[
+      ["01","Tu idea, no un catálogo","Nos cuentas qué quieres por el configurador o por escrito. Preparamos la propuesta y la ajustamos hasta que la des por buena."],
+      ["02","Corte a medida de tu moto","Marca, modelo y año exactos. Depósito, tapas, frontal, colín y guardabarros."],
+      ["03","Ves el resultado antes de pagar por fabricarlo","Previsualización digital del diseño final, con las rondas de ajustes necesarias."]
+    ],
+    finish:"Eliges la base (normal, cromada u holográfica) y encima el acabado (brillo, mate o glitter). Te asesoramos según los colores del diseño.",
+    zones:"depósito, tapas laterales, frontal, colín y guardabarros",
+    custom:true,
+    faq:[
+      ["¿Cuántos cambios puedo pedir?","Los necesarios hasta que apruebes la previsualización. No se fabrica nada sin tu OK."],
+      ["¿Tiene devolución?","Al ser un kit 100% personalizado no admite desistimiento, salvo defecto de fabricación o daño en el transporte. Por eso apruebas el diseño antes."]
+    ]
+  }
+];
+
+const INSTALL_IMG = "https://cdn.shopify.com/s/files/1/0948/5382/4899/files/DSC09429-2.jpg?v=1765584750&width=900&format=jpg";
+const INSTALL_PRICE = {mt07:"70 €",z900:"70 €",tmax:"80 €",gs:"85 €",voge:"85 €",husq:"60 €",custom:"70 €"};
+
+const eur = n => n.toLocaleString("es-ES",{minimumFractionDigits: Number.isInteger(n)?0:2, maximumFractionDigits:2}) + " €";
+const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+
+function ficha(p, i){
+  const min = Math.min(...p.prices);
+  const url = STORE + p.handle;
+  const opts = (name, list, key) => list.map(([v,d],k)=>`
+    <div class="opt">
+      <input type="radio" id="${p.id}-${key}-${k}" name="${p.id}-${key}" value="${k}" ${k===0?"checked":""}>
+      <label for="${p.id}-${key}-${k}"><b>${v}</b><small>${d}</small></label>
+    </div>`).join("");
+  const excl = p.custom ? ["cúpula","llantas","suspensiones","escape","chasis","radiador"] : ["cúpula","paramanos","llantas","suspensiones","escape","chasis","radiador"];
+  return `
+  <article class="ficha" id="${p.id}" data-id="${p.id}">
+    <div class="ficha-head">
+      <span class="plate" aria-hidden="true">${p.plate}</span>
+      <span class="cat">Ficha ${String(i+1).padStart(2,"0")} · <b>${esc(p.brand)}</b> · ${esc(p.years)}</span>
+    </div>
+
+    <div class="hero">
+      <figure class="gallery" style="margin:0">
+        <img src="${p.img}" alt="${esc(p.alt)}" loading="${i<2?"eager":"lazy"}" width="1000" height="1000">
+        <div class="stickers">${p.stickers.map((s,k)=>`<span class="sticker ${k%2?"ink":""}">${esc(s)}</span>`).join("")}</div>
+        <figcaption>Representación digital del diseño ${esc(p.design)} sobre ${esc(p.brand)} ${esc(p.model)}</figcaption>
+      </figure>
+
+      <div class="buybox">
+        <div>
+          <div class="eyebrow">${p.custom ? "Kit de adhesivos 100% personalizado" : `Kit de adhesivos · ${esc(p.brand)} ${esc(p.model)}`}</div>
+          <h2 style="margin-top:6px">${esc(p.design)} <span>${p.custom ? "" : "· " + esc(p.model)}</span></h2>
+        </div>
+        <p class="hook">${esc(p.hook)}</p>
+        <ul class="proof">
+          <li>Envío gratis en España</li>
+          <li>Previsualización antes de fabricar</li>
+          <li>Vinilo premium 485 μm</li>
+          <li>${p.custom ? "Diseño desde cero" : "30 días de devolución"}</li>
+        </ul>
+
+        <div class="config">
+          <div class="lbl"><span>Base</span><output id="${p.id}-base-out">Normal</output></div>
+          <div class="opts">${opts("Base",BASES,"base")}</div>
+          <div class="lbl"><span>Acabado</span><output id="${p.id}-fin-out">Brillo</output></div>
+          <div class="opts">${opts("Acabado",FINISHES,"fin")}</div>
+        </div>
+
+        <div class="pricebar">
+          <div>
+            <div class="price" id="${p.id}-price">${eur(min)}</div>
+            <div class="price-note">IVA incluido · <b>envío gratis</b> en España</div>
+          </div>
+          <div class="price-note" style="text-align:right">Desde ${eur(min)}<br>Montaje opcional: ${INSTALL_PRICE[p.id]}</div>
+        </div>
+
+        <div class="ctas">
+          <a class="cta" href="${url}" target="_blank" rel="noopener" data-cta>${p.custom ? "Empezar mi diseño" : "Configurar y comprar"} →</a>
+          <a class="cta ghost" href="#${p.id}-detalle">Ver qué incluye y cómo funciona</a>
+          <p class="micro">${p.custom ? "No se fabrica nada hasta que apruebes la previsualización." : "Entrega en España en 3 a 5 días laborables tras aprobar la previsualización."}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="body" id="${p.id}-detalle">
+      <section class="sec">
+        <h3>Por qué este diseño</h3>
+        <ul class="bene">${p.why.map(([ic,t,d])=>`<li><span class="ic">${esc(ic)}</span><div><b>${esc(t)}</b><span>${esc(d)}</span></div></li>`).join("")}</ul>
+        <p><strong>Brillo, mate o glitter:</strong> ${esc(p.finish)}</p>
+      </section>
+
+      <section class="sec">
+        <h3>Qué incluye el kit</h3>
+        <div class="inc">
+          <div class="yes"><h4>Incluido</h4><ul>${(p.custom?["Diseño personalizado completo con rondas de ajuste","Previsualización digital del diseño final"]:[]).concat(p.zones.split(", ").map(z=>"Adhesivos para " + z)).map(z=>`<li>${esc(z.charAt(0).toUpperCase()+z.slice(1))}</li>`).join("")}<li>Corte a medida de marca, modelo y año</li></ul></div>
+          <div class="no"><h4>Se pide aparte</h4><ul>${excl.map(z=>`<li>${z}</li>`).join("")}</ul></div>
+          <p class="note">El contenido exacto puede variar ligeramente según el modelo seleccionado. Los elementos opcionales se pueden añadir al pedido.</p>
+        </div>
+      </section>
+
+      <section class="sec">
+        <h3>Cómo funciona</h3>
+        <ol class="steps">
+          <li><b>Configura</b><span>${p.custom ? "Cuéntanos tu idea por el configurador o por escrito." : "Elige base, acabado y el año de tu moto."}</span></li>
+          <li><b>Revisa</b><span>Te enviamos una previsualización del diseño final para que la apruebes.</span></li>
+          <li><b>Fabricamos</b><span>Troquelamos el kit en vinilo de 485 μm con las plantillas de tu modelo.</span></li>
+          <li><b>Monta o trae</b><span>Lo montas tú o lo hacemos en nuestro taller de Martorell.</span></li>
+        </ol>
+      </section>
+
+      <section class="sec">
+        <h3>Material y garantías</h3>
+        <table class="spec">
+          <tr><th>Material</th><td>Vinilo premium <code>485 μm</code>, alta adherencia. Impactos, rayaduras, agua, sol y uso intensivo.</td></tr>
+          <tr><th>Base</th><td>Normal · Cromado · Holográfico</td></tr>
+          <tr><th>Acabado</th><td>Brillo · Mate · Glitter</td></tr>
+          <tr><th>Compatibilidad</th><td>${esc(p.brand)} ${esc(p.model)} · ${esc(p.years)}</td></tr>
+          <tr><th>Pintura</th><td>No se toca. El vinilo se retira sin dañarla.</td></tr>
+        </table>
+        <div class="guar">
+          <div><b>Envío gratis</b><span>España, 3 a 5 días laborables. UE 13,50 €.</span></div>
+          <div><b>${p.custom ? "OK previo" : "30 días"}</b><span>${p.custom ? "Nada se fabrica sin tu aprobación del diseño." : "Devolución de productos de catálogo sin usar."}</span></div>
+          <div><b>Taller propio</b><span>Montaje profesional en Martorell, más de 6 años instalando.</span></div>
+        </div>
+      </section>
+
+      <section class="sec" style="grid-column:1/-1">
+        <h3>Preguntas frecuentes</h3>
+        ${p.faq.map(([q,a])=>`<details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join("")}
+        <details><summary>¿La moto queda igual que en la foto?</summary><p>La imagen es una representación digital. Líneas, proporciones o elementos gráficos pueden ajustarse para encajar en tu modelo, y lo ves en la previsualización antes de fabricar.</p></details>
+      </section>
+    </div>
+
+    <aside class="upsell">
+      <img src="${INSTALL_IMG}" alt="Montaje de un kit de adhesivos sobre una moto en el taller de Carez Designs" loading="lazy">
+      <div>
+        <h3>¿Sin experiencia colocando vinilos? Lo montamos nosotros.</h3>
+        <p>Servicio de instalación en Martorell (08760). Cita tras confirmar el pedido, instaladores con más de 6 años de experiencia y entrega sin burbujas ni fallos. Si son plásticos sueltos, puedes enviarlos.</p>
+      </div>
+      <a class="cta" href="${STORE}servicio-de-instalacion-de-adhesivos" target="_blank" rel="noopener">Añadir montaje · ${INSTALL_PRICE[p.id]}</a>
+    </aside>
+
+    <div class="tools">
+      <button type="button" data-copy="${p.id}">Copiar descripción HTML para Shopify</button>
+      <span class="st" id="${p.id}-st"></span>
+    </div>
+  </article>`;
+}
+
+// ---- Render
+const main = document.getElementById("fichas");
+main.innerHTML = PRODUCTS.map(ficha).join("");
+document.getElementById("index").innerHTML = PRODUCTS.map((p,i)=>`<li><a href="#${p.id}" data-idx="${p.id}"><span class="n">${String(i+1).padStart(2,"0")}</span>${esc(p.brand)} ${esc(p.custom? "a medida" : p.model)}</a></li>`).join("");
+
+// ---- Configurator
+function priceOf(p){
+  const b = +document.querySelector(`input[name="${p.id}-base"]:checked`).value;
+  const f = +document.querySelector(`input[name="${p.id}-fin"]:checked`).value;
+  return {price:p.prices[b*3+f], base:BASES[b][0], fin:FINISHES[f][0]};
+}
+function update(p){
+  const {price,base,fin} = priceOf(p);
+  document.getElementById(p.id+"-price").textContent = eur(price);
+  document.getElementById(p.id+"-base-out").textContent = base;
+  document.getElementById(p.id+"-fin-out").textContent = fin;
+  if (current === p) mobile(p);
+}
+PRODUCTS.forEach(p=>{
+  document.querySelectorAll(`input[name="${p.id}-base"],input[name="${p.id}-fin"]`).forEach(el=>el.addEventListener("change",()=>update(p)));
+});
+
+// ---- Mobile sticky CTA + index highlight
+let current = PRODUCTS[0];
+const mcta = document.getElementById("mcta");
+function mobile(p){
+  const {price} = priceOf(p);
+  document.getElementById("mprice").textContent = eur(price);
+  document.getElementById("mname").textContent = p.custom ? "Kit 100% personalizado" : `${p.brand} ${p.model} · ${p.design}`;
+  document.getElementById("mlink").href = STORE + p.handle;
+  mcta.hidden = false;
+}
+const links = [...document.querySelectorAll("#index a")];
+const io = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      current = PRODUCTS.find(p=>p.id===e.target.dataset.id);
+      links.forEach(a=>a.classList.toggle("active",a.dataset.idx===current.id));
+      mobile(current);
+    }
+  });
+},{rootMargin:"-30% 0px -55% 0px"});
+document.querySelectorAll(".ficha").forEach(el=>io.observe(el));
+mobile(current);
+
+// ---- Copy Shopify-ready description
+function shopifyHtml(p){
+  const excl = p.custom ? ["cúpula","llantas","suspensiones","escape","chasis","radiador"] : ["cúpula","paramanos","llantas","suspensiones","escape","chasis","radiador"];
+  const li = a => a.map(x=>`<li>${x}</li>`).join("\n");
+  return `<p><strong>${esc(p.hook)}</strong></p>
+<ul>
+<li>Envío gratis en España (3 a 5 días laborables)</li>
+<li>Previsualización del diseño antes de fabricar</li>
+<li>Vinilo premium de 485 μm</li>
+<li>${p.custom ? "Diseño desde cero, sin plantillas de catálogo" : "30 días de devolución en productos de catálogo"}</li>
+</ul>
+<h3>POR QUÉ ${esc(p.design.toUpperCase())}</h3>
+${p.why.map(([,t,d])=>`<p><strong>${esc(t)}.</strong> ${esc(d)}</p>`).join("\n")}
+<p><strong>Brillo, mate o glitter:</strong> ${esc(p.finish)}</p>
+<hr>
+<h3>¿QUÉ INCLUYE EL KIT?</h3>
+<p>Adhesivos para ${esc(p.zones)}, cortados a medida de marca, modelo y año${p.custom ? ", más el diseño personalizado completo con las rondas de ajuste necesarias" : ""}.<br>El contenido exacto puede variar ligeramente según el modelo seleccionado.</p>
+<hr>
+<h3>¿QUÉ NO ESTÁ INCLUIDO?</h3>
+<p>El kit no incluye adhesivos para:</p>
+<ul>
+${li(excl)}
+</ul>
+<p>Estos elementos se consideran opcionales y pueden solicitarse aparte.</p>
+<hr>
+<h3>CÓMO FUNCIONA</h3>
+<ol>
+<li><strong>Configura:</strong> ${p.custom ? "cuéntanos tu idea por el configurador o por escrito." : "elige base, acabado y el año de tu moto."}</li>
+<li><strong>Revisa:</strong> te enviamos una previsualización del diseño final para que la apruebes.</li>
+<li><strong>Fabricamos:</strong> troquelamos el kit con las plantillas de tu modelo.</li>
+<li><strong>Monta o trae:</strong> lo montas tú o lo hacemos en nuestro taller de Martorell (Barcelona).</li>
+</ol>
+<hr>
+<h3>MATERIALES</h3>
+<p>Fabricado en vinilo premium de 485 μm de grosor y alta resistencia, preparado para soportar impactos, rayaduras, agua, sol y uso intensivo. Se retira sin dañar la pintura.</p>
+<ul>
+<li><strong>Base:</strong> normal, cromado u holográfico</li>
+<li><strong>Acabado:</strong> brillo, mate o glitter</li>
+</ul>
+<hr>
+<h3>PREGUNTAS FRECUENTES</h3>
+${p.faq.map(([q,a])=>`<p><strong>${esc(q)}</strong><br>${esc(a)}</p>`).join("\n")}
+<hr>
+<h3>INFORMACIÓN IMPORTANTE</h3>
+<p>${p.custom ? "Las imágenes de esta ficha son ejemplos de trabajos ya realizados: tu kit se diseña desde cero y no reproduce ninguno de ellos." : "La imagen mostrada es una representación digital del diseño y puede presentar pequeñas variaciones respecto al resultado final."}</p>
+<p>Algunos detalles como líneas, proporciones o elementos gráficos pueden ajustarse para adaptarse correctamente al modelo de tu moto.</p>
+<p>Antes de fabricar el kit, te enviaremos una previsualización del diseño final para que puedas revisarlo y confirmar que todo esté correcto.</p>
+<p>El montaje profesional es opcional y puede añadirse al pedido: lo realizamos en nuestro taller de Martorell (Barcelona).</p>`;
+}
+document.querySelectorAll("[data-copy]").forEach(btn=>{
+  btn.addEventListener("click", async ()=>{
+    const p = PRODUCTS.find(x=>x.id===btn.dataset.copy);
+    const st = document.getElementById(p.id+"-st");
+    try{ await navigator.clipboard.writeText(shopifyHtml(p)); st.textContent="Copiado. Pégalo en el editor de descripción (vista HTML)."; }
+    catch(e){ st.textContent="No se pudo copiar automáticamente: abre el HTML del archivo y copia la función shopifyHtml."; }
+    setTimeout(()=>st.textContent="",5000);
+  });
+});
+</script>
+</body>
+</html>
