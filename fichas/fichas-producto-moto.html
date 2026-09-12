@@ -95,6 +95,21 @@
   .card .nm{font-size:13px;font-weight:600;color:#fff;line-height:1.15}
   .card .pr{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--tape-ink);background:var(--tape);border-radius:999px;padding:2px 7px;white-space:nowrap}
 
+  /* resultado final (como en la tienda) */
+  .split{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:14px;align-items:start}
+  .res{display:grid;gap:8px;position:sticky;top:64px}
+  .res .t{font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+  .res .box{position:relative;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--surface-2);aspect-ratio:1/1}
+  .res .box img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;transition:opacity .2s}
+  .res .box.loading img{opacity:.5}
+  .res .combo{font-family:var(--display);font-weight:800;font-size:22px;text-transform:uppercase;letter-spacing:.03em;line-height:1}
+  .res .combo small{display:block;font-family:var(--mono);font-weight:500;font-size:12px;color:var(--ink);text-transform:none;letter-spacing:0;margin-top:4px}
+  .res .hint{font-size:12.5px;color:var(--ink-3)}
+  .split .cards{grid-template-columns:repeat(3,1fr);gap:8px}
+  .split .card .ft{flex-direction:column;align-items:flex-start;gap:3px;padding:6px 8px}
+  .split .card .nm{font-size:12px}
+  .split .card .pr{font-size:10px;padding:1px 6px}
+
   /* cambios de diseño progresivos */
   .changes{display:grid;gap:8px}
   .change{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center}
@@ -247,6 +262,8 @@
     .inc,.row2{grid-template-columns:1fr}
     .top{flex-direction:column;align-items:flex-start}
     .topmeta{text-align:left}
+    .split{grid-template-columns:1fr}
+    .res{position:static}
     .change{grid-template-columns:1fr auto}
     .change .k{grid-column:1/-1;min-width:0}
   }
@@ -296,6 +313,8 @@ const CARD_IMG = [
   [CDN+"hf_20260730_223613_67641135-d9f7-4403-9b6d-4a179c4f384c.png?v=1785452213&width=400", CDN+"hf_20260730_223616_feec3db5-52fa-4665-b76b-c4b5177ede3b.png?v=1785453005&width=400", CDN+"cromado-glitter-v3.png?v=1785455298&width=400"],
   [CDN+"hf_20260730_223855_f173530a-b497-4937-8dba-145db88effae.png?v=1785452213&width=400", CDN+"hf_20260730_223626_59eae77c-a6b9-4658-9a3f-bb26adc57794.png?v=1785453005&width=400", CDN+"holografico-glitter-v3.png?v=1785455533&width=400"]
 ];
+// Foto de resultado final por base × acabado (las mismas que muestra la tienda al elegir)
+const RES_IMG = [["normal","cromado","holografico"].map(b=>["brillo","mate","glitter"].map(a=>CDN+`resultado-${b}-${a}.png?width=700&format=jpg`))][0];
 const IG_IMG = CDN+"instagram-stickers-extra.png?v=1785457759&width=300";
 const MONT_IMG = CDN+"montaje-extra.jpg?v=1785490894&width=300";
 const YEARS = (a,b) => Array.from({length:b-a+1},(_,i)=>String(b-i));
@@ -459,8 +478,18 @@ function ficha(p){
 
         <section class="step">
           <div class="step-h"><span class="n">PASO 2</span><h3>Diseño</h3><small>Elige base y acabado</small></div>
-          <div class="field"><label>Base</label><div class="cards" id="cards-base">${cards(BASES,"base")}</div></div>
-          <div class="field"><label>Acabado</label><div class="cards" id="cards-fin">${cards(FINISHES,"fin")}</div></div>
+          <div class="split">
+            <div class="res">
+              <span class="t">Resultado final</span>
+              <div class="box" id="res-box"><img id="res-img" src="${RES_IMG[0][0]}" alt="Vinilo con base Normal y acabado Brillo" width="700" height="700"></div>
+              <div class="combo" id="res-combo">Normal + Brillo<small id="res-price">${eur(p.prices[0])}</small></div>
+              <p class="hint">Así queda el vinilo con la base y el acabado que has elegido.</p>
+            </div>
+            <div style="display:grid;gap:12px">
+              <div class="field"><label>Base</label><div class="cards" id="cards-base">${cards(BASES,"base")}</div></div>
+              <div class="field"><label>Acabado</label><div class="cards" id="cards-fin">${cards(FINISHES,"fin")}</div></div>
+            </div>
+          </div>
           <p class="help"><strong>Brillo, mate o glitter:</strong> ${esc(p.finish)}</p>
         </section>
 
@@ -553,6 +582,11 @@ function setDesign(b,f){
   base=b; fin=f;
   document.querySelectorAll("#cards-base .card").forEach(x=>{ const i=+x.dataset.base; x.setAttribute("aria-pressed",i===b); x.querySelector("img").src=CARD_IMG[i][f]; });
   document.querySelectorAll("#cards-fin .card").forEach(x=>{ const i=+x.dataset.fin; x.setAttribute("aria-pressed",i===f); x.querySelector("img").src=CARD_IMG[b][i]; });
+  const ri=document.getElementById("res-img"), rb=document.getElementById("res-box");
+  if(ri.src!==RES_IMG[b][f]){ rb.classList.add("loading"); ri.onload=()=>rb.classList.remove("loading"); ri.src=RES_IMG[b][f]; }
+  ri.alt=`Vinilo con base ${BASES[b][0]} y acabado ${FINISHES[f][0]}`;
+  document.getElementById("res-combo").firstChild.textContent=`${BASES[b][0]} + ${FINISHES[f][0]}`;
+  document.getElementById("res-price").textContent=eur(current.prices[b*3+f]);
   total();
 }
 function changesFilled(){ return [...document.querySelectorAll("#changes input")].filter(i=>i.value.trim()).length; }
