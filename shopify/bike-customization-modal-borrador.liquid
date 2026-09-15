@@ -1,0 +1,2320 @@
+{%- doc -%}
+  Selector de personalización "Base + Acabado" con foto y ficha de moto.
+  Reutiliza variantes reales de Shopify (Base x Acabado) para el precio y el
+  flujo nativo de añadir al carrito del tema (no sustituye ni clona el botón).
+{%- enddoc -%}
+
+{% liquid
+  assign product = closest.product
+  if request.visual_preview_mode and product == blank
+    assign product = collections.all.products.first
+  endif
+
+  assign base_option = product.options_with_values[0]
+  assign finish_option = product.options_with_values[1]
+
+  assign cheapest_price = product.price_min
+
+  assign brands_json = product.metafields.custom.compatible_brands.value | default: blank
+  assign models_json = product.metafields.custom.compatible_models.value | default: blank
+  assign years_json = product.metafields.custom.compatible_years.value | default: blank
+  assign custom_mode = block.settings.custom_request_mode
+  assign hide_adapt = block.settings.hide_adapt_bike_option
+
+  comment
+    Carez: familia del producto para ofrecer SOLO su montaje especifico.
+    Personalizados: por el handle del producto. Kits normales: por las
+    colecciones de familia a las que pertenece. La familia de calle
+    (carretera) muestra Carretera y Naked porque esa coleccion mezcla
+    motos con carenado y naked y el montaje tiene precio distinto.
+    Si no se reconoce ninguna familia, se muestran todas (como antes).
+  endcomment
+  assign carez_montajes = ''
+  case product.handle
+    when 'kit-de-pegatinas-enduro-mx-100-personalizado'
+      assign carez_montajes = 'enduro'
+    when 'kit-de-adhesivos-personalizado-para-moto-trail'
+      assign carez_montajes = 'trail'
+    when 'kit-de-pegatinas-100-personalizado'
+      assign carez_montajes = 'naked'
+    when 'kit-de-adhesivos-personalizado-para-moto-de-carretera'
+      assign carez_montajes = 'carretera'
+    when 'kit-de-adhesivos-personalizado-para-maxi-scooter'
+      assign carez_montajes = 'scooter'
+    when 'kit-de-adhesivos-personalizado-para-moto-de-agua'
+      assign carez_montajes = 'agua'
+    when 'kit-de-adhesivos-personalizado-para-quad'
+      assign carez_montajes = 'quad'
+  endcase
+  if carez_montajes == ''
+    assign carez_texto_montaje = product.title | append: ' ' | append: product.product_type | downcase
+    if carez_texto_montaje contains 'supermoto' or carez_texto_montaje contains 'enduro' or carez_texto_montaje contains ' mx'
+      assign carez_montajes = 'enduro'
+    endif
+  endif
+  if carez_montajes == ''
+    for carez_col in product.collections
+      case carez_col.handle
+        when 'supermoto'
+          assign carez_montajes = carez_montajes | append: ' enduro'
+        when 'kit-adhesivos-mx-enduro'
+          assign carez_montajes = carez_montajes | append: ' enduro'
+        when 'trail'
+          assign carez_montajes = carez_montajes | append: ' trail'
+        when 'maxi-scooter'
+          assign carez_montajes = carez_montajes | append: ' scooter'
+        when 'quad'
+          assign carez_montajes = carez_montajes | append: ' quad'
+        when 'moto-de-agua'
+          assign carez_montajes = carez_montajes | append: ' agua'
+        when 'carretera'
+          assign carez_montajes = carez_montajes | append: ' carretera naked'
+      endcase
+    endfor
+  endif
+  if carez_montajes == blank
+    assign carez_montajes = 'carretera naked enduro trail scooter quad agua'
+  endif
+  assign carez_montaje_num = carez_montajes | strip | split: ' ' | uniq | size
+  if carez_montajes contains 'enduro'
+    assign carez_montaje_min = 6000
+  elsif carez_montajes contains 'naked'
+    assign carez_montaje_min = 7000
+  elsif carez_montajes contains 'carretera'
+    assign carez_montaje_min = 8000
+  elsif carez_montajes contains 'scooter'
+    assign carez_montaje_min = 8000
+  elsif carez_montajes contains 'trail'
+    assign carez_montaje_min = 8500
+  elsif carez_montajes contains 'quad'
+    assign carez_montaje_min = 9900
+  else
+    assign carez_montaje_min = 12000
+  endif
+
+  assign step_label_1 = 'bike_customizer.step_label_1' | t
+  assign step_label_2 = 'bike_customizer.step_label_2' | t
+  assign step_label_3 = 'bike_customizer.step_label_3' | t
+%}
+
+{% if custom_mode or base_option and finish_option %}
+  {% style %}
+    .cz-modal-{{ block.id }} {
+      display: block;
+    }
+    .cz-modal-trigger-{{ block.id }} {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 16px 18px;
+      background: #a42325;
+      border: 1px solid rgba(201, 162, 75, 0.35);
+      border-radius: 10px;
+      color: #f2f1ee;
+      cursor: pointer;
+      font-family: inherit;
+      transition: border-color 0.2s ease, transform 0.15s ease;
+    }
+    .cz-modal-trigger-{{ block.id }}:hover {
+      border-color: #c9a24b;
+      transform: translateY(-1px);
+    }
+    .cz-modal-trigger-{{ block.id }} .cz-trigger-label {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+      text-align: left;
+    }
+    .cz-modal-trigger-{{ block.id }} .cz-trigger-title {
+      font-family: 'Barlow Condensed', Arial, sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #ffffff;
+    }
+    .cz-modal-trigger-{{ block.id }} .cz-trigger-sub {
+      font-size: 12.5px;
+      color: rgba(255, 255, 255, 0.85);
+    }
+    .cz-modal-trigger-{{ block.id }} .cz-trigger-arrow {
+      flex-shrink: 0;
+      width: 18px;
+      height: 18px;
+      color: #ffffff;
+    }
+
+    .cz-dialog-{{ block.id }} {
+      padding: 0;
+      border: none;
+      border-radius: 16px;
+      max-width: 720px;
+      width: min(92vw, 720px);
+      max-height: 88vh;
+      max-height: 88dvh;
+      background: #0b0b0d;
+      color: #f2f1ee;
+      /* El propio <dialog> es el contenedor de scroll: los scrollers anidados
+         dentro de un dialog modal no responden al gesto táctil en iOS Safari. */
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+      /* Anclaje de scroll ACTIVO (valor por defecto). Se retiró
+         "overflow-anchor: none": el motivo por el que se puso ya no se da en este
+         DOM —las tarjetas tienen aspect-ratio fijo y sus imágenes van en
+         position:absolute, así que cargarlas no mueve el layout— y desactivado se
+         perdía la única compensación nativa de Chrome cuando el contenido se
+         pliega. */
+    }
+    .cz-dialog-{{ block.id }}::backdrop {
+      background: rgba(0, 0, 0, 0.72);
+      backdrop-filter: blur(2px);
+    }
+    .cz-dialog-{{ block.id }}[open] {
+      animation: cz-dialog-in-{{ block.id }} 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes cz-dialog-in-{{ block.id }} {
+      from { opacity: 0; transform: translateY(12px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .cz-panel-{{ block.id }} {
+      display: block;
+    }
+    .cz-panel-head-{{ block.id }} {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      position: sticky;
+      top: 0;
+      z-index: 3;
+      background: #0b0b0d;
+    }
+    .cz-panel-head-{{ block.id }} h3 {
+      font-family: 'Barlow Condensed', Arial, sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin: 0;
+      color: #f2f1ee;
+    }
+    .cz-close-{{ block.id }} {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.06);
+      border: none;
+      color: #f2f1ee;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.15s ease;
+    }
+    .cz-close-{{ block.id }}:hover {
+      background: rgba(164, 35, 37, 0.5);
+    }
+    .cz-close-{{ block.id }} svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .cz-body-{{ block.id }} {
+      padding: 22px 24px 8px;
+    }
+    .cz-section-{{ block.id }} {
+      margin-bottom: 28px;
+    }
+    .cz-section-label-{{ block.id }} {
+      font-family: 'Barlow Condensed', Arial, sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #c9a24b;
+      margin: 0 0 12px;
+    }
+    .cz-grid-{{ block.id }} {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    @media screen and (max-width: 520px) {
+      .cz-grid-{{ block.id }} {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    .cz-card-{{ block.id }} {
+      position: relative;
+      display: block;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 2px solid transparent;
+      background: #17171a;
+      cursor: pointer;
+      padding: 0;
+      text-align: left;
+      transition: border-color 0.18s ease, transform 0.18s ease;
+      aspect-ratio: 1 / 1;
+    }
+    .cz-card-{{ block.id }}:hover {
+      transform: translateY(-2px);
+    }
+    .cz-card-{{ block.id }}[aria-pressed='true'] {
+      border-color: #c9a24b;
+    }
+    .cz-card-{{ block.id }} img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .cz-card-footer-{{ block.id }} {
+      position: absolute;
+      inset: auto 0 0 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      padding: 8px 10px;
+      background: linear-gradient(0deg, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0));
+    }
+    .cz-card-name-{{ block.id }} {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #f2f1ee;
+      line-height: 1.15;
+    }
+    .cz-card-price-{{ block.id }} {
+      font-size: 11px;
+      font-weight: 700;
+      color: #0b0b0d;
+      background: #c9a24b;
+      border-radius: 999px;
+      padding: 2px 7px;
+      white-space: nowrap;
+    }
+    .cz-card-{{ block.id }}[aria-pressed='true'] .cz-card-price-{{ block.id }} {
+      background: #a42325;
+      color: #f2f1ee;
+    }
+    .cz-check-{{ block.id }} {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #a42325;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      opacity: 0;
+      transform: scale(0.5);
+      transition: opacity 0.15s ease, transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .cz-card-{{ block.id }}[aria-pressed='true'] .cz-check-{{ block.id }} {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .cz-field-{{ block.id }} {
+      margin-bottom: 14px;
+    }
+    .cz-field-{{ block.id }} label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      color: #9a9894;
+      margin-bottom: 6px;
+    }
+    .cz-required-{{ block.id }} {
+      color: #a42325;
+    }
+
+    .cz-toggle-btn-{{ block.id }} {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      width: 100%;
+      padding: 13px 16px;
+      background: #17171a;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 10px;
+      color: #f2f1ee;
+      font-size: 13.5px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      text-align: left;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    .cz-toggle-btn-{{ block.id }}:hover {
+      border-color: #c9a24b;
+    }
+    .cz-toggle-btn-{{ block.id }}[aria-pressed='true'] {
+      background: #1c1a14;
+      border-color: #c9a24b;
+    }
+    .cz-toggle-badge-{{ block.id }} {
+      flex-shrink: 0;
+      font-size: 11px;
+      font-weight: 700;
+      color: #0b0b0d;
+      background: #c9a24b;
+      border-radius: 999px;
+      padding: 3px 9px;
+      white-space: nowrap;
+    }
+    .cz-toggle-panel-{{ block.id }} {
+      margin-top: 10px;
+    }
+    .cz-toggle-panel-{{ block.id }}[hidden] {
+      display: none;
+    }
+    .cz-toggle-panel-{{ block.id }} textarea {
+      width: 100%;
+      min-height: 90px;
+      padding: 12px;
+      background: #17171a;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 8px;
+      color: #f2f1ee;
+      font-size: 13.5px;
+      font-family: inherit;
+      resize: vertical;
+    }
+    .cz-toggle-panel-{{ block.id }} textarea:focus {
+      outline: none;
+      border-color: #c9a24b;
+    }
+    .cz-toggle-panel-{{ block.id }} textarea::placeholder {
+      color: #6b6b6b;
+      white-space: pre-line;
+    }
+    .cz-field-{{ block.id }} select,
+    .cz-field-{{ block.id }} input[type='text'] {
+      width: 100%;
+      padding: 11px 12px;
+      background: #17171a;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 8px;
+      color: #f2f1ee;
+      font-size: 14px;
+      font-family: inherit;
+    }
+    .cz-field-{{ block.id }} select:focus,
+    .cz-field-{{ block.id }} input:focus {
+      outline: none;
+      border-color: #c9a24b;
+    }
+    .cz-fields-row-{{ block.id }} {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .cz-field-{{ block.id }} textarea {
+      width: 100%;
+      padding: 11px 12px;
+      background: #17171a;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 8px;
+      color: #f2f1ee;
+      font-size: 14px;
+      font-family: inherit;
+      resize: vertical;
+    }
+    .cz-field-{{ block.id }} textarea:focus {
+      outline: none;
+      border-color: #c9a24b;
+    }
+    .cz-field-{{ block.id }} textarea::placeholder,
+    .cz-field-{{ block.id }} input[type='text']::placeholder {
+      color: #9a9894;
+    }
+
+    .cz-upload-{{ block.id }} {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+      border: 1px dashed rgba(201, 162, 75, 0.4);
+      border-radius: 10px;
+      background: #131315;
+      cursor: pointer;
+    }
+    .cz-upload-{{ block.id }} svg {
+      width: 22px;
+      height: 22px;
+      color: #c9a24b;
+      flex-shrink: 0;
+    }
+    .cz-upload-text-{{ block.id }} {
+      font-size: 12.5px;
+      color: #9a9894;
+    }
+    .cz-upload-filename-{{ block.id }} {
+      display: block;
+      font-size: 12.5px;
+      color: #f2f1ee;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+    .cz-upload-{{ block.id }} input[type='file'] {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+    }
+    .cz-upload-hint-{{ block.id }} {
+      font-size: 12px;
+      color: #9a9894;
+      margin: 0 0 10px;
+    }
+
+    .cz-addon-trigger-{{ block.id }} {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      padding: 10px;
+      background: #17171a;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 10px;
+      cursor: pointer;
+      text-align: left;
+      font-family: inherit;
+      color: #f2f1ee;
+      transition: border-color 0.15s ease;
+    }
+    .cz-addon-trigger-{{ block.id }}:hover {
+      border-color: #c9a24b;
+    }
+    .cz-addon-trigger-{{ block.id }}[aria-expanded='true'] {
+      border-color: #c9a24b;
+    }
+    .cz-addon-thumb-{{ block.id }} {
+      width: 96px;
+      height: 96px;
+      border-radius: 10px;
+      object-fit: cover;
+      flex-shrink: 0;
+      background: #0b0b0d;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .cz-addon-info-{{ block.id }} {
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+    .cz-addon-name-{{ block.id }} {
+      font-size: 15px;
+      font-weight: 700;
+    }
+    .cz-addon-sub-{{ block.id }} {
+      font-size: 12.5px;
+      color: #9a9894;
+    }
+    .cz-addon-badge-{{ block.id }} {
+      flex-shrink: 0;
+      font-size: 12px;
+      font-weight: 700;
+      color: #0b0b0d;
+      background: #c9a24b;
+      border-radius: 999px;
+      padding: 4px 10px;
+      white-space: nowrap;
+    }
+    .cz-addon-panel-{{ block.id }} {
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .cz-addon-panel-{{ block.id }}[hidden] {
+      display: none;
+    }
+    .cz-addon-option-{{ block.id }} {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      background: #131315;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      cursor: pointer;
+      color: #f2f1ee;
+      font-family: inherit;
+      font-size: 12.5px;
+      text-align: left;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    .cz-addon-option-{{ block.id }}:hover {
+      border-color: #c9a24b;
+    }
+    .cz-addon-option-{{ block.id }}[aria-pressed='true'] {
+      border-color: #c9a24b;
+      background: #1c1a14;
+    }
+    .cz-addon-option-units-{{ block.id }} {
+      font-weight: 600;
+    }
+    .cz-addon-option-price-{{ block.id }} {
+      font-weight: 700;
+      color: #c9a24b;
+      white-space: nowrap;
+    }
+    .cz-addon-option-price-{{ block.id }} s {
+      color: #6b6b6b;
+      font-weight: 500;
+      margin-left: 4px;
+    }
+    .cz-addon-remove-{{ block.id }} {
+      align-self: flex-start;
+      background: none;
+      border: none;
+      color: #a42325;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 4px 2px;
+      text-decoration: underline;
+    }
+
+    .buy-buttons-block {
+      position: absolute !important;
+      width: 1px !important;
+      height: 1px !important;
+      padding: 0 !important;
+      margin: -1px !important;
+      overflow: hidden !important;
+      clip: rect(0, 0, 0, 0) !important;
+      white-space: nowrap !important;
+      border: 0 !important;
+    }
+
+    .cz-bottom-{{ block.id }} {
+      position: sticky;
+      bottom: 0;
+      z-index: 3;
+      background: #101012;
+    }
+    .cz-footer-{{ block.id }} {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 16px 24px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      background: #101012;
+    }
+    .cz-footer-summary-{{ block.id }} {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .cz-footer-summary-{{ block.id }} .cz-selected {
+      font-size: 13px;
+      font-weight: 600;
+      color: #f2f1ee;
+    }
+    .cz-footer-summary-{{ block.id }} .cz-extras {
+      font-size: 12px;
+      color: #9a9894;
+    }
+    .cz-footer-summary-{{ block.id }} .cz-extras strong {
+      color: #c9a24b;
+    }
+    .cz-add-{{ block.id }} {
+      flex-shrink: 0;
+      padding: 13px 22px;
+      background: #a42325;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    .cz-add-{{ block.id }}:hover {
+      background: #8a1d1f;
+    }
+    .cz-add-{{ block.id }}:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .cz-add-{{ block.id }}[hidden] {
+      display: none;
+    }
+
+    .cz-progress-{{ block.id }} {
+      margin-bottom: 20px;
+    }
+    .cz-progress-list-{{ block.id }} {
+      list-style: none;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+    }
+    .cz-progress-item-{{ block.id }} {
+      flex: 1 1 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      text-align: center;
+    }
+    .cz-progress-num-{{ block.id }} {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: #9a9894;
+      background: #17171a;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+    }
+    .cz-progress-label-{{ block.id }} {
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #6b6b6b;
+      transition: color 0.15s ease;
+    }
+    .cz-progress-item-{{ block.id }}[aria-current='step'] .cz-progress-num-{{ block.id }} {
+      background: #c9a24b;
+      border-color: #c9a24b;
+      color: #0b0b0d;
+    }
+    .cz-progress-item-{{ block.id }}[aria-current='step'] .cz-progress-label-{{ block.id }} {
+      color: #f2f1ee;
+    }
+    .cz-progress-item-{{ block.id }}.cz-is-complete-{{ block.id }} .cz-progress-num-{{ block.id }} {
+      border-color: #c9a24b;
+      color: #c9a24b;
+    }
+
+    .cz-visually-hidden-{{ block.id }} {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .cz-step-panel-{{ block.id }}[hidden] {
+      display: none;
+    }
+    .cz-step-heading-{{ block.id }} {
+      font-family: 'Barlow Condensed', Arial, sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      color: #f2f1ee;
+      margin: 0 0 16px;
+    }
+    .cz-step-heading-{{ block.id }}:focus {
+      outline: none;
+    }
+
+    .cz-design-notice-{{ block.id }} {
+      display: flex;
+      align-items: flex-start;
+      gap: 13px;
+      margin: 0 0 26px;
+      padding: 16px 18px;
+      background: #17171a;
+      border: 1px solid #232226;
+      border-left: 4px solid #c9a24b;
+      border-radius: 10px;
+    }
+    .cz-design-notice-{{ block.id }} > svg {
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
+      color: #c9a24b;
+      margin-top: 2px;
+    }
+    .cz-design-notice-title-{{ block.id }} {
+      display: block;
+      font-size: 17px;
+      font-weight: 700;
+      line-height: 1.3;
+      color: #f2f1ee;
+      margin: 0 0 6px;
+    }
+    .cz-design-notice-body-{{ block.id }} {
+      display: block;
+      font-size: 14.5px;
+      line-height: 1.5;
+      color: #d6d4ce;
+      margin: 0;
+    }
+    @media screen and (max-width: 520px) {
+      .cz-design-notice-{{ block.id }} {
+        gap: 11px;
+        padding: 14px 15px;
+      }
+      .cz-design-notice-title-{{ block.id }} {
+        font-size: 16px;
+      }
+      .cz-design-notice-body-{{ block.id }} {
+        font-size: 14px;
+      }
+    }
+
+    .cz-back-{{ block.id }} {
+      flex-shrink: 0;
+      padding: 13px 18px;
+      background: transparent;
+      color: #f2f1ee;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: border-color 0.15s ease;
+    }
+    .cz-back-{{ block.id }}:hover {
+      border-color: #c9a24b;
+    }
+    .cz-back-{{ block.id }}[hidden] {
+      display: none;
+    }
+
+    .cz-toast-{{ block.id }} {
+      position: fixed;
+      left: 50%;
+      bottom: 28px;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 20px;
+      background: #17171a;
+      border: 1px solid rgba(201, 162, 75, 0.45);
+      border-radius: 10px;
+      color: #f2f1ee;
+      font-size: 13.5px;
+      font-weight: 600;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, 10px);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+    .cz-toast-{{ block.id }}[hidden] {
+      display: none;
+    }
+    .cz-toast-{{ block.id }}.cz-toast-visible-{{ block.id }} {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+    .cz-toast-{{ block.id }} svg {
+      width: 18px;
+      height: 18px;
+      color: #c9a24b;
+      flex-shrink: 0;
+    }
+
+    .cz-error-{{ block.id }} {
+      flex-shrink: 0;
+      margin: 0;
+      padding: 12px 24px;
+      background: #2a1113;
+      border-top: 1px solid #a42325;
+      color: #f2b8b9;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+    .cz-error-{{ block.id }}[hidden] {
+      display: none;
+    }
+    .cz-field-invalid-{{ block.id }} {
+      border-color: #a42325 !important;
+      box-shadow: 0 0 0 1px #a42325;
+    }
+    .cz-add-{{ block.id }}[data-cz-busy] {
+      opacity: 0.7;
+      cursor: progress;
+    }
+
+    .cz-dialog-fallback-{{ block.id }}[open] {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 9998;
+      margin: 0;
+      box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.72);
+    }
+    .cz-scroll-lock-{{ block.id }} {
+      overflow: hidden;
+    }
+  {% endstyle %}
+
+  <div class="cz-modal-{{ block.id }}" {{ block.shopify_attributes }}>
+    <button type="button" class="cz-modal-trigger-{{ block.id }}" data-cz-open>
+      <span class="cz-trigger-label">
+        <span class="cz-trigger-title">{{ block.settings.trigger_title | default: 'Elegir materiales y moto' }}</span>
+        <span class="cz-trigger-sub" data-cz-trigger-sub>{{ block.settings.trigger_subtitle | default: 'Base, acabado y ficha de tu moto' }}</span>
+      </span>
+      <svg class="cz-trigger-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+
+    <dialog class="cz-dialog-{{ block.id }}" data-cz-dialog>
+      <div class="cz-panel-{{ block.id }}">
+        <div class="cz-panel-head-{{ block.id }}">
+          <h3>{{ block.settings.modal_title | default: 'Personaliza tu kit' }}</h3>
+          <button type="button" class="cz-close-{{ block.id }}" data-cz-close aria-label="{% if request.locale.iso_code contains 'en' %}Close{% else %}Cerrar{% endif %}">
+            {{- 'icon-close.svg' | inline_asset_content -}}
+          </button>
+        </div>
+
+        <div class="cz-progress-{{ block.id }}" data-cz-progress role="group" aria-label="{{ 'bike_customizer.step_progress_label' | t }}">
+          <ol class="cz-progress-list-{{ block.id }}">
+            <li class="cz-progress-item-{{ block.id }}" data-cz-step-indicator="1" aria-current="step">
+              <span class="cz-progress-num-{{ block.id }}">1</span>
+              <span class="cz-progress-label-{{ block.id }}">{{ 'bike_customizer.step_label_1' | t }}</span>
+            </li>
+            <li class="cz-progress-item-{{ block.id }}" data-cz-step-indicator="2">
+              <span class="cz-progress-num-{{ block.id }}">2</span>
+              <span class="cz-progress-label-{{ block.id }}">{{ 'bike_customizer.step_label_2' | t }}</span>
+            </li>
+            <li class="cz-progress-item-{{ block.id }}" data-cz-step-indicator="3">
+              <span class="cz-progress-num-{{ block.id }}">3</span>
+              <span class="cz-progress-label-{{ block.id }}">{{ 'bike_customizer.step_label_3' | t }}</span>
+            </li>
+          </ol>
+        </div>
+        <p class="cz-visually-hidden-{{ block.id }}" data-cz-step-announcer role="status" aria-live="polite"></p>
+
+        <div class="cz-body-{{ block.id }}">
+          <div class="cz-step-panel-{{ block.id }}" data-cz-step="1">
+            <h4 class="cz-step-heading-{{ block.id }}" data-cz-step-heading tabindex="-1">1. {{ 'bike_customizer.step_label_1' | t }}</h4>
+
+            {% if custom_mode %}
+              <div class="cz-design-notice-{{ block.id }}" data-cz-design-notice>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 11 11 13 15 9"/></svg>
+                <span>
+                  {%- comment -%}
+                    Mismo criterio EN/ES que el aria-label de Cerrar más arriba: este aviso
+                    estaba escrito sólo en español y seguía saliendo en español en la web
+                    inglesa. Los textos coinciden palabra por palabra con el bloque de
+                    texto equivalente de la ficha de producto.
+                  {%- endcomment -%}
+                  <strong class="cz-design-notice-title-{{ block.id }}">
+                    {%- if request.locale.iso_code contains 'en' -%}
+                      Before manufacturing, we validate your design with you.
+                    {%- else -%}
+                      Antes de fabricar, validamos tu diseño contigo.
+                    {%- endif -%}
+                  </strong>
+                  <span class="cz-design-notice-body-{{ block.id }}">
+                    {%- if request.locale.iso_code contains 'en' -%}
+                      A member of our team will contact you to show you the preview and confirm that everything is to your liking.
+                    {%- else -%}
+                      Un miembro de nuestro equipo te contactará para enseñarte la previsualización y confirmar que todo está a tu gusto.
+                    {%- endif -%}
+                  </span>
+                </span>
+              </div>
+            {% endif %}
+
+            <div class="cz-section-{{ block.id }}">
+              <p class="cz-section-label-{{ block.id }}">{{ block.settings.bike_info_label | default: 'Información de tu moto' }}</p>
+
+              {% if brands_json != blank %}
+                <div class="cz-field-{{ block.id }}">
+                  <label for="CzBrand-{{ block.id }}">{{ 'bike_customizer.brand' | t }} <span class="cz-required-{{ block.id }}">*</span></label>
+                  <select id="CzBrand-{{ block.id }}" data-cz-prop="Marca" data-cz-required>
+                    <option value="">{{ 'bike_customizer.select_brand' | t }}</option>
+                    {% for brand in brands_json %}
+                      <option value="{{ brand | escape }}">{{ brand }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              {% endif %}
+
+              <div class="cz-fields-row-{{ block.id }}">
+                <div class="cz-field-{{ block.id }}">
+                  <label for="CzModel-{{ block.id }}">{{ 'bike_customizer.model' | t }} <span class="cz-required-{{ block.id }}">*</span></label>
+                  {% if models_json != blank %}
+                    <select id="CzModel-{{ block.id }}" data-cz-prop="Modelo" data-cz-required>
+                      <option value="">{{ 'bike_customizer.select_model' | t }}</option>
+                      {% for model in models_json %}
+                        <option value="{{ model | escape }}">{{ model }}</option>
+                      {% endfor %}
+                    </select>
+                  {% else %}
+                    <input type="text" id="CzModel-{{ block.id }}" data-cz-prop="Modelo" data-cz-required placeholder="{{ 'bike_customizer.model_placeholder' | t }}">
+                  {% endif %}
+                </div>
+                <div class="cz-field-{{ block.id }}">
+                  <label for="CzYear-{{ block.id }}">{{ 'bike_customizer.year' | t }} <span class="cz-required-{{ block.id }}">*</span></label>
+                  {% if years_json != blank %}
+                    <select id="CzYear-{{ block.id }}" data-cz-prop="Año" data-cz-required>
+                      <option value="">{{ 'bike_customizer.select_year' | t }}</option>
+                      {% for year in years_json %}
+                        <option value="{{ year | escape }}">{{ year }}</option>
+                      {% endfor %}
+                    </select>
+                  {% else %}
+                    <input type="text" id="CzYear-{{ block.id }}" data-cz-prop="Año" data-cz-required placeholder="{{ 'bike_customizer.year_placeholder' | t }}">
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+
+            {% unless custom_mode %}
+              <div class="cz-section-{{ block.id }}">
+                <p class="cz-section-label-{{ block.id }}">{{ block.settings.photo_label | default: 'Foto de tu moto (opcional)' }}</p>
+                <p class="cz-upload-hint-{{ block.id }}">{{ 'bike_customizer.photo_hint' | t }}</p>
+                <label class="cz-upload-{{ block.id }}" data-cz-upload>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                  <span>
+                    <span class="cz-upload-text-{{ block.id }}">{{ 'bike_customizer.upload_single' | t }}</span>
+                    <span class="cz-upload-filename-{{ block.id }}" data-cz-filename></span>
+                  </span>
+                  <input type="file" accept="image/*" data-cz-file-input>
+                </label>
+              </div>
+            {% endunless %}
+          </div>
+
+          <div class="cz-step-panel-{{ block.id }}" data-cz-step="2" hidden>
+            <h4 class="cz-step-heading-{{ block.id }}" data-cz-step-heading tabindex="-1">2. {{ 'bike_customizer.step_label_2' | t }}</h4>
+
+            {% if base_option and finish_option %}
+              <div class="cz-section-{{ block.id }}">
+                <p class="cz-section-label-{{ block.id }}">{{ base_option.name }}</p>
+                <div class="cz-grid-{{ block.id }}" data-cz-grid="Base">
+                  {% for value in base_option.values %}
+                    {% liquid
+                      # Las imágenes se asignan por POSICIÓN de la opción, no por su texto:
+                      # los valores llegan traducidos según el idioma (Cromado→Chrome, Brillo→Gloss…)
+                      # y una comparación por texto solo funcionaría en español.
+                      assign swatch_image = null
+                      case forloop.index0
+                        when 0
+                          assign swatch_image = block.settings.combo_normal_brillo
+                        when 1
+                          assign swatch_image = block.settings.combo_cromado_brillo
+                        when 2
+                          assign swatch_image = block.settings.combo_holografico_brillo
+                      endcase
+                    %}
+                    <button
+                      type="button"
+                      class="cz-card-{{ block.id }}"
+                      data-cz-card
+                      data-option-name="Base"
+                      data-option-value="{{ value | escape }}"
+                      data-option-index="{{ forloop.index0 }}"
+                      aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}"
+                    >
+                      <img data-cz-card-img src="{% if swatch_image %}{{ swatch_image | image_url: width: 500 }}{% endif %}" alt="{{ value | escape }}" loading="lazy" width="500" height="500">
+                      <span class="cz-check-{{ block.id }}">&#10003;</span>
+                      <span class="cz-card-footer-{{ block.id }}">
+                        <span class="cz-card-name-{{ block.id }}">{{ value }}</span>
+                        <span class="cz-card-price-{{ block.id }}" data-cz-price-badge>&nbsp;</span>
+                      </span>
+                    </button>
+                  {% endfor %}
+                </div>
+              </div>
+
+              <div class="cz-section-{{ block.id }}">
+                <p class="cz-section-label-{{ block.id }}">{{ finish_option.name }}</p>
+                <div class="cz-grid-{{ block.id }}" data-cz-grid="Acabado">
+                  {% for value in finish_option.values %}
+                    {% liquid
+                      assign swatch_image = null
+                      case forloop.index0
+                        when 0
+                          assign swatch_image = block.settings.combo_normal_brillo
+                        when 1
+                          assign swatch_image = block.settings.combo_normal_mate
+                        when 2
+                          assign swatch_image = block.settings.combo_normal_glitter
+                      endcase
+                    %}
+                    <button
+                      type="button"
+                      class="cz-card-{{ block.id }}"
+                      data-cz-card
+                      data-option-name="Acabado"
+                      data-option-value="{{ value | escape }}"
+                      data-option-index="{{ forloop.index0 }}"
+                      aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}"
+                    >
+                      <img data-cz-card-img src="{% if swatch_image %}{{ swatch_image | image_url: width: 500 }}{% endif %}" alt="{{ value | escape }}" loading="lazy" width="500" height="500">
+                      <span class="cz-check-{{ block.id }}">&#10003;</span>
+                      <span class="cz-card-footer-{{ block.id }}">
+                        <span class="cz-card-name-{{ block.id }}">{{ value }}</span>
+                        <span class="cz-card-price-{{ block.id }}" data-cz-price-badge>&nbsp;</span>
+                      </span>
+                    </button>
+                  {% endfor %}
+                </div>
+              </div>
+            {% endif %}
+
+            {% if custom_mode %}
+              <div class="cz-section-{{ block.id }}">
+                <div class="cz-field-{{ block.id }}">
+                  <label for="CzHowYouLike-{{ block.id }}">{{ 'bike_customizer.how_you_like' | t }} <span class="cz-required-{{ block.id }}">*</span></label>
+                  <textarea
+                    id="CzHowYouLike-{{ block.id }}"
+                    data-cz-prop="¿Cómo te gustaría?"
+                    data-cz-required
+                    rows="4"
+                    placeholder="{{ 'bike_customizer.how_you_like_placeholder' | t }}"
+                  ></textarea>
+                </div>
+                <div class="cz-field-{{ block.id }}">
+                  <label for="CzAdditionalInfo-{{ block.id }}">{{ 'bike_customizer.additional_info' | t }}</label>
+                  <textarea
+                    id="CzAdditionalInfo-{{ block.id }}"
+                    data-cz-prop="Información adicional a tener en cuenta"
+                    rows="3"
+                    placeholder="{{ 'bike_customizer.additional_info_placeholder' | t }}"
+                  ></textarea>
+                </div>
+              </div>
+
+              <div class="cz-section-{{ block.id }}">
+                <p class="cz-section-label-{{ block.id }}">{{ 'bike_customizer.reference_photos' | t }} <span class="cz-required-{{ block.id }}">*</span></p>
+                <p class="cz-upload-hint-{{ block.id }}">{{ 'bike_customizer.reference_photos_hint' | t }}</p>
+                <label class="cz-upload-{{ block.id }}" data-cz-upload>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                  <span>
+                    <span class="cz-upload-text-{{ block.id }}">{{ 'bike_customizer.upload_multi' | t }}</span>
+                    <span class="cz-upload-filename-{{ block.id }}" data-cz-filename></span>
+                  </span>
+                  <input type="file" accept="image/*" multiple data-cz-file-required data-cz-file-input>
+                </label>
+              </div>
+            {% endif %}
+          </div>
+
+          <div class="cz-step-panel-{{ block.id }}" data-cz-step="3" hidden>
+            <h4 class="cz-step-heading-{{ block.id }}" data-cz-step-heading tabindex="-1">3. {{ 'bike_customizer.step_label_3' | t }}</h4>
+
+            {% unless custom_mode %}
+              <div class="cz-section-{{ block.id }}">
+                <button
+                  type="button"
+                  class="cz-toggle-btn-{{ block.id }}"
+                  data-cz-toggle="design_change"
+                  aria-pressed="false"
+                >
+                  <span>{{ 'bike_customizer.design_change' | t }}</span>
+                  <span class="cz-toggle-badge-{{ block.id }}">{{ 'bike_customizer.design_change_badge' | t }}</span>
+                </button>
+                <div class="cz-toggle-panel-{{ block.id }}" data-cz-toggle-panel="design_change" hidden>
+                  <textarea
+                    data-cz-prop="Cambio de diseño"
+                    rows="4"
+                    placeholder="{{ 'bike_customizer.design_change_placeholder' | t }}"
+                  ></textarea>
+                </div>
+              </div>
+
+              {%- comment -%}
+                Carez: nota libre del cliente, siempre visible. Solo en kits de
+                catalogo; los personalizados ya tienen su propio campo en el paso 2.
+                Rotulo en linea (no por locales) para no reescribir en.default.json.
+              {%- endcomment -%}
+              {%- capture cz_notes_label -%}
+                {%- if request.locale.iso_code == 'es' -%}Información a tener en cuenta{%- else -%}Information to keep in mind{%- endif -%}
+              {%- endcapture -%}
+              <div class="cz-section-{{ block.id }}">
+                <p class="cz-section-label-{{ block.id }}">{{ cz_notes_label }}</p>
+                <div class="cz-field-{{ block.id }}">
+                  <textarea
+                    id="CzNotes-{{ block.id }}"
+                    data-cz-prop="Información a tener en cuenta"
+                    aria-label="{{ cz_notes_label | escape }}"
+                    rows="3"
+                  ></textarea>
+                </div>
+              </div>
+
+              {% unless hide_adapt %}
+              <div class="cz-section-{{ block.id }}">
+                <button
+                  type="button"
+                  class="cz-toggle-btn-{{ block.id }}"
+                  data-cz-toggle="adapt_bike"
+                  aria-pressed="false"
+                >
+                  <span>{{ 'bike_customizer.adapt_bike' | t }}</span>
+                  <span class="cz-toggle-badge-{{ block.id }}">{{ '+20€' }}</span>
+                </button>
+                <div class="cz-toggle-panel-{{ block.id }}" data-cz-toggle-panel="adapt_bike" hidden>
+                  <textarea
+                    data-cz-prop="Adaptación a otra moto"
+                    rows="3"
+                    placeholder="{{ 'bike_customizer.adapt_placeholder' | t }}"
+                  ></textarea>
+                </div>
+              </div>
+              {% endunless %}
+            {% endunless %}
+
+            <div class="cz-section-{{ block.id }}">
+              <p class="cz-section-label-{{ block.id }}">{{ 'bike_customizer.extra' | t }}</p>
+              <button type="button" class="cz-addon-trigger-{{ block.id }}" data-cz-addon-toggle="stickers" aria-expanded="false">
+                <img class="cz-addon-thumb-{{ block.id }}" src="{{ block.settings.addon_stickers_image | image_url: width: 300 }}" alt="{{ 'bike_customizer.instagram_stickers' | t }}" loading="lazy" width="96" height="96">
+                <span class="cz-addon-info-{{ block.id }}">
+                  <span class="cz-addon-name-{{ block.id }}">{{ 'bike_customizer.instagram_stickers' | t }}</span>
+                  <span class="cz-addon-sub-{{ block.id }}" data-cz-addon-summary="stickers">{{ 'bike_customizer.stickers_summary' | t }}</span>
+                </span>
+                <span class="cz-addon-badge-{{ block.id }}" data-cz-addon-price-badge="stickers">{{ '+9,99€' }}</span>
+              </button>
+              <div class="cz-addon-panel-{{ block.id }}" data-cz-addon-panel="stickers" hidden>
+                <button type="button" class="cz-addon-option-{{ block.id }}" data-cz-addon-option data-total-cents="999" data-extra-cents="0" data-before-cents="0" data-variant-id="{{ block.settings.addon_stickers_variant_5 | default: '62259365642627' }}" data-units-label="{{ 'bike_customizer.units' | t: count: 5 }}" aria-pressed="false">
+                  <span class="cz-addon-option-units-{{ block.id }}">{{ 'bike_customizer.units' | t: count: 5 }}</span>
+                  <span class="cz-addon-option-price-{{ block.id }}" data-cz-addon-option-price></span>
+                </button>
+                <button type="button" class="cz-addon-option-{{ block.id }}" data-cz-addon-option data-total-cents="1349" data-extra-cents="350" data-before-cents="599" data-variant-id="{{ block.settings.addon_stickers_variant_15 | default: '62259369607555' }}" data-units-label="{{ 'bike_customizer.units' | t: count: 15 }}" aria-pressed="false">
+                  <span class="cz-addon-option-units-{{ block.id }}">{{ 'bike_customizer.units' | t: count: 15 }}</span>
+                  <span class="cz-addon-option-price-{{ block.id }}" data-cz-addon-option-price></span>
+                </button>
+                <button type="button" class="cz-addon-option-{{ block.id }}" data-cz-addon-option data-total-cents="1398" data-extra-cents="399" data-before-cents="1899" data-variant-id="{{ block.settings.addon_stickers_variant_20 | default: '62259369640323' }}" data-units-label="{{ 'bike_customizer.units' | t: count: 20 }}" aria-pressed="false">
+                  <span class="cz-addon-option-units-{{ block.id }}">{{ 'bike_customizer.units' | t: count: 20 }}</span>
+                  <span class="cz-addon-option-price-{{ block.id }}" data-cz-addon-option-price></span>
+                </button>
+                <button type="button" class="cz-addon-option-{{ block.id }}" data-cz-addon-option data-total-cents="3098" data-extra-cents="2099" data-before-cents="3050" data-variant-id="{{ block.settings.addon_stickers_variant_50 | default: '62259369673091' }}" data-units-label="{{ 'bike_customizer.units' | t: count: 50 }}" aria-pressed="false">
+                  <span class="cz-addon-option-units-{{ block.id }}">{{ 'bike_customizer.units' | t: count: 50 }}</span>
+                  <span class="cz-addon-option-price-{{ block.id }}" data-cz-addon-option-price></span>
+                </button>
+                <button type="button" class="cz-addon-remove-{{ block.id }}" data-cz-addon-remove>{{ 'bike_customizer.remove_extra' | t }}</button>
+              </div>
+            </div>
+
+            <div class="cz-section-{{ block.id }}">
+              <button type="button" class="cz-addon-trigger-{{ block.id }}" data-cz-addon-toggle="montaje" aria-expanded="false">
+                <img class="cz-addon-thumb-{{ block.id }}" src="{{ block.settings.addon_montaje_image | image_url: width: 300 }}" alt="Montaje" loading="lazy" width="96" height="96">
+                <span class="cz-addon-info-{{ block.id }}">
+                  <span class="cz-addon-name-{{ block.id }}">{{ 'bike_customizer.montaje' | t }}</span>
+                  <span class="cz-addon-sub-{{ block.id }}" data-cz-addon-summary="montaje">{{ 'bike_customizer.montaje_summary' | t }}</span>
+                </span>
+                <span class="cz-addon-badge-{{ block.id }}" data-cz-addon-price-badge="montaje">{{ 'bike_customizer.montaje_badge' | t }}</span>
+              </button>
+              <p class="cz-upload-hint-{{ block.id }}">{{ 'bike_customizer.montaje_note' | t }}</p>
+              <div class="cz-addon-panel-{{ block.id }}" data-cz-addon-panel="montaje" hidden>
+                {% if carez_montajes contains 'carretera' %}
+                <button type="button" class="cz-addon-option-{{ block.id }}" data-cz-addon-option data-total-cents="8000" data-extra-cents="0" data-before-cents="0" data-variant-id="{{ block.settings.addon_montaje_variant_carretera | default: '62263631348099' }}" data-units-label="{{ 'bike_customizer.road' | t }}" aria-pressed="false">
+                  <span class="cz-addon-option-units-{{ block.id }}">{{ 'bike_customizer.road' | t }}</span>
+                  <span class="cz-addon-option-price-{{ block.id }}" data-cz-addon-option-price></span>
+                </button>
+                {% endif %}
+                {% if carez_montajes contains 'naked' %}
+                <button type="button" class="cz-addon-option-{{ block.id }}" data-cz-addon-option data-total-cents="7000" data-extra-cents="0" data-before-cents="0" data-variant-id="{{ block.settings.addon_montaje_variant_naked | default: '62263633609091' }}" data-units-label="{{ 'bike_customizer.vehicle_types.naked' | t }}" aria-pressed="false">
+                  <span class="cz-addon-option-units-{{ block.id }}">{{ 'bike_customizer.vehicle_types.naked' | t }}</span>
+                  <span class="cz-addon-option-price-{{ block.id }}" data-cz-addon-option-price></span>
+                </button>
+                {% endif %}
+                {% if carez_montajes contains 'enduro' %}
+                <button type="button" class="cz-addon-option-{{ block.id }}" data-cz-addon-option data-total-cents="6000" data-extra-cents="0" data-before-cents="0" data-variant-id="{{ block.settings.addon_montaje_variant_enduro | default: '62263633641859' }}" data-units-label="{{ 'bike_customizer.vehicle_types.enduro' | t }}" aria-pressed="false">
+                  <span class="cz-addon-option-units-{{ block.id }}">{{ 'bike_customizer.vehicle_types.enduro' | t }}</span>
+                  <span class="cz-addon-option-price-{{ block.id }}" data-cz-addon-option-price></span>
+                </button>
+                {% endif %}
+                {% if carez_montajes contains 'trail' %}
+                <button type="button" class="cz-addon-option-{{ block.id }}" data-cz-addon-option data-total-cents="8500" data-extra-cents="0" data-before-cents="0" data-variant-id="{{ block.settings.addon_montaje_variant_trail | default: '62263633674627' }}" data-units-label="{{ 'bike_customizer.vehicle_types.trail' | t }}" aria-pressed="false">
+                  <span class="cz-addon-option-units-{{ block.id }}">{{ 'bike_customizer.vehicle_types.trail' | t }}</span>
+                  <span class="cz-addon-option-price-{{ block.id }}" data-cz-addon-option-price></span>
+                </button>
+                {% endif %}
+                {% if carez_montajes contains 'scooter' %}
+                <button type="button" class="cz-addon-option-{{ block.id }}" data-cz-addon-option data-total-cents="8000" data-extra-cents="0" data-before-cents="0" data-variant-id="{{ block.settings.addon_montaje_variant_scooter | default: '62263633707395' }}" data-units-label="{{ 'bike_customizer.vehicle_types.scooter' | t }}" aria-pressed="false">
+                  <span class="cz-addon-option-units-{{ block.id }}">{{ 'bike_customizer.vehicle_types.scooter' | t }}</span>
+                  <span class="cz-addon-option-price-{{ block.id }}" data-cz-addon-option-price></span>
+                </button>
+                {% endif %}
+                {% if carez_montajes contains 'quad' %}
+                <button type="button" class="cz-addon-option-{{ block.id }}" data-cz-addon-option data-total-cents="9900" data-extra-cents="0" data-before-cents="0" data-variant-id="{{ block.settings.addon_montaje_variant_quad | default: '62263633740163' }}" data-units-label="{{ 'bike_customizer.vehicle_types.quad' | t }}" aria-pressed="false">
+                  <span class="cz-addon-option-units-{{ block.id }}">{{ 'bike_customizer.vehicle_types.quad' | t }}</span>
+                  <span class="cz-addon-option-price-{{ block.id }}" data-cz-addon-option-price></span>
+                </button>
+                {% endif %}
+                {% if carez_montajes contains 'agua' %}
+                <button type="button" class="cz-addon-option-{{ block.id }}" data-cz-addon-option data-total-cents="12000" data-extra-cents="0" data-before-cents="0" data-variant-id="{{ block.settings.addon_montaje_variant_agua | default: '62263633772931' }}" data-units-label="{{ 'bike_customizer.jet_ski' | t }}" aria-pressed="false">
+                  <span class="cz-addon-option-units-{{ block.id }}">{{ 'bike_customizer.jet_ski' | t }}</span>
+                  <span class="cz-addon-option-price-{{ block.id }}" data-cz-addon-option-price></span>
+                </button>
+                {% endif %}
+                <button type="button" class="cz-addon-remove-{{ block.id }}" data-cz-addon-remove>{{ 'bike_customizer.remove_extra' | t }}</button>
+              </div>
+            </div>
+
+            {%- comment -%} BORRADOR Carez: extra "Llantas personalizadas a juego con el diseño" (85 €) {%- endcomment -%}
+            <div class="cz-section-{{ block.id }}">
+              <button type="button" class="cz-addon-trigger-{{ block.id }}" data-cz-addon-toggle="llantas" aria-expanded="false">
+                <img class="cz-addon-thumb-{{ block.id }}" src="{{ block.settings.addon_llantas_image | image_url: width: 300 }}" alt="Llantas personalizadas a juego con el diseño" loading="lazy" width="96" height="96">
+                <span class="cz-addon-info-{{ block.id }}">
+                  <span class="cz-addon-name-{{ block.id }}">Llantas personalizadas a juego</span>
+                  <span class="cz-addon-sub-{{ block.id }}" data-cz-addon-summary="llantas">Toca para añadir · mismo diseño en las dos llantas</span>
+                </span>
+                <span class="cz-addon-badge-{{ block.id }}" data-cz-addon-price-badge="llantas">+85€</span>
+              </button>
+              <p class="cz-upload-hint-{{ block.id }}">Vinilos para las dos llantas dibujados con los mismos colores y grafismos que tu kit. Los ves en la previsualización antes de fabricar.</p>
+              <div class="cz-addon-panel-{{ block.id }}" data-cz-addon-panel="llantas" hidden>
+                <button type="button" class="cz-addon-option-{{ block.id }}" data-cz-addon-option data-total-cents="8500" data-extra-cents="0" data-before-cents="0" data-variant-id="{{ block.settings.addon_llantas_variant }}" data-units-label="Llantas a juego con el diseño" aria-pressed="false">
+                  <span class="cz-addon-option-units-{{ block.id }}">Llantas a juego con el diseño</span>
+                  <span class="cz-addon-option-price-{{ block.id }}" data-cz-addon-option-price></span>
+                </button>
+                <button type="button" class="cz-addon-remove-{{ block.id }}" data-cz-addon-remove>{{ 'bike_customizer.remove_extra' | t }}</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cz-bottom-{{ block.id }}">
+        <div class="cz-error-{{ block.id }}" data-cz-error role="alert" hidden></div>
+
+        <div class="cz-footer-{{ block.id }}">
+          <button type="button" class="cz-back-{{ block.id }}" data-cz-step-back hidden>{{ 'bike_customizer.step_back' | t }}</button>
+          <div class="cz-footer-summary-{{ block.id }}">
+            <span class="cz-selected" data-cz-selected-summary>{{ base_option.values.first }} + {{ finish_option.values.first }}</span>
+            <span class="cz-extras">{{ 'bike_customizer.extras' | t }}: <strong data-cz-extras>+{{ 0 | money }}</strong></span>
+            <span class="cz-extras">{{ 'bike_customizer.total' | t }}: <strong data-cz-total>{{ cheapest_price | money }}</strong></span>
+          </div>
+          <button type="button" class="cz-add-{{ block.id }}" data-cz-step-next>{{ 'bike_customizer.step_next' | t }}</button>
+          <button type="button" class="cz-add-{{ block.id }}" data-cz-confirm hidden>
+            {{ block.settings.add_button_text | default: 'Añadir al carrito' }}
+          </button>
+        </div>
+        </div>
+      </div>
+    </dialog>
+
+    <div class="cz-toast-{{ block.id }}" data-cz-toast role="status" aria-live="polite" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+      <span data-cz-toast-message>{{ 'bike_customizer.add_success' | t }}</span>
+    </div>
+  </div>
+
+  <script type="application/json" data-cz-variants-{{ block.id }}>
+    [
+      {% for variant in product.variants %}
+        {
+          "id": {{ variant.id | json }},
+          "base": {{ variant.options[0] | json }},
+          "acabado": {{ variant.options[1] | json }},
+          "price": {{ variant.price | json }},
+          "available": {{ variant.available | json }}
+        }{% unless forloop.last %},{% endunless %}
+      {% endfor %}
+    ]
+  </script>
+
+  {%- comment -%}
+    Claves por índice (base|acabado) para que el mapeo de fotos funcione en
+    cualquier idioma: 0=Normal/Brillo, 1=Cromado/Mate, 2=Holográfico/Glitter.
+  {%- endcomment -%}
+  <script type="application/json" data-cz-combo-images-{{ block.id }}>
+    {
+      "0|0": {{ block.settings.combo_normal_brillo | image_url: width: 500 | json }},
+      "0|1": {{ block.settings.combo_normal_mate | image_url: width: 500 | json }},
+      "0|2": {{ block.settings.combo_normal_glitter | image_url: width: 500 | json }},
+      "1|0": {{ block.settings.combo_cromado_brillo | image_url: width: 500 | json }},
+      "1|1": {{ block.settings.combo_cromado_mate | image_url: width: 500 | json }},
+      "1|2": {{ block.settings.combo_cromado_glitter | image_url: width: 500 | json }},
+      "2|0": {{ block.settings.combo_holografico_brillo | image_url: width: 500 | json }},
+      "2|1": {{ block.settings.combo_holografico_mate | image_url: width: 500 | json }},
+      "2|2": {{ block.settings.combo_holografico_glitter | image_url: width: 500 | json }}
+    }
+  </script>
+
+  <script>
+    (function () {
+      var scope = document.currentScript.closest('.cz-modal-{{ block.id }}') || document.querySelector('.cz-modal-{{ block.id }}');
+      if (!scope) return;
+
+      var dialog = scope.querySelector('[data-cz-dialog]');
+      var openBtn = scope.querySelector('[data-cz-open]');
+      var closeBtn = scope.querySelector('[data-cz-close]');
+      var confirmBtn = scope.querySelector('[data-cz-confirm]');
+      var extrasEl = scope.querySelector('[data-cz-extras]');
+      var totalEl = scope.querySelector('[data-cz-total]');
+      var selectedSummaryEl = scope.querySelector('[data-cz-selected-summary]');
+      var triggerSubEl = scope.querySelector('[data-cz-trigger-sub]');
+      var fileInput = scope.querySelector('[data-cz-file-input]');
+      var fileNameEl = scope.querySelector('[data-cz-filename]');
+
+      var stepPanels = Array.prototype.slice.call(scope.querySelectorAll('[data-cz-step]'));
+      var stepIndicators = Array.prototype.slice.call(scope.querySelectorAll('[data-cz-step-indicator]'));
+      var stepBackBtn = scope.querySelector('[data-cz-step-back]');
+      var stepNextBtn = scope.querySelector('[data-cz-step-next]');
+      var stepAnnouncer = scope.querySelector('[data-cz-step-announcer]');
+      var toastEl = scope.querySelector('[data-cz-toast]');
+      var toastMessageEl = scope.querySelector('[data-cz-toast-message]');
+      var toastTimer = null;
+      var totalSteps = stepPanels.length;
+      var currentStep = 1;
+
+      var stepAnnouncements = {
+        1: {{ 'bike_customizer.step_announcement' | t: current: 1, total: 3, label: step_label_1 | json }},
+        2: {{ 'bike_customizer.step_announcement' | t: current: 2, total: 3, label: step_label_2 | json }},
+        3: {{ 'bike_customizer.step_announcement' | t: current: 3, total: 3, label: step_label_3 | json }}
+      };
+      var stepValidationError = {{ 'bike_customizer.step_validation_error' | t | json }};
+
+      var variantsScript = document.querySelector('[data-cz-variants-{{ block.id }}]');
+      var variants = [];
+      try {
+        variants = JSON.parse(variantsScript.textContent);
+      } catch (e) {
+        variants = [];
+      }
+
+      var comboImagesScript = document.querySelector('[data-cz-combo-images-{{ block.id }}]');
+      var comboImages = {};
+      try {
+        comboImages = JSON.parse(comboImagesScript.textContent);
+      } catch (e) {
+        comboImages = {};
+      }
+
+      var cheapestPrice = variants.reduce(function (min, v) {
+        return v.price < min ? v.price : min;
+      }, variants.length ? variants[0].price : 0);
+
+      var selection = { Base: null, Acabado: null };
+      var selectionIdx = { Base: null, Acabado: null };
+      var hasComboGrid = scope.querySelectorAll('[data-cz-card]').length > 0;
+      var initialCards = scope.querySelectorAll('[data-cz-card][aria-pressed="true"]');
+      initialCards.forEach(function (card) {
+        selection[card.dataset.optionName] = card.dataset.optionValue;
+        selectionIdx[card.dataset.optionName] = parseInt(card.dataset.optionIndex, 10);
+      });
+
+      var UI_LOCALE = {{ request.locale.iso_code | default: 'es' | json }};
+      var IS_EN = UI_LOCALE.indexOf('en') === 0;
+      var TXT = {
+        adding: IS_EN ? 'Adding…' : 'Añadiendo…',
+        uploading: IS_EN ? 'Uploading photos…' : 'Subiendo fotos…',
+        addError: IS_EN
+          ? 'The product could not be added to the cart. Please check your connection and try again.'
+          : 'No se ha podido añadir el producto al carrito. Revisa tu conexión e inténtalo de nuevo.',
+        fileTooBig: IS_EN
+          ? 'One of the photos is larger than 20 MB. Please use smaller photos and try again.'
+          : 'Una de las fotos supera los 20 MB. Usa fotos más ligeras e inténtalo de nuevo.',
+        photosRequired: IS_EN
+          ? 'Please upload at least one reference photo to continue.'
+          : 'Sube al menos una foto de referencia para continuar.',
+        extraFailed: IS_EN
+          ? 'The kit was added, but one extra could not be added. Please check your cart.'
+          : 'El kit se añadió, pero uno de los extras no pudo añadirse. Revisa tu carrito.'
+      };
+      var CART_ADD_URL = {{ routes.cart_add_url | json }} + '.js';
+      var CART_CHANGE_URL = {{ routes.cart_change_url | json }} + '.js';
+      var CART_JS_URL = {{ routes.cart_url | json }} + '.js';
+      var MAX_FILE_BYTES = 20 * 1024 * 1024;
+
+      function formatMoney(cents) {
+        return (cents / 100).toLocaleString(UI_LOCALE, { style: 'currency', currency: '{{ cart.currency.iso_code | default: shop.currency }}' });
+      }
+
+      function findVariant() {
+        var exact = variants.find(function (v) {
+          return v.base === selection.Base && v.acabado === selection.Acabado;
+        });
+        if (exact) return exact;
+        if (!hasComboGrid) {
+          return variants.find(function (v) { return v.available !== false; }) || variants[0];
+        }
+        return undefined;
+      }
+
+      function comboParts() {
+        return [selection.Base, selection.Acabado].filter(Boolean);
+      }
+
+      function comboLabel() {
+        var parts = comboParts();
+        return parts.length ? parts.join(' + ') : {{ product.title | json }};
+      }
+
+      var ADAPT_FEE_VARIANT_ID = '{{ block.settings.adapt_fee_variant_id | default: "62259251806595" }}';
+      var ADAPT_FEE_CENTS = 2000;
+
+      function isAdaptActive() {
+        var btn = scope.querySelector('[data-cz-toggle="adapt_bike"]');
+        return !!(btn && btn.getAttribute('aria-pressed') === 'true');
+      }
+
+      // --- Estabilidad de scroll en táctil (Android) --------------------------
+      // En táctil los botones de opción no roban el foco: si el usuario viene de
+      // escribir, robarlo cierra el teclado, el viewport visual se reajusta y la
+      // vista pega un tirón. El click sigue funcionando con normalidad.
+      //
+      // NO se vuelve a añadir aquí ninguna "guardia de scroll" que revierta saltos
+      // a posteriori: se probó y no servía, porque el navegador clampea el
+      // scrollTop SIN emitir evento 'scroll'. La causa real estaba en
+      // snippets/carez-fix-personalizados.liquid y está eliminada allí.
+      var IS_COARSE_POINTER = !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
+
+      scope
+        .querySelectorAll(
+          '[data-cz-card], [data-cz-addon-option], [data-cz-addon-toggle], [data-cz-addon-remove], [data-cz-toggle], [data-cz-step-next], [data-cz-step-back], [data-cz-confirm], [data-cz-close]'
+        )
+        .forEach(function (btn) {
+          btn.addEventListener('pointerdown', function (event) {
+            if (!IS_COARSE_POINTER) return;
+            event.preventDefault();
+          });
+        });
+
+      // --- Anclaje al plegar paneles -----------------------------------------
+      // Cuando un panel se pliega (extras o toggles) el contenido encoge y el
+      // navegador CLAMPEA el scroll del modal: la vista da un salto hacia arriba y
+      // el usuario percibe que "la página se sube sola" justo al pulsar una opción.
+      // Tras plegar, si el control que acaba de tocar queda por encima del área
+      // visible, lo traemos de vuelta bajo la cabecera fija.
+      function esScrollerCz(el) {
+        if (!el) return false;
+        var ov = window.getComputedStyle(el).overflowY;
+        return (ov === 'auto' || ov === 'scroll') && el.scrollHeight > el.clientHeight + 1;
+      }
+
+      function scrollerModal() {
+        var cuerpo = dialog.querySelector('.cz-body-{{ block.id }}');
+        return esScrollerCz(cuerpo) ? cuerpo : dialog;
+      }
+
+      function mantenerALaVista(el) {
+        if (!el) return;
+        var scroller = scrollerModal();
+        if (!scroller) return;
+        var cabecera = dialog.querySelector('.cz-panel-head-{{ block.id }}');
+        var margen = 16 + (cabecera ? cabecera.offsetHeight : 0);
+        var r = el.getBoundingClientRect();
+        var rs = scroller.getBoundingClientRect();
+        if (r.top < rs.top + margen) {
+          scroller.scrollTop -= rs.top + margen - r.top;
+        }
+      }
+
+      function createAddonController(groupKey, emptySummaryText, emptyBadgeText, selectedSuffix) {
+        var trigger = scope.querySelector('[data-cz-addon-toggle="' + groupKey + '"]');
+        var panel = scope.querySelector('[data-cz-addon-panel="' + groupKey + '"]');
+        var summaryEl = scope.querySelector('[data-cz-addon-summary="' + groupKey + '"]');
+        var badgeEl = scope.querySelector('[data-cz-addon-price-badge="' + groupKey + '"]');
+        if (!trigger || !panel) return null;
+
+        function getSelection() {
+          var pressed = panel.querySelector('[data-cz-addon-option][aria-pressed="true"]');
+          if (!pressed) return null;
+          return {
+            variantId: pressed.dataset.variantId,
+            totalCents: parseInt(pressed.dataset.totalCents, 10) || 0,
+            unitsLabel: pressed.dataset.unitsLabel
+          };
+        }
+
+        function close() {
+          panel.setAttribute('hidden', '');
+          trigger.setAttribute('aria-expanded', 'false');
+        }
+
+        function updateDisplay() {
+          var selected = getSelection();
+          if (selected) {
+            if (summaryEl) summaryEl.textContent = selected.unitsLabel + selectedSuffix;
+            if (badgeEl) badgeEl.textContent = formatMoney(selected.totalCents);
+          } else {
+            if (summaryEl) summaryEl.textContent = emptySummaryText;
+            if (badgeEl) badgeEl.textContent = emptyBadgeText;
+          }
+        }
+
+        trigger.addEventListener('click', function () {
+          var isOpen = trigger.getAttribute('aria-expanded') === 'true';
+          if (isOpen) {
+            close();
+          } else {
+            panel.removeAttribute('hidden');
+            trigger.setAttribute('aria-expanded', 'true');
+          }
+        });
+
+        panel.querySelectorAll('[data-cz-addon-option]').forEach(function (opt) {
+          opt.addEventListener('click', function () {
+            panel.querySelectorAll('[data-cz-addon-option]').forEach(function (o) {
+              o.setAttribute('aria-pressed', 'false');
+            });
+            opt.setAttribute('aria-pressed', 'true');
+            updateDisplay();
+            updateSummary();
+            // El panel NO se pliega al elegir. Plegarlo sacaba del flujo hasta 8
+            // filas y, con el diálogo a 88dvh en un móvil, el navegador clampeaba
+            // el scroll: el contenido saltaba hacia arriba justo "al pulsar una
+            // opción" (medido: -202 px). La elección ya se ve marcada con
+            // aria-pressed y el resumen del disparador se actualiza solo.
+          });
+        });
+
+        var removeBtn = panel.querySelector('[data-cz-addon-remove]');
+        if (removeBtn) {
+          removeBtn.addEventListener('click', function () {
+            panel.querySelectorAll('[data-cz-addon-option]').forEach(function (o) {
+              o.setAttribute('aria-pressed', 'false');
+            });
+            close();
+            updateDisplay();
+            updateSummary();
+            mantenerALaVista(trigger);
+          });
+        }
+
+        return { getSelection: getSelection, updateDisplay: updateDisplay };
+      }
+
+      function renderAddonOptions() {
+        scope.querySelectorAll('[data-cz-addon-option]').forEach(function (opt) {
+          var priceEl = opt.querySelector('[data-cz-addon-option-price]');
+          if (!priceEl) return;
+          var extra = parseInt(opt.dataset.extraCents, 10) || 0;
+          var before = parseInt(opt.dataset.beforeCents, 10) || 0;
+          var total = parseInt(opt.dataset.totalCents, 10) || 0;
+          if (extra > 0) {
+            var html = '+' + formatMoney(extra);
+            if (before > 0) html += ' <s>' + {{ 'bike_customizer.before' | t | json }} + ' +' + formatMoney(before) + '</s>';
+            priceEl.innerHTML = html;
+          } else {
+            priceEl.textContent = formatMoney(total);
+          }
+        });
+      }
+
+      function requiredFieldsFilled() {
+        var fields = scope.querySelectorAll('[data-cz-required]');
+        for (var i = 0; i < fields.length; i++) {
+          if (!fields[i].value || !fields[i].value.trim()) return false;
+        }
+        if (fileInput && fileInput.hasAttribute('data-cz-file-required')) {
+          if (!fileInput.files || fileInput.files.length === 0) return false;
+        }
+        return true;
+      }
+
+      function validateStep(stepNumber) {
+        var panel = stepPanels.filter(function (p) { return parseInt(p.dataset.czStep, 10) === stepNumber; })[0];
+        if (!panel) return true;
+        var fields = panel.querySelectorAll('[data-cz-required]');
+        for (var i = 0; i < fields.length; i++) {
+          if (!fields[i].value || !fields[i].value.trim()) return false;
+        }
+        var stepFileInput = panel.querySelector('[data-cz-file-input][data-cz-file-required]');
+        if (stepFileInput && (!stepFileInput.files || stepFileInput.files.length === 0)) return false;
+        return true;
+      }
+
+      var errorEl = scope.querySelector('[data-cz-error]');
+
+      function showError(message) {
+        if (!errorEl) return;
+        errorEl.textContent = message;
+        errorEl.removeAttribute('hidden');
+        if (stepAnnouncer) stepAnnouncer.textContent = message;
+      }
+
+      function hideError() {
+        if (errorEl) errorEl.setAttribute('hidden', '');
+      }
+
+      function markFieldInvalid(field, invalid) {
+        if (!field) return;
+        field.classList.toggle('cz-field-invalid-{{ block.id }}', !!invalid);
+      }
+
+      function showToast(message) {
+        if (!toastEl) return;
+        if (toastMessageEl) toastMessageEl.textContent = message || {{ 'bike_customizer.add_success' | t | json }};
+        toastEl.removeAttribute('hidden');
+        window.clearTimeout(toastTimer);
+        window.requestAnimationFrame(function () {
+          toastEl.classList.add('cz-toast-visible-{{ block.id }}');
+        });
+        toastTimer = window.setTimeout(function () {
+          toastEl.classList.remove('cz-toast-visible-{{ block.id }}');
+          window.setTimeout(function () {
+            toastEl.setAttribute('hidden', '');
+          }, 260);
+        }, 2600);
+      }
+
+      function showStep(stepNumber, options) {
+        options = options || {};
+        stepNumber = Math.min(Math.max(stepNumber, 1), totalSteps);
+        stepPanels.forEach(function (panel) {
+          var isCurrent = parseInt(panel.dataset.czStep, 10) === stepNumber;
+          if (isCurrent) {
+            panel.removeAttribute('hidden');
+          } else {
+            panel.setAttribute('hidden', '');
+          }
+        });
+        stepIndicators.forEach(function (indicator) {
+          var n = parseInt(indicator.dataset.czStepIndicator, 10);
+          if (n === stepNumber) {
+            indicator.setAttribute('aria-current', 'step');
+          } else {
+            indicator.removeAttribute('aria-current');
+          }
+          indicator.classList.toggle('cz-is-complete-{{ block.id }}', n < stepNumber);
+        });
+        currentStep = stepNumber;
+        if (stepBackBtn) {
+          if (stepNumber === 1) {
+            stepBackBtn.setAttribute('hidden', '');
+          } else {
+            stepBackBtn.removeAttribute('hidden');
+          }
+        }
+        if (stepNextBtn) {
+          if (stepNumber === totalSteps) {
+            stepNextBtn.setAttribute('hidden', '');
+          } else {
+            stepNextBtn.removeAttribute('hidden');
+          }
+        }
+        if (confirmBtn) {
+          if (stepNumber === totalSteps) {
+            confirmBtn.removeAttribute('hidden');
+          } else {
+            confirmBtn.setAttribute('hidden', '');
+          }
+        }
+        if (stepAnnouncer) {
+          stepAnnouncer.textContent = stepAnnouncements[stepNumber] || '';
+        }
+        // Cerrar el teclado y soltar el foco antes de recolocar el scroll:
+        // en Android Chrome, un elemento enfocado en la parte alta del paso
+        // hace que el navegador devuelva el scroll arriba cada vez que el
+        // viewport se reajusta (teclado, barra de URL), impidiendo navegar.
+        if (document.activeElement && typeof document.activeElement.blur === 'function') {
+          document.activeElement.blur();
+        }
+        // Cada paso empieza por arriba, sobre el scroller real (no se da por
+        // supuesto cuál es: hoy el <dialog>, mañana quizá .cz-body-*).
+        scrollerModal().scrollTop = 0;
+        if (!options.skipFocus && !(window.matchMedia && window.matchMedia('(pointer: coarse)').matches)) {
+          var heading = stepPanels.filter(function (p) { return parseInt(p.dataset.czStep, 10) === stepNumber; })[0];
+          heading = heading && heading.querySelector('[data-cz-step-heading]');
+          if (heading) {
+            try { heading.focus({ preventScroll: true }); } catch (e) { heading.focus(); }
+          }
+        }
+        updateSummary();
+      }
+
+      function updateSummary() {
+        var variant = findVariant();
+        var adaptFee = isAdaptActive() ? ADAPT_FEE_CENTS : 0;
+        var addonFee = addonControllers.reduce(function (sum, controller) {
+          var sel = controller.getSelection();
+          return sum + (sel ? sel.totalCents : 0);
+        }, 0);
+        var basePrice = variant ? variant.price : cheapestPrice;
+        var extras = (variant ? variant.price - cheapestPrice : 0) + adaptFee + addonFee;
+        if (extrasEl) extrasEl.textContent = '+' + formatMoney(extras);
+        if (totalEl) totalEl.textContent = formatMoney(basePrice + adaptFee + addonFee);
+        var parts = comboParts();
+        if (parts.length) {
+          if (selectedSummaryEl) selectedSummaryEl.textContent = parts.join(' + ');
+          if (triggerSubEl) triggerSubEl.textContent = parts.join(' · ');
+        }
+        if (confirmBtn && !confirmBtn.hasAttribute('data-cz-busy')) {
+          confirmBtn.disabled = !variant || variant.available === false || !requiredFieldsFilled();
+        }
+      }
+
+      function renderPriceBadges() {
+        scope.querySelectorAll('[data-cz-card]').forEach(function (card) {
+          var group = card.dataset.optionName;
+          var value = card.dataset.optionValue;
+          var key = group === 'Base' ? 'base' : 'acabado';
+          var matching = variants.filter(function (v) { return v[key] === value; });
+          var minPrice = matching.reduce(function (min, v) {
+            return v.price < min ? v.price : min;
+          }, matching.length ? matching[0].price : cheapestPrice);
+          var diff = minPrice - cheapestPrice;
+          var badge = card.querySelector('[data-cz-price-badge]');
+          if (!badge) return;
+          badge.textContent = diff > 0 ? '+' + formatMoney(diff) : {{ 'bike_customizer.included' | t | json }};
+        });
+      }
+
+      function comboImageFor(baseIdx, acabadoIdx) {
+        if (baseIdx === null || acabadoIdx === null || isNaN(baseIdx) || isNaN(acabadoIdx)) return '';
+        return comboImages[baseIdx + '|' + acabadoIdx] || '';
+      }
+
+      function updateOppositeGridImages(changedGroup) {
+        var oppositeGroup = changedGroup === 'Base' ? 'Acabado' : 'Base';
+        scope.querySelectorAll('[data-cz-card][data-option-name="' + oppositeGroup + '"]').forEach(function (card) {
+          var img = card.querySelector('[data-cz-card-img]');
+          if (!img) return;
+          var cardIdx = parseInt(card.dataset.optionIndex, 10);
+          var baseIdx = oppositeGroup === 'Base' ? cardIdx : selectionIdx.Base;
+          var acabadoIdx = oppositeGroup === 'Acabado' ? cardIdx : selectionIdx.Acabado;
+          var url = comboImageFor(baseIdx, acabadoIdx);
+          if (url) img.src = url;
+        });
+      }
+
+      scope.querySelectorAll('[data-cz-card]').forEach(function (card) {
+        card.addEventListener('click', function () {
+          var group = card.dataset.optionName;
+          scope.querySelectorAll('[data-cz-card][data-option-name="' + group + '"]').forEach(function (c) {
+            c.setAttribute('aria-pressed', 'false');
+          });
+          card.setAttribute('aria-pressed', 'true');
+          selection[group] = card.dataset.optionValue;
+          selectionIdx[group] = parseInt(card.dataset.optionIndex, 10);
+          updateOppositeGridImages(group);
+          updateSummary();
+        });
+      });
+
+      // Bloqueo del scroll de fondo mientras el modal está abierto. En iOS
+      // Safari el gesto de scroll dentro de un <dialog> "sangra" a la página
+      // (el fondo baja y el modal no); fijar el <body> lo impide de raíz.
+      var scrollLockY = 0;
+      var scrollLocked = false;
+      function lockScroll() {
+        if (scrollLocked) return;
+        scrollLocked = true;
+        scrollLockY = window.scrollY || document.documentElement.scrollTop || 0;
+        document.body.style.position = 'fixed';
+        document.body.style.top = -scrollLockY + 'px';
+        document.body.style.left = '0';
+        document.body.style.right = '0';
+        document.body.style.width = '100%';
+        document.documentElement.classList.add('cz-scroll-lock-{{ block.id }}');
+      }
+      function unlockScroll() {
+        if (!scrollLocked) return;
+        scrollLocked = false;
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.left = '';
+        document.body.style.right = '';
+        document.body.style.width = '';
+        document.documentElement.classList.remove('cz-scroll-lock-{{ block.id }}');
+        window.scrollTo(0, scrollLockY);
+      }
+
+      // Fallback para Safari < 15.4 (sin soporte de <dialog>): se simula el modal
+      // con el atributo open + una clase de posicionamiento.
+      var supportsDialog = typeof dialog.showModal === 'function';
+      function openDialog() {
+        hideError();
+        if (supportsDialog) {
+          dialog.showModal();
+        } else {
+          dialog.setAttribute('open', '');
+          dialog.classList.add('cz-dialog-fallback-{{ block.id }}');
+        }
+        lockScroll();
+      }
+      function closeDialog() {
+        if (supportsDialog) {
+          dialog.close();
+        } else {
+          dialog.removeAttribute('open');
+          dialog.classList.remove('cz-dialog-fallback-{{ block.id }}');
+        }
+        unlockScroll();
+      }
+      // El <dialog> también puede cerrarse solo (tecla Esc, gesto del sistema):
+      // liberar siempre el scroll cuando eso ocurra.
+      dialog.addEventListener('close', unlockScroll);
+
+      if (openBtn) {
+        openBtn.addEventListener('click', function () {
+          showStep(1, { skipFocus: true });
+          openDialog();
+        });
+      }
+      if (closeBtn) {
+        closeBtn.addEventListener('click', function () {
+          closeDialog();
+        });
+      }
+      dialog.addEventListener('click', function (event) {
+        if (event.target === dialog) closeDialog();
+      });
+
+      if (stepNextBtn) {
+        stepNextBtn.addEventListener('click', function () {
+          if (!validateStep(currentStep)) {
+            var panel = stepPanels.filter(function (p) { return parseInt(p.dataset.czStep, 10) === currentStep; })[0];
+            var invalidField = null;
+            var missingPhotos = false;
+            if (panel) {
+              var requiredFields = panel.querySelectorAll('[data-cz-required]');
+              for (var i = 0; i < requiredFields.length; i++) {
+                var isEmpty = !requiredFields[i].value || !requiredFields[i].value.trim();
+                markFieldInvalid(requiredFields[i], isEmpty);
+                if (isEmpty && !invalidField) invalidField = requiredFields[i];
+              }
+              var stepFileInput = panel.querySelector('[data-cz-file-input][data-cz-file-required]');
+              if (stepFileInput && (!stepFileInput.files || stepFileInput.files.length === 0)) {
+                missingPhotos = true;
+                markFieldInvalid(stepFileInput.closest('[data-cz-upload]'), true);
+              }
+            }
+            showError(missingPhotos && !invalidField ? TXT.photosRequired : stepValidationError);
+            if (invalidField) {
+              // Un solo desplazamiento, instantáneo y explícito: focus() sin
+              // preventScroll lanzaba un segundo scroll propio que abortaba el
+              // anterior a medias.
+              try { invalidField.scrollIntoView({ block: 'center', inline: 'nearest' }); }
+              catch (e) { invalidField.scrollIntoView(); }
+              // En táctil no se enfoca: abriría el teclado sobre el campo y Chrome
+              // volvería a recolocar el viewport. Mismo criterio que en showStep y
+              // en los paneles de notas.
+              if (!IS_COARSE_POINTER) {
+                try { invalidField.focus({ preventScroll: true }); } catch (e2) { invalidField.focus(); }
+              }
+            }
+            return;
+          }
+          hideError();
+          showStep(currentStep + 1);
+        });
+      }
+      if (stepBackBtn) {
+        stepBackBtn.addEventListener('click', function () {
+          showStep(currentStep - 1);
+        });
+      }
+
+      if (fileInput) {
+        fileInput.addEventListener('change', function () {
+          if (fileInput.files && fileInput.files.length && fileNameEl) {
+            var names = Array.prototype.map.call(fileInput.files, function (f) { return f.name; });
+            fileNameEl.textContent = names.join(', ');
+            markFieldInvalid(fileInput.closest('[data-cz-upload]'), false);
+            hideError();
+          }
+          updateSummary();
+        });
+      }
+
+      scope.querySelectorAll('select[data-cz-prop]').forEach(function (select) {
+        select.addEventListener('change', function () {
+          markFieldInvalid(select, false);
+          updateSummary();
+        });
+      });
+      scope.querySelectorAll('input[type="text"][data-cz-prop], textarea[data-cz-prop]').forEach(function (input) {
+        input.addEventListener('input', function () {
+          markFieldInvalid(input, false);
+          updateSummary();
+        });
+      });
+
+      scope.querySelectorAll('[data-cz-toggle]').forEach(function (toggleBtn) {
+        toggleBtn.addEventListener('click', function () {
+          var key = toggleBtn.dataset.czToggle;
+          var panel = scope.querySelector('[data-cz-toggle-panel="' + key + '"]');
+          var isOpen = toggleBtn.getAttribute('aria-pressed') === 'true';
+          toggleBtn.setAttribute('aria-pressed', isOpen ? 'false' : 'true');
+          if (panel) {
+            if (isOpen) {
+              panel.setAttribute('hidden', '');
+              mantenerALaVista(toggleBtn);
+            } else {
+              panel.removeAttribute('hidden');
+              // Solo en puntero fino (ratón): en táctil, enfocar el textarea
+              // abre el teclado y provoca los saltos de scroll de Android.
+              if (!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches)) {
+                var textarea = panel.querySelector('textarea');
+                if (textarea) {
+                  try { textarea.focus({ preventScroll: true }); } catch (e) { textarea.focus(); }
+                }
+              }
+            }
+          }
+          updateSummary();
+        });
+      });
+
+      var addonControllers = [
+        createAddonController('stickers', {{ 'bike_customizer.stickers_summary' | t | json }}, '+' + formatMoney(999), ' ' + {{ 'bike_customizer.selected_f' | t | json }}),
+        createAddonController('montaje', {{ 'bike_customizer.montaje_summary' | t | json }}, {% if carez_montaje_num == 1 %}formatMoney({{ carez_montaje_min }}){% else %}{{ 'bike_customizer.from' | t | json }} + ' ' + formatMoney({{ carez_montaje_min }}){% endif %}, ' ' + {{ 'bike_customizer.selected_m' | t | json }}),
+        createAddonController('llantas', 'Toca para añadir · mismo diseño en las dos llantas', '+' + formatMoney(8500), ' ' + {{ 'bike_customizer.selected_f' | t | json }})
+      ].filter(Boolean);
+
+      // --- Añadido al carrito verificado -------------------------------------
+      // El éxito solo se muestra cuando Shopify confirma que la línea está en el
+      // carrito. Si algo falla (subida de fotos, red, error del tema) el modal
+      // permanece abierto y se muestra un error visible, nunca un falso "añadido".
+
+      function addLineVerified(variantId, properties) {
+        return fetch(CART_ADD_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({ items: [{ id: parseInt(variantId, 10), quantity: 1, properties: properties }] })
+        }).then(function (res) {
+          return res.json().then(function (json) {
+            var ok = res.ok && !json.status;
+            var key = ok && json.items && json.items[0] ? json.items[0].key : null;
+            return { ok: ok, key: key, message: json.message || json.description || '' };
+          }).catch(function () { return { ok: res.ok, key: null, message: '' }; });
+        }, function () { return { ok: false, key: null, message: '' }; });
+      }
+
+      function removeLineByKey(key) {
+        if (!key) return Promise.resolve();
+        return fetch(CART_CHANGE_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({ id: key, quantity: 0 })
+        }).catch(function () {});
+      }
+
+      function getCartCount() {
+        return fetch(CART_JS_URL, { headers: { 'Accept': 'application/json' } })
+          .then(function (res) { return res.json(); })
+          .then(function (cart) { return cart.item_count || 0; })
+          .catch(function () { return null; });
+      }
+
+      // Espera el resultado real del añadido del tema: escucha los eventos
+      // estándar de Shopify y, como red de seguridad, compara el carrito.
+      function awaitThemeAddOutcome(countBefore, timeoutMs) {
+        return new Promise(function (resolve) {
+          var settled = false;
+          var timer = null;
+          function settle(ok) {
+            if (settled) return;
+            settled = true;
+            window.clearTimeout(timer);
+            document.removeEventListener('shopify:cart:lines-update', onLines, true);
+            document.removeEventListener('shopify:cart:error', onError, true);
+            resolve(ok);
+          }
+          function onLines(ev) {
+            if (!ev || !ev.promise) return;
+            ev.promise.then(function (result) {
+              var detail = result && result.detail;
+              settle(!(detail && detail.didError));
+            }).catch(function () { settle(false); });
+          }
+          function onError() { settle(false); }
+          document.addEventListener('shopify:cart:lines-update', onLines, true);
+          document.addEventListener('shopify:cart:error', onError, true);
+          timer = window.setTimeout(function () {
+            // Sin señal del tema: comprobación directa contra el carrito.
+            getCartCount().then(function (countAfter) {
+              settle(countAfter !== null && countBefore !== null && countAfter > countBefore);
+            });
+          }, timeoutMs);
+        });
+      }
+
+      function setBusy(busy, withFiles) {
+        if (!confirmBtn) return;
+        if (busy) {
+          confirmBtn.dataset.czOriginalText = confirmBtn.dataset.czOriginalText || confirmBtn.textContent;
+          confirmBtn.textContent = withFiles ? TXT.uploading : TXT.adding;
+          confirmBtn.setAttribute('data-cz-busy', '');
+          confirmBtn.disabled = true;
+        } else {
+          if (confirmBtn.dataset.czOriginalText) confirmBtn.textContent = confirmBtn.dataset.czOriginalText;
+          confirmBtn.removeAttribute('data-cz-busy');
+          confirmBtn.disabled = false;
+          updateSummary();
+        }
+      }
+
+      function cleanupInjectedInputs(form) {
+        if (!form) return;
+        form.querySelectorAll('input[type="file"][data-cz-injected]').forEach(function (el) { el.remove(); });
+        form.querySelectorAll('[data-cz-injected-prop]').forEach(function (el) { el.remove(); });
+      }
+
+      if (confirmBtn) {
+        var confirmInFlight = false;
+        confirmBtn.addEventListener('click', function () {
+          if (confirmInFlight) return;
+          hideError();
+
+          var variant = findVariant();
+          if (!variant) { showError(TXT.addError); return; }
+
+          // Validación final de todos los pasos antes de enviar.
+          for (var s = 1; s <= totalSteps; s++) {
+            if (!validateStep(s)) {
+              showStep(s);
+              showError(stepValidationError);
+              return;
+            }
+          }
+
+          var hasFiles = !!(fileInput && fileInput.files && fileInput.files.length);
+          if (hasFiles) {
+            for (var f = 0; f < fileInput.files.length; f++) {
+              if (fileInput.files[f].size > MAX_FILE_BYTES) {
+                showError(TXT.fileTooBig);
+                return;
+              }
+            }
+          }
+
+          var sectionEl = scope.closest('.shopify-section') || document;
+          var form = sectionEl.querySelector('product-form-component form[data-type="add-to-cart-form"]')
+            || document.querySelector('product-form-component form[data-type="add-to-cart-form"]');
+
+          confirmInFlight = true;
+          setBusy(true, hasFiles);
+
+          // 1) Extras primero (verificados uno a uno, con clave para poder
+          //    revertirlos si el producto principal fallara después).
+          var extraItems = [];
+          if (isAdaptActive() && ADAPT_FEE_VARIANT_ID) {
+            var adaptTextarea = scope.querySelector('[data-cz-prop="Adaptación a otra moto"]');
+            extraItems.push({
+              id: ADAPT_FEE_VARIANT_ID,
+              properties: {
+                'Aplica a': comboLabel(),
+                'Detalle': adaptTextarea && adaptTextarea.value ? adaptTextarea.value : 'Sin detalle indicado'
+              }
+            });
+          }
+          addonControllers.forEach(function (controller) {
+            var sel = controller.getSelection();
+            if (sel && sel.variantId) extraItems.push({ id: sel.variantId, properties: { 'Aplica a': comboLabel() } });
+          });
+
+          var addedExtraKeys = [];
+          var anyExtraFailed = false;
+
+          function addExtrasSequentially(index) {
+            if (index >= extraItems.length) return Promise.resolve();
+            return addLineVerified(extraItems[index].id, extraItems[index].properties).then(function (result) {
+              if (result.ok && result.key) addedExtraKeys.push(result.key);
+              if (!result.ok) anyExtraFailed = true;
+              return addExtrasSequentially(index + 1);
+            });
+          }
+
+          getCartCount().then(function (countBefore) {
+            return addExtrasSequentially(0).then(function () {
+              // 2) Producto principal a través del formulario nativo del tema
+              //    (mantiene el drawer, el contador y las animaciones nativas).
+              if (form) {
+                var idInput = form.querySelector('input[name="id"]');
+                if (idInput) idInput.value = variant.id;
+
+                cleanupInjectedInputs(form);
+
+                if (hasFiles) {
+                  form.enctype = 'multipart/form-data';
+                  var totalFiles = fileInput.files.length;
+                  Array.prototype.forEach.call(fileInput.files, function (file, index) {
+                    var clonedFile = document.createElement('input');
+                    clonedFile.type = 'file';
+                    var propName = totalFiles > 1 ? 'properties[Foto ' + (index + 1) + ']' : 'properties[Foto de la moto]';
+                    clonedFile.setAttribute('name', propName);
+                    clonedFile.setAttribute('data-cz-injected', 'true');
+                    clonedFile.style.display = 'none';
+                    form.appendChild(clonedFile);
+                    try {
+                      var dt = new DataTransfer();
+                      dt.items.add(file);
+                      clonedFile.files = dt.files;
+                    } catch (e) {
+                      clonedFile.remove();
+                    }
+                  });
+                }
+
+                scope.querySelectorAll('[data-cz-prop]').forEach(function (field) {
+                  var value = field.value;
+                  if (!value) return;
+                  var hidden = document.createElement('input');
+                  hidden.type = 'hidden';
+                  hidden.name = 'properties[' + field.dataset.czProp + ']';
+                  hidden.value = value;
+                  hidden.setAttribute('data-cz-injected-prop', 'true');
+                  form.appendChild(hidden);
+                });
+
+                var countAfterExtras = countBefore === null ? null : countBefore + addedExtraKeys.length;
+                var outcomePromise = awaitThemeAddOutcome(countAfterExtras, hasFiles ? 90000 : 15000);
+
+                var submitButton = form.querySelector('[ref="addToCartButton"]') || form.querySelector('button[type="submit"]');
+                if (submitButton && !submitButton.disabled) {
+                  submitButton.click();
+                } else if (typeof form.requestSubmit === 'function') {
+                  form.requestSubmit();
+                } else {
+                  form.submit();
+                }
+
+                return outcomePromise;
+              }
+
+              // Sin formulario nativo disponible: añadido directo verificado
+              // (sin fotos, que requieren el envío multipart del formulario).
+              var directProps = {};
+              scope.querySelectorAll('[data-cz-prop]').forEach(function (field) {
+                if (field.value) directProps[field.dataset.czProp] = field.value;
+              });
+              return addLineVerified(variant.id, directProps).then(function (result) { return result.ok; });
+            });
+          }).then(function (mainOk) {
+            cleanupInjectedInputs(form);
+            if (mainOk) {
+              confirmInFlight = false;
+              setBusy(false, false);
+              closeDialog();
+              showToast(anyExtraFailed ? TXT.extraFailed : null);
+            } else {
+              // Revertir extras ya añadidos para no dejar cargos huérfanos.
+              addedExtraKeys.forEach(function (key) { removeLineByKey(key); });
+              confirmInFlight = false;
+              setBusy(false, false);
+              showError(TXT.addError);
+            }
+          }).catch(function () {
+            cleanupInjectedInputs(form);
+            addedExtraKeys.forEach(function (key) { removeLineByKey(key); });
+            confirmInFlight = false;
+            setBusy(false, false);
+            showError(TXT.addError);
+          });
+        });
+      }
+
+      // Al volver desde el caché de página (bfcache de Safari/iOS), restaura el
+      // estado del botón para que el modal no quede bloqueado.
+      window.addEventListener('pageshow', function (event) {
+        if (event.persisted) {
+          setBusy(false, false);
+          hideError();
+          if (!dialog.hasAttribute('open')) unlockScroll();
+        }
+      });
+
+      renderPriceBadges();
+      renderAddonOptions();
+      addonControllers.forEach(function (controller) { controller.updateDisplay(); });
+      showStep(1, { skipFocus: true });
+    })();
+  </script>
+{% endif %}
+
+{% comment %}
+  Carez: parche del modal (fotos opcionales, aviso de validacion y repintado
+  anti panel-negro de Chrome Android). Antes se cargaba globalmente desde
+  layout/theme.liquid; ahora viaja con este bloque y solo se ejecuta en las
+  paginas donde el modal existe. El contenido del parche sigue viviendo en
+  snippets/carez-fix-personalizados.liquid: si se edita este bloque, el parche
+  se conserva mientras no se borre esta linea.
+{% endcomment %}
+{% render 'carez-fix-personalizados' %}
+
+{% schema %}
+{
+  "name": "Base + Acabado (borrador llantas)",
+  "tag": null,
+  "settings": [
+    { "type": "header", "content": "Textos" },
+    { "type": "text", "id": "trigger_title", "label": "Título del botón", "default": "Elegir materiales y moto" },
+    { "type": "text", "id": "trigger_subtitle", "label": "Subtítulo del botón" },
+    { "type": "text", "id": "modal_title", "label": "Título del modal", "default": "Personaliza tu kit" },
+    { "type": "text", "id": "bike_info_label", "label": "Etiqueta de la sección moto", "default": "Información de tu moto" },
+    { "type": "text", "id": "photo_label", "label": "Etiqueta de subida de foto", "default": "Foto de tu moto (opcional)" },
+    { "type": "text", "id": "add_button_text", "label": "Texto del botón añadir", "default": "Añadir al carrito" },
+    { "type": "text", "id": "adapt_fee_variant_id", "label": "ID variante cargo +20€ (Adaptación a otra moto)", "default": "62259251806595" },
+    { "type": "checkbox", "id": "custom_request_mode", "label": "Modo personalizado (Base/Acabado + petición libre)", "default": false },
+    { "type": "checkbox", "id": "hide_adapt_bike_option", "label": "Ocultar Adaptación a otra moto", "default": false },
+
+    { "type": "header", "content": "Extra — Instagram Stickers" },
+    { "type": "image_picker", "id": "addon_stickers_image", "label": "Foto del extra" },
+    { "type": "text", "id": "addon_stickers_variant_5", "label": "ID variante 5 unidades", "default": "62259365642627" },
+    { "type": "text", "id": "addon_stickers_variant_15", "label": "ID variante 15 unidades", "default": "62259369607555" },
+    { "type": "text", "id": "addon_stickers_variant_20", "label": "ID variante 20 unidades", "default": "62259369640323" },
+    { "type": "text", "id": "addon_stickers_variant_50", "label": "ID variante 50 unidades", "default": "62259369673091" },
+
+    { "type": "header", "content": "Extra — Montaje" },
+    { "type": "image_picker", "id": "addon_montaje_image", "label": "Foto del extra" },
+    { "type": "text", "id": "addon_montaje_variant_carretera", "label": "ID variante Carretera (80€)", "default": "62263631348099" },
+    { "type": "text", "id": "addon_montaje_variant_naked", "label": "ID variante Naked (70€)", "default": "62263633609091" },
+    { "type": "text", "id": "addon_montaje_variant_enduro", "label": "ID variante Enduro/MX/Supermoto (60€)", "default": "62263633641859" },
+    { "type": "text", "id": "addon_montaje_variant_trail", "label": "ID variante Trail (85€)", "default": "62263633674627" },
+    { "type": "text", "id": "addon_montaje_variant_scooter", "label": "ID variante Scooter (80€)", "default": "62263633707395" },
+    { "type": "text", "id": "addon_montaje_variant_quad", "label": "ID variante Quad (99€)", "default": "62263633740163" },
+    { "type": "text", "id": "addon_montaje_variant_agua", "label": "ID variante Moto de agua (120€)", "default": "62263633772931" },
+
+    { "type": "header", "content": "Extra — Llantas personalizadas a juego (BORRADOR)" },
+    { "type": "image_picker", "id": "addon_llantas_image", "label": "Foto del extra" },
+    { "type": "text", "id": "addon_llantas_variant", "label": "ID variante Llantas a juego (85€)" },
+
+    { "type": "header", "content": "Fotos — Normal" },
+    { "type": "image_picker", "id": "combo_normal_brillo", "label": "Normal + Brillo" },
+    { "type": "image_picker", "id": "combo_normal_mate", "label": "Normal + Mate" },
+    { "type": "image_picker", "id": "combo_normal_glitter", "label": "Normal + Glitter" },
+
+    { "type": "header", "content": "Fotos — Cromado" },
+    { "type": "image_picker", "id": "combo_cromado_brillo", "label": "Cromado + Brillo" },
+    { "type": "image_picker", "id": "combo_cromado_mate", "label": "Cromado + Mate" },
+    { "type": "image_picker", "id": "combo_cromado_glitter", "label": "Cromado + Glitter" },
+
+    { "type": "header", "content": "Fotos — Holográfico" },
+    { "type": "image_picker", "id": "combo_holografico_brillo", "label": "Holográfico + Brillo" },
+    { "type": "image_picker", "id": "combo_holografico_mate", "label": "Holográfico + Mate" },
+    { "type": "image_picker", "id": "combo_holografico_glitter", "label": "Holográfico + Glitter" }
+  ],
+  "presets": [
+    { "name": "Base + Acabado (borrador llantas)" }
+  ]
+}
+{% endschema %}
+

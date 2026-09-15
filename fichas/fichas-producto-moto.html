@@ -200,6 +200,8 @@
   .cta:focus-visible{outline:3px solid var(--tape);outline-offset:2px}
   .cta.tape{background:var(--tape);color:var(--tape-ink);width:auto}
   .micro{font-size:12.5px;color:var(--ink-3);text-align:center}
+  .cta-note{font-size:15px;font-weight:600;color:var(--ink);text-align:center;padding:12px 14px;border-radius:8px;background:var(--accent-soft);border:1px solid var(--accent)}
+  .cta-note::before{content:"✓ ";color:var(--accent)}
 
   /* secciones */
   .body{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:28px}
@@ -524,10 +526,10 @@ function ficha(p){
           <ul class="lines" id="lines"></ul>
           <div class="total">
             <div><div class="price" id="price">${eur(minP(p))}</div><div class="price-note">IVA incluido · <b>envío gratis</b> en España</div></div>
-            <div class="price-note" style="text-align:right">Kit desde ${eur(minP(p))}<br>Entrega en 3 a 5 días laborables</div>
+            <div class="price-note" style="text-align:right">Kit desde ${eur(minP(p))}<br>Entrega en 7 a 10 días laborables</div>
           </div>
           <a class="cta" id="cta" href="${url(p)}" target="_blank" rel="noopener">Añadir al carrito →</a>
-          <p class="micro" id="cta-note">${p.custom?"No se fabrica nada hasta que apruebes la previsualización.":"Antes de fabricar te enviamos la previsualización de tu kit para que la apruebes."}</p>
+          <p class="cta-note" id="cta-note">${p.custom?"No se fabrica nada hasta que apruebes la previsualización.":"Antes de fabricar te enviamos la previsualización de tu kit para que la apruebes."}</p>
         </div>
       </form>
     </div>
@@ -555,7 +557,7 @@ function ficha(p){
           <tr><th>Acabado</th><td>Brillo · Mate · Glitter</td></tr>
           <tr><th>Compatibilidad</th><td>${esc(name(p))} · ${esc(p.years)}</td></tr>
           <tr><th>Garantía</th><td>365 días. Pintura intacta: el vinilo se retira sin dañarla.</td></tr>
-          <tr><th>Envío</th><td>España gratis, 3 a 5 días laborables · UE 13,50 €, 5 a 7 días</td></tr>
+          <tr><th>Envío</th><td>España gratis, 7 a 10 días laborables · UE 13,50 €, 5 a 7 días</td></tr>
           <tr><th>Devolución</th><td>${p.custom?"Sin desistimiento por ser 100% personalizado, salvo defecto o daño en transporte":"30 días naturales en productos de catálogo sin usar"}</td></tr>
         </table></section>
       <section class="sec full"><h3>Preguntas frecuentes</h3>
@@ -658,7 +660,7 @@ function shopifyHtml(p){
 <ul>
 <li>365 días de garantía en el vinilo</li>
 <li>2 cambios de diseño gratis incluidos</li>
-<li>Envío gratis en España (3 a 5 días laborables) · UE 13,50 €</li>
+<li>Envío gratis en España (7 a 10 días laborables) · UE 13,50 €</li>
 <li>Previsualización del diseño antes de fabricar</li>
 </ul>
 <h3>POR QUÉ ${esc(p.design.toUpperCase())}</h3>
