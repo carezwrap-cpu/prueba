@@ -166,7 +166,8 @@
                 "combo_holografico_glitter": "shopify://shop_images/holografico-glitter-v3.png",
                 "addon_llantas_image": "shopify://shop_images/vinilos-llanta-carretera-personalizado.png",
                 "addon_llantas_variant": "62622437114243",
-                "change_fee_variant_id": "62622669930883"
+                "change_fee_variant_id": "62622669930883",
+                "inline_mode": true
               },
               "blocks": {}
             },
@@ -179,7 +180,8 @@
                 "shipping_title": "Envío gratis a toda España",
                 "shipping_subtitle": "En todos los pedidos"
               },
-              "blocks": {}
+              "blocks": {},
+              "disabled": true
             },
             "buy_buttons_eYQEYi": {
               "type": "buy-buttons",
