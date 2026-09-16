@@ -2,7 +2,7 @@
 
 **Tienda:** Carez Designs (www.carezdesigns.com)
 **Detectado:** 16/09/2026, por quejas de clientes (caso concreto reportado: montaje **Trail**)
-**Estado:** causa localizada, arreglo del tema pendiente
+**Estado:** arreglo hecho y probado en el borrador **V78**; falta publicarlo
 
 ## Síntoma
 
@@ -74,17 +74,88 @@ Ventas de `Montaje (extra)` por semana frente al total de pedidos:
 adjunción. Los kits se siguen vendiendo con normalidad: encaja con que los
 clientes estén comprando por el botón nativo, que no pasa por el configurador.
 
-## Arreglo propuesto (tema)
+## Arreglo aplicado
 
-En las fichas que usan el configurador, dejar **un solo** camino de compra:
+El conector de Shopify bloquea la escritura sobre el tema publicado, así que el
+cambio se ha hecho sobre un duplicado exacto del tema en vivo:
 
-1. Ocultar el bloque nativo de compra (`product-form-component` /
-   `buy-buttons-block`) cuando la sección `bike_customizer` esté activa, **o**
-2. dejar el botón nativo solo como "Comprar sin personalizar" y subir el botón
-   del configurador por encima, con un texto que lo distinga de verdad.
+- **Tema en vivo:** V77 (`gid://shopify/OnlineStoreTheme/199615840643`)
+- **Borrador con el arreglo:** **V78 — un solo boton de compra en fichas con
+  configurador** (`gid://shopify/OnlineStoreTheme/199679803779`), duplicado de
+  V77 el 16/09/2026.
 
-La opción 1 es la que menos ambigüedad deja. Requiere editar el tema; conviene
-hacerlo sobre una copia no publicada y previsualizarla antes de publicar.
+Dos archivos:
+
+1. **`snippets/carez-un-boton-compra.liquid`** (nuevo, 1876 bytes). Oculta el
+   bloque de compra nativo, pero solo en las páginas donde existe el
+   configurador:
+
+   ```css
+   body:has([data-cz-dialog]) .buy-buttons-block,
+   body:has([data-cz-dialog]) sticky-add-to-cart {
+     display: none !important;
+   }
+   ```
+
+   Incluye un respaldo en JS para navegadores sin `:has()`, que hace lo mismo y
+   nada más.
+
+2. **`layout/theme.liquid`**: una sola línea añadida, junto al resto de snippets
+   `carez-*`:
+
+   ```diff
+      {% render 'carez-montaje-tipo' %}
+   +  {% render 'carez-un-boton-compra' %}
+      {% render 'carez-tipografia' %}
+   ```
+
+   La copia local desde la que se generó el cambio se verificó byte a byte
+   contra el archivo en vivo (MD5 `7e56f154628e8c8fa5b2af1c31aeef1e`, 8086
+   bytes) antes de tocar nada, y los dos archivos subidos devolvieron el MD5
+   esperado.
+
+### Por qué se oculta y no se elimina
+
+El configurador añade el kit haciendo `submitButton.click()` sobre el formulario
+nativo del tema (`product-form-component form[data-type="add-to-cart-form"]`), y
+ese formulario es también el que sube las fotos en multipart. Si se quita el
+bloque, el configurador cae a un añadido directo que **pierde las fotos**. Un
+`display:none` no impide el click programático, así que el formulario sigue
+haciendo su trabajo desde dentro del configurador.
+
+No se ha cambiado el texto de ningún botón.
+
+### Comprobaciones hechas
+
+| Comprobación | Resultado |
+|---|---|
+| Botón "Agregar al carrito" dentro de `.buy-buttons-block` | Sí (52×264 px) |
+| Con el CSS aplicado | 0 px, no visible |
+| Formulario y botón submit siguen en el DOM y habilitados | Sí |
+| Flujo completo en móvil (kit + montaje Trail) | 2 × `/cart/add` HTTP 200 |
+| Carrito resultante | Kit 188 € + Montaje Trail 85 € = **273 €** |
+| Fichas **con** configurador (BMW GS, MT-07, kit personalizado) | Botón nativo oculto |
+| Fichas **sin** configurador (montaje-extra, vinilos-llanta-yamaha-gt) | Botón nativo visible, intactas |
+
+Esa última fila es la que evita el riesgo grave: la regla está anclada a
+`[data-cz-dialog]`, que solo existe donde hay configurador, así que ningún
+producto se queda sin forma de comprarse.
+
+### Cómo publicarlo
+
+Previsualización:
+`https://www.carezdesigns.com/products/adhesivos-para-moto-bmw-1200-gs-2014-2016?preview_theme_id=199679803779`
+
+Opción A — publicar V78 desde el admin (Tienda online → Temas → V78 →
+Publicar). El borrador es copia de V77 del 16/09: cualquier cambio hecho en V77
+después de esa fecha no está incluido.
+
+Opción B — mantener V77 como tema en vivo y aplicar los dos cambios a mano en
+Tienda online → Temas → V77 → Editar código: crear
+`snippets/carez-un-boton-compra.liquid` con el contenido de arriba y añadir la
+línea `{% render 'carez-un-boton-compra' %}` en `layout/theme.liquid`.
+
+Para revertirlo, basta con quitar esa línea de `layout/theme.liquid`.
 
 ## Limpieza recomendada aparte
 
