@@ -1758,7 +1758,10 @@ photosRequired: IS_EN
 : 'Sube al menos una foto de referencia para continuar.',
 extraFailed: IS_EN
 ? 'The kit was added, but one extra could not be added. Please check your cart.'
-: 'El kit se añadió, pero uno de los extras no pudo añadirse. Revisa tu carrito.'
+: 'El kit se añadió, pero uno de los extras no pudo añadirse. Revisa tu carrito.',
+extraAddError: IS_EN
+? 'One of the extras could not be added. Nothing was added to the cart; please check your connection and try again.'
+: 'No se ha podido añadir uno de los extras. No se ha añadido nada al carrito; revisa tu conexión e inténtalo de nuevo.'
 };
 var CART_ADD_URL = {{ routes.cart_add_url | json }} + '.js';
 var CART_CHANGE_URL = {{ routes.cart_change_url | json }} + '.js';
@@ -2396,6 +2399,11 @@ return addExtrasSequentially(index + 1);
 }
 getCartCount().then(function (countBefore) {
 return addExtrasSequentially(0).then(function () {
+if (anyExtraFailed) {
+/* Un extra (llantas, cambio de diseño, adaptación…) no se pudo añadir:
+   no se envía el kit para que el carrito nunca quede incompleto. */
+return Promise.all(addedExtraKeys.map(removeLineByKey)).then(function () { return 'extra-failed'; });
+}
 if (form) {
 var idInput = form.querySelector('input[name="id"]');
 if (idInput) idInput.value = variant.id;
@@ -2450,6 +2458,12 @@ return addLineVerified(variant.id, directProps).then(function (result) { return 
 });
 }).then(function (mainOk) {
 cleanupInjectedInputs(form);
+if (mainOk === 'extra-failed') {
+confirmInFlight = false;
+setBusy(false, false);
+showError(TXT.extraAddError);
+return;
+}
 if (mainOk) {
 confirmInFlight = false;
 setBusy(false, false);
