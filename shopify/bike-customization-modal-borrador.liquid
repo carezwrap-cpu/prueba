@@ -16,7 +16,16 @@ assign models_json = product.metafields.custom.compatible_models.value | default
 assign years_json = product.metafields.custom.compatible_years.value | default: blank
 assign custom_mode = block.settings.custom_request_mode
 assign hide_adapt = block.settings.hide_adapt_bike_option
-assign inline_mode = block.settings.inline_mode
+assign open_mode = block.settings.open_mode | default: 'modal'
+assign inline_mode = false
+assign link_mode = false
+if open_mode == 'inline'
+assign inline_mode = true
+elsif open_mode == 'link'
+assign link_mode = true
+endif
+assign link_view = block.settings.link_view | default: 'configurador'
+assign config_url = product.url | append: '?view=' | append: link_view
 comment
 Carez: familia del producto para ofrecer SOLO su montaje especifico.
 Personalizados: por el handle del producto. Kits normales: por las
@@ -926,13 +935,115 @@ grid-template-columns: 1fr auto;
 grid-column: 1 / -1;
 }
 }
+a.cz-modal-trigger-{{ block.id }} {
+text-decoration: none;
+box-sizing: border-box;
+}
 .cz-inline-{{ block.id }} {
 display: block;
+width: 100%;
 background: #0b0b0d;
 border: 1px solid #232226;
 border-radius: 16px;
 color: #f2f1ee;
 overflow: hidden;
+container-type: inline-size;
+}
+.cz-modal-{{ block.id }}:has(> .cz-inline-{{ block.id }}) {
+width: 100%;
+}
+.cz-inline-head-{{ block.id }} {
+display: flex;
+gap: 18px;
+align-items: center;
+margin: 0 0 18px;
+padding: 0 0 18px;
+border-bottom: 1px solid #232226;
+}
+.cz-inline-thumb-{{ block.id }} {
+flex: 0 0 auto;
+width: 96px;
+height: 96px;
+object-fit: cover;
+border-radius: 12px;
+border: 1px solid #232226;
+background: #17171a;
+}
+.cz-inline-head-text-{{ block.id }} {
+min-width: 0;
+}
+.cz-inline-back-{{ block.id }} {
+display: inline-block;
+font-size: 12.5px;
+color: #9a9894;
+text-decoration: none;
+margin-bottom: 8px;
+}
+.cz-inline-back-{{ block.id }}:hover {
+color: #c9a24b;
+}
+.cz-inline-kicker-{{ block.id }} {
+margin: 0 0 2px;
+font-family: 'Barlow Condensed', Arial, sans-serif;
+font-size: 13px;
+font-weight: 700;
+letter-spacing: 0.12em;
+text-transform: uppercase;
+color: #c9a24b;
+}
+.cz-inline-title-{{ block.id }} {
+margin: 0;
+font-family: 'Barlow Condensed', Arial, sans-serif;
+font-size: clamp(24px, 3.2vw, 36px);
+font-weight: 800;
+line-height: 1.05;
+text-transform: uppercase;
+color: #f2f1ee;
+}
+.cz-inline-sub-{{ block.id }} {
+margin: 6px 0 0;
+font-size: 14px;
+line-height: 1.5;
+color: #9a9894;
+}
+.cz-inline-{{ block.id }} [data-cz-step="2"].carez-split {
+grid-template-columns: minmax(280px, 400px) minmax(0, 1fr);
+column-gap: 28px;
+}
+.cz-inline-{{ block.id }} [data-cz-step="2"].carez-split [data-cz-grid] {
+grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+gap: 12px !important;
+}
+@container (max-width: 820px) {
+.cz-inline-{{ block.id }} [data-cz-step="2"].carez-split {
+display: block;
+}
+.cz-inline-{{ block.id }} [data-cz-step="2"].carez-split > .carez-res {
+position: static;
+margin-bottom: 18px;
+}
+.cz-inline-{{ block.id }} .cz-inline-head-{{ block.id }} {
+align-items: flex-start;
+}
+.cz-inline-{{ block.id }} .cz-inline-thumb-{{ block.id }} {
+width: 72px;
+height: 72px;
+}
+}
+@container (max-width: 1000px) {
+.cz-inline-{{ block.id }} [data-cz-step="2"].carez-split [data-cz-card] [class*="cz-card-footer"] {
+flex-direction: column !important;
+align-items: flex-start !important;
+gap: 4px !important;
+padding: 8px 10px !important;
+}
+.cz-inline-{{ block.id }} [data-cz-step="2"].carez-split [data-cz-card] [class*="cz-card-name"] {
+font-size: 13px !important;
+}
+.cz-inline-{{ block.id }} [data-cz-step="2"].carez-split [data-cz-card] [class*="cz-card-price"] {
+font-size: 11px !important;
+padding: 2px 7px !important;
+}
 }
 .cz-inline-{{ block.id }} .cz-body-{{ block.id }} {
 padding: 18px 20px 4px;
@@ -1032,15 +1143,16 @@ grid-template-columns: 1fr;
 {% endstyle %}
 <div class="cz-modal-{{ block.id }}" {{ block.shopify_attributes }}>
 {% unless inline_mode %}
-<button type="button" class="cz-modal-trigger-{{ block.id }}" data-cz-open>
+{% if link_mode %}<a href="{{ config_url }}" class="cz-modal-trigger-{{ block.id }}" data-cz-link>{% else %}<button type="button" class="cz-modal-trigger-{{ block.id }}" data-cz-open>{% endif %}
 <span class="cz-trigger-label">
 <span class="cz-trigger-title">{{ block.settings.trigger_title | default: 'Elegir materiales y moto' }}</span>
 <span class="cz-trigger-sub" data-cz-trigger-sub>{{ block.settings.trigger_subtitle | default: 'Base, acabado y ficha de tu moto' }}</span>
 </span>
 <svg class="cz-trigger-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-</button>
+{% if link_mode %}</a>{% else %}</button>{% endif %}
 <p class="cz-preview-note-{{ block.id }}">Antes de fabricar te enviamos la previsualización de tu kit para que la apruebes.</p>
 {% endunless %}
+{% unless link_mode %}
 {% if inline_mode %}<div class="cz-inline-{{ block.id }}" data-cz-dialog data-cz-inline>{% else %}<dialog class="cz-dialog-{{ block.id }}" data-cz-dialog>{% endif %}
 <div class="cz-panel-{{ block.id }}">
 {% unless inline_mode %}
@@ -1070,6 +1182,15 @@ grid-template-columns: 1fr;
 <p class="cz-visually-hidden-{{ block.id }}" data-cz-step-announcer role="status" aria-live="polite"></p>
 <div class="cz-body-{{ block.id }}">
 {% if inline_mode %}
+<div class="cz-inline-head-{{ block.id }}">
+{% if product.featured_image %}<img class="cz-inline-thumb-{{ block.id }}" src="{{ product.featured_image | image_url: width: 240 }}" alt="{{ product.title | escape }}" width="120" height="120" loading="eager">{% endif %}
+<div class="cz-inline-head-text-{{ block.id }}">
+<a class="cz-inline-back-{{ block.id }}" href="{{ product.url }}">&larr; Volver a la ficha del producto</a>
+<p class="cz-inline-kicker-{{ block.id }}">Configura tu kit</p>
+<h1 class="cz-inline-title-{{ block.id }}">{{ product.title }}</h1>
+<p class="cz-inline-sub-{{ block.id }}">Elige tu moto, la base y el acabado, y los extras. Ves el precio final abajo antes de añadirlo al carrito.</p>
+</div>
+</div>
 <ul class="cz-badges-{{ block.id }}">
 <li><b>365 días</b><span>de garantía en el vinilo</span></li>
 <li><b>2 cambios</b><span>de diseño gratis incluidos</span></li>
@@ -1481,7 +1602,9 @@ placeholder="{{ 'bike_customizer.adapt_placeholder' | t }}"
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
 <span data-cz-toast-message>{{ 'bike_customizer.add_success' | t }}</span>
 </div>
+{% endunless %}
 </div>
+{% unless link_mode %}
 <script type="application/json" data-cz-variants-{{ block.id }}>
 [
 {% for variant in product.variants %}
@@ -1589,6 +1712,7 @@ extraFailed: IS_EN
 var CART_ADD_URL = {{ routes.cart_add_url | json }} + '.js';
 var CART_CHANGE_URL = {{ routes.cart_change_url | json }} + '.js';
 var CART_JS_URL = {{ routes.cart_url | json }} + '.js';
+var CART_URL = {{ routes.cart_url | json }};
 var MAX_FILE_BYTES = 20 * 1024 * 1024;
 function formatMoney(cents) {
 return (cents / 100).toLocaleString(UI_LOCALE, { style: 'currency', currency: '{{ cart.currency.iso_code | default: shop.currency }}' });
@@ -2277,6 +2401,7 @@ cleanupInjectedInputs(form);
 if (mainOk) {
 confirmInFlight = false;
 setBusy(false, false);
+if (INLINE) { window.location.href = CART_URL; return; }
 closeDialog();
 showToast(anyExtraFailed ? TXT.extraFailed : null);
 } else {
@@ -2307,6 +2432,7 @@ addonControllers.forEach(function (controller) { controller.updateDisplay(); });
 showStep(1, { skipFocus: true });
 })();
 </script>
+{% endunless %}
 {% endif %}
 {% comment %}
 Carez: parche del modal (fotos opcionales, aviso de validacion y repintado
@@ -2332,7 +2458,8 @@ se conserva mientras no se borre esta linea.
 { "type": "text", "id": "adapt_fee_variant_id", "label": "ID variante cargo +20€ (Adaptación a otra moto)", "default": "62259251806595" },
 { "type": "text", "id": "change_fee_variant_id", "label": "ID variante cambio de diseño adicional (9,99€)" },
 { "type": "checkbox", "id": "custom_request_mode", "label": "Modo personalizado (Base/Acabado + petición libre)", "default": false },
-{ "type": "checkbox", "id": "inline_mode", "label": "Configurador en la página (sin ventana emergente)", "default": false },
+{ "type": "select", "id": "open_mode", "label": "Cómo se abre el configurador", "default": "modal", "options": [ { "value": "modal", "label": "Ventana emergente (modal)" }, { "value": "link", "label": "Botón que lleva a una página nueva" }, { "value": "inline", "label": "Incrustado en la página (plantilla configurador)" } ] },
+{ "type": "text", "id": "link_view", "label": "Plantilla de la página nueva (product.<valor>.json)", "default": "configurador" },
 { "type": "checkbox", "id": "hide_adapt_bike_option", "label": "Ocultar Adaptación a otra moto", "default": false },
 { "type": "header", "content": "Extra — Instagram Stickers" },
 { "type": "image_picker", "id": "addon_stickers_image", "label": "Foto del extra" },

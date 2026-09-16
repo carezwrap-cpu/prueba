@@ -167,7 +167,8 @@
                 "addon_llantas_image": "shopify://shop_images/vinilos-llanta-carretera-personalizado.png",
                 "addon_llantas_variant": "62622437114243",
                 "change_fee_variant_id": "62622669930883",
-                "inline_mode": true
+                "open_mode": "link",
+                "link_view": "configurador"
               },
               "blocks": {}
             },
@@ -180,8 +181,7 @@
                 "shipping_title": "Envío gratis a toda España",
                 "shipping_subtitle": "En todos los pedidos"
               },
-              "blocks": {},
-              "disabled": true
+              "blocks": {}
             },
             "buy_buttons_eYQEYi": {
               "type": "buy-buttons",
@@ -331,8 +331,7 @@
                 "divider_color": "",
                 "type_preset": "h6"
               },
-              "blocks": {},
-              "disabled": true
+              "blocks": {}
             },
             "text_gXMUag": {
               "type": "text",
