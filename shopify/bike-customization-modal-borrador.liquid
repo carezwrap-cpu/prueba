@@ -1196,6 +1196,7 @@ grid-template-columns: 1fr;
 <li><b>2 cambios</b><span>de diseño gratis incluidos</span></li>
 <li><b>Envío gratis</b><span>en España · UE 13,50 €</span></li>
 </ul>
+<form method="post" action="{{ routes.cart_add_url }}" enctype="multipart/form-data" data-cz-inline-form hidden><input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}"><input type="hidden" name="quantity" value="1"></form>
 {% endif %}
 <div class="cz-step-panel-{{ block.id }}" data-cz-step="1">
 <h4 class="cz-step-heading-{{ block.id }}" data-cz-step-heading tabindex="-1">1. {{ 'bike_customizer.step_label_1' | t }}</h4>
@@ -2309,7 +2310,8 @@ return;
 }
 var sectionEl = scope.closest('.shopify-section') || document;
 var form = sectionEl.querySelector('product-form-component form[data-type="add-to-cart-form"]')
-|| document.querySelector('product-form-component form[data-type="add-to-cart-form"]');
+|| document.querySelector('product-form-component form[data-type="add-to-cart-form"]')
+|| scope.querySelector('[data-cz-inline-form]');
 confirmInFlight = true;
 setBusy(true, hasFiles);
 var extraItems = [];
