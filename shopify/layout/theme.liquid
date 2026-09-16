@@ -1,0 +1,217 @@
+<!doctype html>
+<html
+  {% if request.design_mode %}
+    class="shopify-design-mode"
+  {% endif %}
+  lang="{{ request.locale.iso_code }}"
+>
+  <head>
+    {%- if settings.favicon != blank -%}
+      <link
+        rel="icon"
+        sizes="48x48"
+        href="{{ settings.favicon | image_url: width: 48, height: 48 }}"
+      >
+      <link
+        rel="icon"
+        sizes="96x96"
+        href="{{ settings.favicon | image_url: width: 96, height: 96 }}"
+      >
+      <link
+        rel="icon"
+        sizes="192x192"
+        href="{{ settings.favicon | image_url: width: 192, height: 192 }}"
+      >
+      <link
+        rel="apple-touch-icon"
+        sizes="180x180"
+        href="{{ settings.favicon | image_url: width: 180, height: 180 }}"
+      >
+    {%- endif -%}
+
+    {% comment %}
+      Opt into cross-document (MPA) view transitions and hold first paint until #MainContent
+      parses, so the transition runs consistently.
+      Both are gated on the same settings as the view-transitions.js opt-out switch (see snippets/scripts.liquid).
+    {% endcomment %}
+    {% if settings.transition_to_main_product or settings.page_transition_enabled %}
+      {% style %}
+        @media (prefers-reduced-motion: no-preference) {
+          @view-transition {
+            navigation: auto;
+          }
+        }
+      {% endstyle %}
+      <link
+        rel="expect"
+        href="#MainContent"
+        blocking="render"
+        id="view-transition-render-blocker"
+      >
+    {% endif %}
+
+    {%- render 'meta-tags' -%}
+    {%- render 'stylesheets' -%}
+    {%- render 'fonts' -%}
+    {%- render 'scripts' -%}
+    {%- render 'theme-styles-variables' -%}
+    {%- render 'color-palette' -%}
+
+    {% if request.design_mode %}
+      {%- render 'theme-editor' -%}
+    {% endif %}
+
+    {{ content_for_header }}
+    {% render 'carez-judgeme-en' %}
+  </head>
+
+  <body class="page-width-{{ settings.page_width }} card-hover-effect-{{ settings.card_hover_effect }}">
+    {% render 'carez-imagenes-en' %}
+    {% render 'skip-to-content-link', href: '#MainContent', text: 'accessibility.skip_to_text' %}
+
+    {% render 'chat-drawer' %}
+
+    <div class="page-wrapper">
+      {% render 'carez-mobile-localization' %}
+      <div id="header-group">
+        {% sections 'header-group' %}
+      </div>
+
+      <script>
+        // Inline header height and menu style calculations to prevent layout shift
+        // Note: Updates in calculateHeaderGroupHeight(), updateTransparentHeaderOffset() and setHeaderMenuStyle() utilities.js should be kept in sync with this function
+        (function setHeaderHeighCustomProperties() {
+          /*
+           * Header calculation functions for maintaining CSS variables
+           * Mimic calculateHeaderGroupHeight() in utilities.js
+           */
+          const header = document.querySelector('header-component');
+          const headerGroup = document.querySelector('#header-group');
+          const hasHeaderSection = headerGroup?.querySelector('.header-section');
+
+          if (!header || !headerGroup) return;
+
+          const headerTopRow = header.querySelector('.header__row--top');
+          const headerHeight = header.offsetHeight;
+
+          // Calculate the total height of the header group
+          let headerGroupHeight = 0;
+          const children = headerGroup.children;
+          for (let i = 0; i < children.length; i++) {
+            const element = children[i];
+            if (element === header || !(element instanceof HTMLElement)) continue;
+            headerGroupHeight += element.offsetHeight;
+          }
+
+          // Check for transparent header special case
+          if (header.hasAttribute('transparent') && header.parentElement?.nextElementSibling) {
+            headerGroupHeight += headerHeight;
+          }
+
+          // Set CSS variables
+          document.body.style.setProperty('--header-height', `${headerHeight}px`);
+          document.body.style.setProperty('--header-group-height', `${headerGroupHeight}px`);
+
+          if (headerTopRow) {
+            window.requestAnimationFrame(function () {
+              document.body.style.setProperty('--top-row-height', `${headerTopRow.offsetHeight}px`);
+            });
+          }
+
+          /**
+           * Updates CSS custom properties for transparent header offset calculation
+           * Mimic updateTransparentHeaderOffset() in utilities.js
+           */
+
+          if (!hasHeaderSection || !header?.hasAttribute('transparent')) {
+            document.body.style.setProperty('--transparent-header-offset-boolean', '0');
+            return;
+          }
+
+          const hasImmediateSection = hasHeaderSection.nextElementSibling?.classList.contains('shopify-section');
+
+          const shouldApplyOffset = !hasImmediateSection ? '1' : '0';
+          document.body.style.setProperty('--transparent-header-offset-boolean', shouldApplyOffset);
+        })();
+
+        (function setHeaderMenuStyle() {
+          const headerComponent = document.querySelector('#header-component');
+          if (headerComponent) {
+            const isTouchDevice = 'ontouchstart' in window && navigator.maxTouchPoints > 0;
+            const overflowList = headerComponent?.querySelector('overflow-list');
+            const hasReachedMinimum = overflowList && overflowList.hasAttribute('minimum-reached');
+            headerComponent.dataset.menuStyle = isTouchDevice || hasReachedMinimum ? 'drawer' : 'menu';
+          }
+        })();
+      </script>
+
+      {% render 'carez-localization-labels' %}
+
+      <main
+        id="MainContent"
+        class="content-for-layout"
+        role="main"
+        data-page-transition-enabled="{{ settings.page_transition_enabled }}"
+        data-product-transition="{{ settings.transition_to_main_product }}"
+        data-template="{{ template }}"
+      >
+        {{ content_for_layout }}
+        {% comment %}
+          Carez: bloques visuales de la guia de compra. Se inyectan desde aqui
+          porque la plantilla JSON de esa pagina no es reescribible por API
+          (body.content infiel, como locales/en.default.json).
+        {% endcomment %}
+        {% if template.name == 'page' and template.suffix == 'kit-pegatinas-moto' %}
+          {% render 'carez-guia-kit' %}
+        {% endif %}
+        {% comment %}
+          Carez: en /search sin consulta se oculta el volcado de productos por
+          defecto y se ofrecen los destinos utiles (ver carez-busqueda).
+        {% endcomment %}
+        {% if template.name == 'search' %}
+          {% render 'carez-busqueda' %}
+        {% endif %}
+        {% comment %}
+          Carez: H1 y texto SEO de las colecciones. Se inyecta aqui, despues de
+          content_for_layout, por dos motivos: asi queda SIEMPRE debajo del
+          buscador y de la rejilla de kits (que es lo que el cliente debe ver
+          primero), y templates/collection.json es autogenerado y el editor de
+          temas lo reescribe. Solo la plantilla por defecto: las de llantas ya
+          pintan su propio H1 arriba y se duplicaria.
+        {% endcomment %}
+        {% if template.name == 'collection' and template.suffix == blank %}
+          {% render 'carez-seo-coleccion' %}
+        {% endif %}
+      </main>
+
+      <footer>
+        {% sections 'footer-group' %}
+      </footer>
+    </div>
+
+    {% render 'carez-motion' %}
+
+    {% render 'cart-drawer', render_wrapper: true %}
+    {% render 'theme-drawer' %}
+
+    {% render 'search-modal' %}
+
+    {% if settings.quick_add or settings.mobile_quick_add %}
+      {% render 'quick-add-modal' %}
+    {% endif %}
+
+    {% comment %}
+      Carez: el parche del modal de personalizacion (carez-fix-personalizados)
+      ya NO se renderiza aqui: viaja dentro de blocks/bike-customization-modal
+      y solo se ejecuta en las paginas de producto donde existe el modal.
+    {% endcomment %}
+    {% render 'carez-drawer-enlaces' %}
+    {% render 'carez-footer-estilo' %}
+    {% render 'carez-espaciado-fichas' %}
+    {% render 'carez-montaje-tipo' %}
+    {% render 'carez-un-boton-compra' %}
+    {% render 'carez-tipografia' %}
+    {% render 'carez-tipografia-ajustes' %}
+    {% render 'carez-auto-locale' %}
+  </body>
+</html>

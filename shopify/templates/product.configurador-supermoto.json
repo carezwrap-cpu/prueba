@@ -4,9 +4,9 @@
       "type": "_blocks",
       "blocks": {
         "bike_1": {
-          "type": "bike-customization-modal-borrador",
+          "type": "bike-customization-modal",
           "settings": {
-            "trigger_title": "AÑADIR AL CARRITO",
+            "trigger_title": "AÑADIR AL CARRITO / VER OPCIONES DE  MATERIALES / MODELO DE MOTO / EXTRAS",
             "trigger_subtitle": "Base, acabado y ficha de tu moto",
             "modal_title": "Personaliza tu kit",
             "bike_info_label": "Informacion de tu moto",
@@ -14,7 +14,7 @@
             "add_button_text": "Anadir al carrito",
             "adapt_fee_variant_id": "62259251806595",
             "custom_request_mode": false,
-            "hide_adapt_bike_option": false,
+            "hide_adapt_bike_option": true,
             "addon_stickers_image": "shopify://shop_images/instagram-stickers-extra.png",
             "addon_stickers_variant_5": "62259365642627",
             "addon_stickers_variant_15": "62259369607555",
@@ -41,7 +41,7 @@
             "addon_llantas_variant": "62622437114243",
             "change_fee_variant_id": "62622669930883",
             "open_mode": "inline",
-            "link_view": "configurador"
+            "link_view": "configurador-supermoto"
           },
           "blocks": {}
         }

@@ -2,6 +2,18 @@
 Selector de personalización "Base + Acabado" con foto y ficha de moto.
 Reutiliza variantes reales de Shopify (Base x Acabado) para el precio y el
 flujo nativo de añadir al carrito del tema (no sustituye ni clona el botón).
+
+Modos (ajuste "Cómo se abre el configurador"):
+- modal: botón que abre una ventana emergente con los 3 pasos (comportamiento original).
+- link: el mismo botón enlaza a la página del configurador del producto
+  (?view=<plantilla>, por defecto product.configurador.json). No renderiza el modal.
+- inline: los 3 pasos incrustados en la página, con scroll. Es el modo que usan las
+  plantillas product.configurador*.json.
+
+Incluye ademas: cambios de diseño progresivos (2 gratis, 9,99 € desde el tercero,
+producto "Cambio de diseño adicional (extra)") y el extra "Llantas personalizadas a
+juego" (85 €, producto "Llantas personalizadas a juego (extra)").
+Textos nuevos del bloque: variables t_* al inicio (ES/EN en linea).
 {%- enddoc -%}
 {% liquid
 assign product = closest.product
@@ -26,6 +38,65 @@ assign link_mode = true
 endif
 assign link_view = block.settings.link_view | default: 'configurador'
 assign config_url = product.url | append: '?view=' | append: link_view
+comment
+Textos propios del bloque (ES/EN en linea, como el resto del bloque: los
+locales/*.json no son reescribibles con fidelidad por API).
+endcomment
+assign is_en = false
+if request.locale.iso_code contains 'en'
+assign is_en = true
+endif
+if is_en
+assign t_add_to_cart = 'Add to cart'
+assign t_bike_info = 'Information about your motorcycle'
+assign t_photo_label = 'Photo of your motorcycle (optional)'
+assign t_page_kicker = 'Configure your kit'
+assign t_page_intro = 'Choose your bike, the base and finish, and any extras. You will see the final price below before adding it to your cart.'
+assign t_back_to_product = 'Back to the product page'
+assign t_badge_warranty = '365 days'
+assign t_badge_warranty_sub = 'vinyl warranty'
+assign t_badge_changes = '2 changes'
+assign t_badge_changes_sub = 'free design changes included'
+assign t_badge_shipping = 'Free shipping'
+assign t_badge_shipping_sub = 'in Spain · EU €13.50'
+assign t_changes_hint = 'The first 2 changes are included. From the third one, each change costs [fee]. You will see them applied in the preview before production.'
+assign t_change = 'Change'
+assign t_change_placeholder_1 = 'e.g. change the grey to black'
+assign t_change_placeholder_2 = 'e.g. add my name on the tank'
+assign t_change_placeholder_3 = 'e.g. remove the number from the tail'
+assign t_change_placeholder_other = 'Another change'
+assign t_free = 'Free'
+assign t_rims_name = 'Matching custom rim decals'
+assign t_rims_summary = 'Tap to add · same design on both rims'
+assign t_rims_hint = 'Decals for both rims drawn with the same colours and graphics as your kit. You will see them in the preview before production.'
+assign t_rims_option = 'Rim decals matching the design'
+assign t_preview_note = 'Before production we send you a preview of your kit for your approval.'
+else
+assign t_add_to_cart = 'Añadir al carrito'
+assign t_bike_info = 'Información de tu moto'
+assign t_photo_label = 'Foto de tu moto (opcional)'
+assign t_page_kicker = 'Configura tu kit'
+assign t_page_intro = 'Elige tu moto, la base y el acabado, y los extras. Ves el precio final abajo antes de añadirlo al carrito.'
+assign t_back_to_product = 'Volver a la ficha del producto'
+assign t_badge_warranty = '365 días'
+assign t_badge_warranty_sub = 'de garantía en el vinilo'
+assign t_badge_changes = '2 cambios'
+assign t_badge_changes_sub = 'de diseño gratis incluidos'
+assign t_badge_shipping = 'Envío gratis'
+assign t_badge_shipping_sub = 'en España · UE 13,50 €'
+assign t_changes_hint = 'Los 2 primeros cambios van incluidos. A partir del tercero, cada cambio cuesta [fee]. Los ves aplicados en la previsualización antes de fabricar.'
+assign t_change = 'Cambio'
+assign t_change_placeholder_1 = 'Ej.: cambiar el gris por negro'
+assign t_change_placeholder_2 = 'Ej.: añadir mi nombre en el depósito'
+assign t_change_placeholder_3 = 'Ej.: quitar el dorsal del colín'
+assign t_change_placeholder_other = 'Otro cambio'
+assign t_free = 'Gratis'
+assign t_rims_name = 'Llantas personalizadas a juego'
+assign t_rims_summary = 'Toca para añadir · mismo diseño en las dos llantas'
+assign t_rims_hint = 'Vinilos para las dos llantas dibujados con los mismos colores y grafismos que tu kit. Los ves en la previsualización antes de fabricar.'
+assign t_rims_option = 'Llantas a juego con el diseño'
+assign t_preview_note = 'Antes de fabricar te enviamos la previsualización de tu kit para que la apruebes.'
+endif
 comment
 Carez: familia del producto para ofrecer SOLO su montaje especifico.
 Personalizados: por el handle del producto. Kits normales: por las
@@ -1150,7 +1221,8 @@ grid-template-columns: 1fr;
 </span>
 <svg class="cz-trigger-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
 {% if link_mode %}</a>{% else %}</button>{% endif %}
-<p class="cz-preview-note-{{ block.id }}">Antes de fabricar te enviamos la previsualización de tu kit para que la apruebes.</p>
+<p class="cz-preview-note-{{ block.id }}">{{ t_preview_note }}</p>
+{% if link_mode %}<span data-cz-dialog data-cz-link-marker hidden></span>{% endif %}
 {% endunless %}
 {% unless link_mode %}
 {% if inline_mode %}<div class="cz-inline-{{ block.id }}" data-cz-dialog data-cz-inline>{% else %}<dialog class="cz-dialog-{{ block.id }}" data-cz-dialog>{% endif %}
@@ -1185,16 +1257,16 @@ grid-template-columns: 1fr;
 <div class="cz-inline-head-{{ block.id }}">
 {% if product.featured_image %}<img class="cz-inline-thumb-{{ block.id }}" src="{{ product.featured_image | image_url: width: 240 }}" alt="{{ product.title | escape }}" width="120" height="120" loading="eager">{% endif %}
 <div class="cz-inline-head-text-{{ block.id }}">
-<a class="cz-inline-back-{{ block.id }}" href="{{ product.url }}">&larr; Volver a la ficha del producto</a>
-<p class="cz-inline-kicker-{{ block.id }}">Configura tu kit</p>
+<a class="cz-inline-back-{{ block.id }}" href="{{ product.url }}">&larr; {{ t_back_to_product }}</a>
+<p class="cz-inline-kicker-{{ block.id }}">{{ t_page_kicker }}</p>
 <h1 class="cz-inline-title-{{ block.id }}">{{ product.title }}</h1>
-<p class="cz-inline-sub-{{ block.id }}">Elige tu moto, la base y el acabado, y los extras. Ves el precio final abajo antes de añadirlo al carrito.</p>
+<p class="cz-inline-sub-{{ block.id }}">{{ t_page_intro }}</p>
 </div>
 </div>
 <ul class="cz-badges-{{ block.id }}">
-<li><b>365 días</b><span>de garantía en el vinilo</span></li>
-<li><b>2 cambios</b><span>de diseño gratis incluidos</span></li>
-<li><b>Envío gratis</b><span>en España · UE 13,50 €</span></li>
+<li><b>{{ t_badge_warranty }}</b><span>{{ t_badge_warranty_sub }}</span></li>
+<li><b>{{ t_badge_changes }}</b><span>{{ t_badge_changes_sub }}</span></li>
+<li><b>{{ t_badge_shipping }}</b><span>{{ t_badge_shipping_sub }}</span></li>
 </ul>
 <form method="post" action="{{ routes.cart_add_url }}" enctype="multipart/form-data" data-cz-inline-form hidden><input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}"><input type="hidden" name="quantity" value="1"></form>
 {% endif %}
@@ -1228,7 +1300,7 @@ Un miembro de nuestro equipo te contactará para enseñarte la previsualización
 </div>
 {% endif %}
 <div class="cz-section-{{ block.id }}">
-<p class="cz-section-label-{{ block.id }}">{{ block.settings.bike_info_label | default: 'Información de tu moto' }}</p>
+<p class="cz-section-label-{{ block.id }}">{% if inline_mode %}{{ t_bike_info }}{% else %}{{ block.settings.bike_info_label | default: 'Información de tu moto' }}{% endif %}</p>
 {% if brands_json != blank %}
 <div class="cz-field-{{ block.id }}">
 <label for="CzBrand-{{ block.id }}">{{ 'bike_customizer.brand' | t }} <span class="cz-required-{{ block.id }}">*</span></label>
@@ -1271,7 +1343,7 @@ Un miembro de nuestro equipo te contactará para enseñarte la previsualización
 </div>
 {% unless custom_mode %}
 <div class="cz-section-{{ block.id }}">
-<p class="cz-section-label-{{ block.id }}">{{ block.settings.photo_label | default: 'Foto de tu moto (opcional)' }}</p>
+<p class="cz-section-label-{{ block.id }}">{% if inline_mode %}{{ t_photo_label }}{% else %}{{ block.settings.photo_label | default: 'Foto de tu moto (opcional)' }}{% endif %}</p>
 <p class="cz-upload-hint-{{ block.id }}">{{ 'bike_customizer.photo_hint' | t }}</p>
 <label class="cz-upload-{{ block.id }}" data-cz-upload>
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
@@ -1399,39 +1471,17 @@ placeholder="{{ 'bike_customizer.additional_info_placeholder' | t }}"
 <h4 class="cz-step-heading-{{ block.id }}" data-cz-step-heading tabindex="-1">3. {{ 'bike_customizer.step_label_3' | t }}</h4>
 {% unless custom_mode %}
 <div class="cz-section-{{ block.id }}">
-<p class="cz-section-label-{{ block.id }}">Cambio de diseño · 2 gratis incluidos</p>
-<p class="cz-upload-hint-{{ block.id }}">Los 2 primeros cambios van incluidos. A partir del tercero, cada cambio cuesta 9,99 €. Los ves aplicados en la previsualización antes de fabricar.</p>
+{%- assign change_fee_money = 999 | money -%}
+<p class="cz-section-label-{{ block.id }}">{{ 'bike_customizer.design_change' | t }} · {{ 'bike_customizer.design_change_badge' | t }}</p>
+<p class="cz-upload-hint-{{ block.id }}">{{ t_changes_hint | replace: '[fee]', change_fee_money }}</p>
 <div class="cz-changes-{{ block.id }}" data-cz-changes>
-<div class="cz-change-{{ block.id }}" data-cz-change-row="1">
-<span class="cz-change-k-{{ block.id }}">Cambio 1</span>
-<input type="text" data-cz-prop="Cambio 1" data-cz-change="1" placeholder="Ej.: cambiar el gris por negro">
-<span class="cz-change-fee-{{ block.id }}">Gratis</span>
+{%- for i in (1..6) -%}
+<div class="cz-change-{{ block.id }}" data-cz-change-row="{{ i }}"{% unless i == 1 %} hidden{% endunless %}>
+<span class="cz-change-k-{{ block.id }}">{{ t_change }} {{ i }}</span>
+<input type="text" data-cz-prop="Cambio {{ i }}" data-cz-change="{{ i }}" placeholder="{% case i %}{% when 1 %}{{ t_change_placeholder_1 }}{% when 2 %}{{ t_change_placeholder_2 }}{% when 3 %}{{ t_change_placeholder_3 }}{% else %}{{ t_change_placeholder_other }}{% endcase %}">
+{% if i <= 2 %}<span class="cz-change-fee-{{ block.id }}">{{ t_free }}</span>{% else %}<span class="cz-change-fee-{{ block.id }}" data-paid>+{{ change_fee_money }}</span>{% endif %}
 </div>
-<div class="cz-change-{{ block.id }}" data-cz-change-row="2" hidden>
-<span class="cz-change-k-{{ block.id }}">Cambio 2</span>
-<input type="text" data-cz-prop="Cambio 2" data-cz-change="2" placeholder="Ej.: añadir mi nombre en el depósito">
-<span class="cz-change-fee-{{ block.id }}">Gratis</span>
-</div>
-<div class="cz-change-{{ block.id }}" data-cz-change-row="3" hidden>
-<span class="cz-change-k-{{ block.id }}">Cambio 3</span>
-<input type="text" data-cz-prop="Cambio 3" data-cz-change="3" placeholder="Ej.: quitar el dorsal del colín">
-<span class="cz-change-fee-{{ block.id }}" data-paid>+9,99 €</span>
-</div>
-<div class="cz-change-{{ block.id }}" data-cz-change-row="4" hidden>
-<span class="cz-change-k-{{ block.id }}">Cambio 4</span>
-<input type="text" data-cz-prop="Cambio 4" data-cz-change="4" placeholder="Otro cambio">
-<span class="cz-change-fee-{{ block.id }}" data-paid>+9,99 €</span>
-</div>
-<div class="cz-change-{{ block.id }}" data-cz-change-row="5" hidden>
-<span class="cz-change-k-{{ block.id }}">Cambio 5</span>
-<input type="text" data-cz-prop="Cambio 5" data-cz-change="5" placeholder="Otro cambio">
-<span class="cz-change-fee-{{ block.id }}" data-paid>+9,99 €</span>
-</div>
-<div class="cz-change-{{ block.id }}" data-cz-change-row="6" hidden>
-<span class="cz-change-k-{{ block.id }}">Cambio 6</span>
-<input type="text" data-cz-prop="Cambio 6" data-cz-change="6" placeholder="Otro cambio">
-<span class="cz-change-fee-{{ block.id }}" data-paid>+9,99 €</span>
-</div>
+{%- endfor -%}
 </div>
 </div>
 {%- comment -%}
@@ -1560,20 +1610,20 @@ placeholder="{{ 'bike_customizer.adapt_placeholder' | t }}"
 <button type="button" class="cz-addon-remove-{{ block.id }}" data-cz-addon-remove>{{ 'bike_customizer.remove_extra' | t }}</button>
 </div>
 </div>
-{%- comment -%} BORRADOR Carez: extra "Llantas personalizadas a juego con el diseño" (85 €) {%- endcomment -%}
+{%- comment -%} Carez: extra "Llantas personalizadas a juego con el diseño" (85 €). Textos en las variables t_rims_*. {%- endcomment -%}
 <div class="cz-section-{{ block.id }}">
 <button type="button" class="cz-addon-trigger-{{ block.id }}" data-cz-addon-toggle="llantas" aria-expanded="false">
-<img class="cz-addon-thumb-{{ block.id }}" src="{{ block.settings.addon_llantas_image | image_url: width: 300 }}" alt="Llantas personalizadas a juego con el diseño" loading="lazy" width="96" height="96">
+<img class="cz-addon-thumb-{{ block.id }}" src="{% if block.settings.addon_llantas_image %}{{ block.settings.addon_llantas_image | image_url: width: 300 }}{% else %}{{ 'vinilos-llanta-carretera-personalizado.png' | file_img_url: '300x' }}{% endif %}" alt="{{ t_rims_name | escape }}" loading="lazy" width="96" height="96">
 <span class="cz-addon-info-{{ block.id }}">
-<span class="cz-addon-name-{{ block.id }}">Llantas personalizadas a juego</span>
-<span class="cz-addon-sub-{{ block.id }}" data-cz-addon-summary="llantas">Toca para añadir · mismo diseño en las dos llantas</span>
+<span class="cz-addon-name-{{ block.id }}">{{ t_rims_name }}</span>
+<span class="cz-addon-sub-{{ block.id }}" data-cz-addon-summary="llantas">{{ t_rims_summary }}</span>
 </span>
-<span class="cz-addon-badge-{{ block.id }}" data-cz-addon-price-badge="llantas">+85€</span>
+<span class="cz-addon-badge-{{ block.id }}" data-cz-addon-price-badge="llantas">+{{ 8500 | money }}</span>
 </button>
-<p class="cz-upload-hint-{{ block.id }}">Vinilos para las dos llantas dibujados con los mismos colores y grafismos que tu kit. Los ves en la previsualización antes de fabricar.</p>
+<p class="cz-upload-hint-{{ block.id }}">{{ t_rims_hint }}</p>
 <div class="cz-addon-panel-{{ block.id }}" data-cz-addon-panel="llantas" hidden>
-<button type="button" class="cz-addon-option-{{ block.id }}" data-cz-addon-option data-total-cents="8500" data-extra-cents="0" data-before-cents="0" data-variant-id="{{ block.settings.addon_llantas_variant }}" data-units-label="Llantas a juego con el diseño" aria-pressed="false">
-<span class="cz-addon-option-units-{{ block.id }}">Llantas a juego con el diseño</span>
+<button type="button" class="cz-addon-option-{{ block.id }}" data-cz-addon-option data-total-cents="8500" data-extra-cents="0" data-before-cents="0" data-variant-id="{{ block.settings.addon_llantas_variant | default: '62622437114243' }}" data-units-label="{{ t_rims_option | escape }}" aria-pressed="false">
+<span class="cz-addon-option-units-{{ block.id }}">{{ t_rims_option }}</span>
 <span class="cz-addon-option-price-{{ block.id }}" data-cz-addon-option-price></span>
 </button>
 <button type="button" class="cz-addon-remove-{{ block.id }}" data-cz-addon-remove>{{ 'bike_customizer.remove_extra' | t }}</button>
@@ -1592,9 +1642,9 @@ placeholder="{{ 'bike_customizer.adapt_placeholder' | t }}"
 </div>
 {% unless inline_mode %}<button type="button" class="cz-add-{{ block.id }}" data-cz-step-next>{{ 'bike_customizer.step_next' | t }}</button>{% endunless %}
 <button type="button" class="cz-add-{{ block.id }}" data-cz-confirm{% unless inline_mode %} hidden{% endunless %}>
-{{ block.settings.add_button_text | default: 'Añadir al carrito' }}
+{% if inline_mode %}{{ t_add_to_cart }}{% else %}{{ block.settings.add_button_text | default: 'Añadir al carrito' }}{% endif %}
 </button>
-{% if inline_mode %}<p class="cz-preview-note-{{ block.id }}">Antes de fabricar te enviamos la previsualización de tu kit para que la apruebes.</p>{% endif %}
+{% if inline_mode %}<p class="cz-preview-note-{{ block.id }}">{{ t_preview_note }}</p>{% endif %}
 </div>
 </div>
 </div>
@@ -1737,7 +1787,7 @@ return parts.length ? parts.join(' + ') : {{ product.title | json }};
 }
 var ADAPT_FEE_VARIANT_ID = '{{ block.settings.adapt_fee_variant_id | default: "62259251806595" }}';
 var ADAPT_FEE_CENTS = 2000;
-var CHANGE_FEE_VARIANT_ID = '{{ block.settings.change_fee_variant_id }}';
+var CHANGE_FEE_VARIANT_ID = '{{ block.settings.change_fee_variant_id | default: "62622669930883" }}';
 var CHANGE_FEE_CENTS = 999;
 var CHANGE_FREE = 2;
 var changeRows = Array.prototype.slice.call(scope.querySelectorAll('[data-cz-change-row]'));
@@ -2208,7 +2258,7 @@ updateSummary();
 var addonControllers = [
 createAddonController('stickers', {{ 'bike_customizer.stickers_summary' | t | json }}, '+' + formatMoney(999), ' ' + {{ 'bike_customizer.selected_f' | t | json }}),
 createAddonController('montaje', {{ 'bike_customizer.montaje_summary' | t | json }}, {% if carez_montaje_num == 1 %}formatMoney({{ carez_montaje_min }}){% else %}{{ 'bike_customizer.from' | t | json }} + ' ' + formatMoney({{ carez_montaje_min }}){% endif %}, ' ' + {{ 'bike_customizer.selected_m' | t | json }}),
-createAddonController('llantas', 'Toca para añadir · mismo diseño en las dos llantas', '+' + formatMoney(8500), ' ' + {{ 'bike_customizer.selected_f' | t | json }})
+createAddonController('llantas', {{ t_rims_summary | json }}, '+' + formatMoney(8500), ' ' + {{ 'bike_customizer.selected_f' | t | json }})
 ].filter(Boolean);
 function addLineVerified(variantId, properties, quantity) {
 return fetch(CART_ADD_URL, {
@@ -2447,7 +2497,7 @@ se conserva mientras no se borre esta linea.
 {% render 'carez-fix-personalizados' %}
 {% schema %}
 {
-"name": "Base + Acabado (llantas)",
+"name": "Base + Acabado",
 "tag": null,
 "settings": [
 { "type": "header", "content": "Textos" },
@@ -2458,7 +2508,7 @@ se conserva mientras no se borre esta linea.
 { "type": "text", "id": "photo_label", "label": "Etiqueta de subida de foto", "default": "Foto de tu moto (opcional)" },
 { "type": "text", "id": "add_button_text", "label": "Texto del botón añadir", "default": "Añadir al carrito" },
 { "type": "text", "id": "adapt_fee_variant_id", "label": "ID variante cargo +20€ (Adaptación a otra moto)", "default": "62259251806595" },
-{ "type": "text", "id": "change_fee_variant_id", "label": "ID variante cambio de diseño adicional (9,99€)" },
+{ "type": "text", "id": "change_fee_variant_id", "label": "ID variante cambio de diseño adicional (9,99€)", "default": "62622669930883" },
 { "type": "checkbox", "id": "custom_request_mode", "label": "Modo personalizado (Base/Acabado + petición libre)", "default": false },
 { "type": "select", "id": "open_mode", "label": "Cómo se abre el configurador", "default": "modal", "options": [ { "value": "modal", "label": "Ventana emergente (modal)" }, { "value": "link", "label": "Botón que lleva a una página nueva" }, { "value": "inline", "label": "Incrustado en la página (plantilla configurador)" } ] },
 { "type": "text", "id": "link_view", "label": "Plantilla de la página nueva (product.<valor>.json)", "default": "configurador" },
@@ -2478,9 +2528,9 @@ se conserva mientras no se borre esta linea.
 { "type": "text", "id": "addon_montaje_variant_scooter", "label": "ID variante Scooter (80€)", "default": "62263633707395" },
 { "type": "text", "id": "addon_montaje_variant_quad", "label": "ID variante Quad (99€)", "default": "62263633740163" },
 { "type": "text", "id": "addon_montaje_variant_agua", "label": "ID variante Moto de agua (120€)", "default": "62263633772931" },
-{ "type": "header", "content": "Extra — Llantas personalizadas a juego (BORRADOR)" },
+{ "type": "header", "content": "Extra — Llantas personalizadas a juego" },
 { "type": "image_picker", "id": "addon_llantas_image", "label": "Foto del extra" },
-{ "type": "text", "id": "addon_llantas_variant", "label": "ID variante Llantas a juego (85€)" },
+{ "type": "text", "id": "addon_llantas_variant", "label": "ID variante Llantas a juego (85€)", "default": "62622437114243" },
 { "type": "header", "content": "Fotos — Normal" },
 { "type": "image_picker", "id": "combo_normal_brillo", "label": "Normal + Brillo" },
 { "type": "image_picker", "id": "combo_normal_mate", "label": "Normal + Mate" },
@@ -2495,7 +2545,7 @@ se conserva mientras no se borre esta linea.
 { "type": "image_picker", "id": "combo_holografico_glitter", "label": "Holográfico + Glitter" }
 ],
 "presets": [
-{ "name": "Base + Acabado (llantas)" }
+{ "name": "Base + Acabado" }
 ]
 }
 {% endschema %}

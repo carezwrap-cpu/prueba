@@ -1,0 +1,85 @@
+{
+  "sections": {
+    "configurador": {
+      "type": "_blocks",
+      "blocks": {
+        "bike_1": {
+          "type": "bike-customization-modal",
+          "settings": {
+            "trigger_title": "AÑADIR AL CARRITO",
+            "trigger_subtitle": "Base, acabado y ficha de tu moto",
+            "modal_title": "Personaliza tu kit",
+            "bike_info_label": "Informacion de tu moto",
+            "photo_label": "Foto de tu moto (opcional)",
+            "add_button_text": "Anadir al carrito",
+            "adapt_fee_variant_id": "62259251806595",
+            "custom_request_mode": false,
+            "hide_adapt_bike_option": false,
+            "addon_stickers_image": "shopify://shop_images/instagram-stickers-extra.png",
+            "addon_stickers_variant_5": "62259365642627",
+            "addon_stickers_variant_15": "62259369607555",
+            "addon_stickers_variant_20": "62259369640323",
+            "addon_stickers_variant_50": "62259369673091",
+            "addon_montaje_image": "shopify://shop_images/montaje-extra.jpg",
+            "addon_montaje_variant_carretera": "62263631348099",
+            "addon_montaje_variant_naked": "62263633609091",
+            "addon_montaje_variant_enduro": "62263633641859",
+            "addon_montaje_variant_trail": "62263633674627",
+            "addon_montaje_variant_scooter": "62263633707395",
+            "addon_montaje_variant_quad": "62263633740163",
+            "addon_montaje_variant_agua": "62263633772931",
+            "combo_normal_brillo": "shopify://shop_images/hf_20260730_223536_cee7a8cf-2203-4185-bcf3-8a176fbdccf6.png",
+            "combo_normal_mate": "shopify://shop_images/hf_20260730_223603_6ea1c29e-af1e-4d69-9671-73c1d86e045e.png",
+            "combo_normal_glitter": "shopify://shop_images/normal-glitter-v3.png",
+            "combo_cromado_brillo": "shopify://shop_images/hf_20260730_223613_67641135-d9f7-4403-9b6d-4a179c4f384c.png",
+            "combo_cromado_mate": "shopify://shop_images/hf_20260730_223616_feec3db5-52fa-4665-b76b-c4b5177ede3b.png",
+            "combo_cromado_glitter": "shopify://shop_images/cromado-glitter-v3.png",
+            "combo_holografico_brillo": "shopify://shop_images/hf_20260730_223855_f173530a-b497-4937-8dba-145db88effae.png",
+            "combo_holografico_mate": "shopify://shop_images/hf_20260730_223626_59eae77c-a6b9-4658-9a3f-bb26adc57794.png",
+            "combo_holografico_glitter": "shopify://shop_images/holografico-glitter-v3.png",
+            "addon_llantas_image": "shopify://shop_images/vinilos-llanta-carretera-personalizado.png",
+            "addon_llantas_variant": "62622437114243",
+            "change_fee_variant_id": "62622669930883",
+            "open_mode": "inline",
+            "link_view": "configurador"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "bike_1"
+      ],
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "flex-start",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 12,
+        "section_width": "page-width",
+        "section_height": "",
+        "section_height_custom": 50,
+        "background_media": "none",
+        "background_color": "",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_color": "",
+        "border_radius": 0,
+        "padding-block-start": 24,
+        "padding-block-end": 48
+      }
+    }
+  },
+  "order": [
+    "configurador"
+  ]
+}
