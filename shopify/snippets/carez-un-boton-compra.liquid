@@ -1,0 +1,49 @@
+{% comment %}
+  Carez: un solo camino de compra en las fichas con configurador.
+
+  El montaje y el resto de extras solo se pueden elegir dentro del modal de
+  personalizacion (blocks/bike-customization-modal). El bloque de compra nativo
+  del tema anade el kit sin pasar por ahi y, en movil, aparece ANTES que el
+  boton del configurador: el cliente se llevaba el kit sin montaje sin haber
+  visto nunca la opcion.
+
+  Aqui se oculta ese bloque nativo, pero SOLO en las paginas donde existe el
+  modal (de ahi el :has([data-cz-dialog])). En el resto de fichas el boton
+  nativo es el unico que hay y tiene que seguir visible.
+
+  No se quita del DOM a proposito: el configurador anade el kit haciendo
+  submitButton.click() sobre ese mismo formulario y necesita que siga ahi.
+  Un display:none no impide el click programatico.
+
+  No se cambia el texto de ningun boton.
+{% endcomment %}
+
+{% style %}
+  body:has([data-cz-dialog]) .buy-buttons-block,
+  body:has([data-cz-dialog]) sticky-add-to-cart {
+    display: none !important;
+  }
+{% endstyle %}
+
+<script>
+  /* Respaldo para navegadores sin :has(). Hace exactamente lo mismo que la
+     regla de arriba y nada mas: si la pagina tiene modal de personalizacion,
+     oculta el bloque de compra nativo; si no lo tiene, no toca nada. */
+  (function () {
+    try {
+      if (window.CSS && CSS.supports && CSS.supports('selector(:has(*))')) return;
+    } catch (e) {}
+    function ocultar() {
+      if (!document.querySelector('[data-cz-dialog]')) return;
+      var nodos = document.querySelectorAll('.buy-buttons-block, sticky-add-to-cart');
+      for (var i = 0; i < nodos.length; i++) {
+        nodos[i].style.setProperty('display', 'none', 'important');
+      }
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', ocultar);
+    } else {
+      ocultar();
+    }
+  })();
+</script>
