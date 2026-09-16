@@ -1,112 +1,104 @@
-# Incidencia: la opción de montaje no se añadía al carrito
+# Incidencia: el montaje no llega al carrito
 
 **Tienda:** Carez Designs (www.carezdesigns.com)
-**Detectado:** 16/09/2026, por quejas de clientes
-**Estado:** resuelto
+**Detectado:** 16/09/2026, por quejas de clientes (caso concreto reportado: montaje **Trail**)
+**Estado:** causa localizada, arreglo del tema pendiente
 
 ## Síntoma
 
-Los clientes elegían la opción "Montaje" en la ficha de producto, pero el montaje
-no llegaba al carrito. El kit de adhesivos entraba solo, sin el extra de montaje.
+Clientes que quieren el montaje acaban con el kit en el carrito sin él, o dicen
+directamente que "no les deja añadirlo".
 
-## Causa
+## Causa real: el montaje solo existe dentro del configurador
 
-El montaje se cobra mediante la app **Globo Product Options**, que lo implementa
-con productos ocultos (`status: UNLISTED`, etiqueta `globo-product-options`)
-llamados "Montaje Kit Adhesivos": uno por cada set de opciones. Cada opción del
-desplegable es una variante de ese producto oculto, y al añadir al carrito la app
-mete esa variante como línea adicional.
+La ficha de producto muestra **dos botones de compra**, y el nativo del tema va
+primero:
 
-El 13/08/2026 (17:04–17:05 UTC) se añadieron tres opciones nuevas —**NAKED**,
-**SCOOTER** y **MOTO DE AGUA**— a los 8 sets de opciones. Esas variantes se
-crearon con la configuración por defecto de Shopify:
-
-- seguimiento de inventario **activado** (`inventoryItem.tracked: true`)
-- política **`DENY`** (no vender sin stock)
-- stock **0**
-
-Resultado: `availableForSale: false`. Shopify rechaza añadirlas al carrito por
-estar agotadas, así que la línea de montaje se cae silenciosamente.
-
-Las opciones antiguas (MOTO CARRETERA, ENDURO/MX/SUPERMOTARD, TRAIL, QUAD,
-creadas el 20/01/2026) tienen el seguimiento desactivado, por eso esas sí
-funcionaban. De ahí que el fallo pareciera aleatorio: dependía del tipo de moto
-que eligiera el cliente.
-
-## Alcance
-
-23 variantes bloqueadas en los 8 productos "Montaje Kit Adhesivos":
-
-| Producto (handle) | Product ID | Opciones afectadas |
+| Posición (móvil 390×844) | Botón | ¿Añade montaje? |
 |---|---|---|
-| option-set-1311594-dropdown-1 | 15589713674627 | NAKED, SCOOTER, MOTO DE AGUA |
-| template-54683-dropdown-1 | 15589716164995 | NAKED, SCOOTER, MOTO DE AGUA |
-| template-54684-dropdown-1 | 15589716328835 | NAKED, SCOOTER, MOTO DE AGUA |
-| option-set-1311596-dropdown-1 | 15589729534339 | NAKED, SCOOTER, MOTO DE AGUA |
-| option-set-1311597-dropdown-1 | 15589742936451 | NAKED, SCOOTER, MOTO DE AGUA |
-| option-set-1329073-dropdown-1 | 15589765513603 | NAKED, SCOOTER, MOTO DE AGUA |
-| option-set-1305088-dropdown-1 | 15589773246851 | SCOOTER, MOTO DE AGUA |
-| option-set-1305305-dropdown-1 | 15589780128131 | NAKED, SCOOTER, MOTO DE AGUA |
+| y ≈ 587 | "Agregar al carrito" (nativo del tema) | **No** |
+| y ≈ 740–800 | "AÑADIR AL CARRITO · Base, acabado y ficha de tu moto" (rojo, abre el configurador `bike_customizer`) | Sí |
 
-NAKED afecta a buena parte del catálogo (MT-07, Tmax, etc.), así que el impacto
-en ventas de montaje fue alto durante ese mes.
+Comprobado igual en BMW 1200 GS, Yamaha MT-07 y CFMOTO 1000MTX.
 
-El resto de opciones de pago (Base del Kit Gráfico, Acabado, Espesor del
-Material, Tipo De Vehículo, Adaptación Diseño, Modelo De Moto) y los productos
-extra sueltos (Montaje (extra), Llantas personalizadas, Cambio de diseño,
-Stickers de Instagram) estaban bien configurados y no se han tocado.
+Los dos dicen prácticamente lo mismo ("añadir al carrito"), pero el montaje —y
+el resto de extras— solo se puede elegir dentro del configurador, en el paso
+"3. Extras y confirmación". Quien pulsa el botón nativo, que aparece antes al
+hacer scroll, se lleva el kit sin montaje y sin ver en ningún momento que el
+montaje existía.
 
-## Arreglo aplicado
+## Lo que NO era
 
-Para las 23 variantes: seguimiento de inventario **desactivado** y política
-**`CONTINUE`**, igual que las opciones que ya funcionaban. El montaje es un
-servicio, no tiene stock que controlar.
+- **Las variantes de montaje están bien.** `Montaje (extra)` (producto
+  `montaje-extra`, ID 16219533377923) tiene las 8 opciones disponibles, sin
+  seguimiento de stock y con política `CONTINUE`.
+- **Trail funciona de punta a punta hoy.** Verificado el 16/09:
+  - Se añade por API en todos los mercados: España 85 €, Reino Unido 75,
+    Estados Unidos 101.
+  - El configurador lo añade correctamente en escritorio y en móvil
+    (dos llamadas `/cart/add.js`, ambas HTTP 200, sin error visible).
+  - El carrito lo conserva: kit 188 € + Montaje Trail 85 € = 273 €.
+- **Cada moto ofrece su opción correcta**: trail → Trail, naked → Naked,
+  scooter → Scooter, cross/supermotard → Enduro/MX/Supermoto. Ningún producto
+  se queda sin opción de montaje.
 
-```graphql
-mutation FixMontaje($productId: ID!, $variants: [ProductVariantsBulkInput!]!) {
-  productVariantsBulkUpdate(productId: $productId, variants: $variants) {
-    productVariants {
-      id
-      title
-      availableForSale
-      inventoryPolicy
-      inventoryItem { tracked }
-    }
-    userErrors { field message }
-  }
-}
-```
+## Corrección de un diagnóstico anterior
 
-Con `variants: [{ id, inventoryPolicy: CONTINUE, inventoryItem: { tracked: false } }]`
-por cada variante afectada.
+En una primera pasada se arreglaron 23 variantes de los productos ocultos
+**"Montaje Kit Adhesivos"** de la app Globo Product Options (opciones NAKED,
+SCOOTER y MOTO DE AGUA creadas el 13/08/2026 con seguimiento de inventario
+activado, stock 0 y política `DENY`, por lo que Shopify las daba por agotadas).
 
-Verificado tras el cambio: las 56 variantes de los 8 sets (7 opciones × 8)
-devuelven `availableForSale: true`.
+El arreglo es correcto en sí mismo, pero **no afecta a lo que ve el cliente**:
 
-## Cómo evitar que vuelva a pasar
+- La app Globo no aparece en la ficha de producto (0 referencias en el HTML).
+- Esos 8 productos ocultos no han vendido nada en 180 días.
 
-Al añadir una opción de pago nueva en Globo Product Options, Shopify crea la
-variante con seguimiento de inventario activado y `DENY` por defecto. Hay que
-desactivar el seguimiento en esa variante nada más crearla, o la opción nacerá
-agotada y no se podrá añadir al carrito.
+Es decir, es una ruta muerta que quedó del sistema anterior. Trail, además,
+nunca estuvo entre esas variantes bloqueadas: ya estaba disponible.
 
-Comprobación rápida de que no hay ninguna opción bloqueada:
+## Dato que respalda el problema
 
-```graphql
-query {
-  products(first: 50, query: "tag:globo-product-options") {
-    edges { node { handle variants(first: 20) { edges { node { title availableForSale } } } } }
-  }
-}
-```
+Ventas de `Montaje (extra)` por semana frente al total de pedidos:
 
-Cualquier variante con `availableForSale: false` es una opción que el cliente
-puede elegir pero no comprar.
+| Semana | Pedidos | Montajes |
+|---|---|---|
+| 10/08 | 8 | 1 (Carretera) |
+| 17/08 | 3 | 0 |
+| 24/08 | 6 | 1 (Trail) |
+| 31/08 | 18 | 3 (Naked, Trail, Carretera) |
+| 07/09 | 10 | **0** |
+| 14/09 | 5 | **0** |
 
-## Pendiente (menor)
+15 pedidos seguidos sin un solo montaje, después de semanas con ~15% de
+adjunción. Los kits se siguen vendiendo con normalidad: encaja con que los
+clientes estén comprando por el botón nativo, que no pasa por el configurador.
 
-La variante NAKED de `option-set-1305088-dropdown-1`
-(ProductVariant 57354084254083) sigue con el seguimiento de inventario activado,
-aunque con política `CONTINUE`, así que funciona. Conviene desactivarle el
-seguimiento para dejar los 8 sets con la misma configuración y que no se rompa
-si alguien vuelve a ponerla en `DENY`.
+## Arreglo propuesto (tema)
+
+En las fichas que usan el configurador, dejar **un solo** camino de compra:
+
+1. Ocultar el bloque nativo de compra (`product-form-component` /
+   `buy-buttons-block`) cuando la sección `bike_customizer` esté activa, **o**
+2. dejar el botón nativo solo como "Comprar sin personalizar" y subir el botón
+   del configurador por encima, con un texto que lo distinga de verdad.
+
+La opción 1 es la que menos ambigüedad deja. Requiere editar el tema; conviene
+hacerlo sobre una copia no publicada y previsualizarla antes de publicar.
+
+## Limpieza recomendada aparte
+
+- Los 8 productos ocultos "Montaje Kit Adhesivos" de Globo ya no se usan: si la
+  app está desinstalada, conviene archivarlos para que no confundan en informes
+  ni en búsquedas del admin.
+- La variante NAKED de `option-set-1305088-dropdown-1`
+  (ProductVariant 57354084254083) sigue con seguimiento de inventario activado;
+  irrelevante mientras esos productos no se usen.
+
+## Cómo reproducirlo
+
+1. Abrir cualquier ficha de kit en móvil.
+2. Hacer scroll: aparece antes "Agregar al carrito" que el botón rojo del
+   configurador.
+3. Pulsar el nativo → el kit entra en el carrito y el montaje no se ofrece en
+   ningún momento.
